@@ -1,30 +1,24 @@
 package Models;
 
 import Enums.ToolLevel;
-import Enums.ToolName;
+import Enums.ToolType;
 
 public class Tool {
-    private ToolName name;
+    private ToolType name;
     private ToolLevel level;
     private int energyConsumed;
 
-    public Tool(ToolName name) {
+    public Tool(ToolType name) {
         this.name = name;
         this.level = ToolLevel.normal;
-        this.energyConsumed = this.initialEnergyConsumed();
+        this.energyConsumed = this.name.getInitialEnergyConsumed();
     }
 
-    private int initialEnergyConsumed() {
-        int energyConsumed = 0;
-        return energyConsumed;
-        // TODO
-    }
-
-    public ToolName getName() {
+    public ToolType getName() {
         return name;
     }
 
-    public void setName(ToolName name) {
+    public void setName(ToolType name) {
         this.name = name;
     }
 
@@ -37,6 +31,7 @@ public class Tool {
     }
 
     public int getEnergyConsumed() {
+        // TODO شرط هایش
         return energyConsumed;
     }
 

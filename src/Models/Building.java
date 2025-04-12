@@ -3,14 +3,14 @@ package Models;
 import java.util.ArrayList;
 
 public abstract class Building {
-    private final Position position;
-    private final ArrayList<ArrayList<Tile>> buildingMap;
-    private final Position doorPosition;
+    protected final Position position;
+    protected final ArrayList<ArrayList<Tile>> buildingMap;
+    protected final Position doorPosition;
 
-    public Building() {
-        this.doorPosition = null;
-        this.buildingMap = null;
-        this.position = null;
+    public Building(Position position, Position doorPosition) {
+        this.doorPosition = doorPosition;
+        this.buildingMap = new ArrayList<>();
+        this.position = position;
     }
 
     public Position getPosition() {
@@ -24,4 +24,5 @@ public abstract class Building {
     public Position getDoorPosition() {
         return doorPosition;
     }
+    //
 }

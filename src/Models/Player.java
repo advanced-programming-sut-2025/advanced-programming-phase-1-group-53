@@ -1,8 +1,13 @@
 package Models;
 
+import Enums.Gender;
+
 import java.util.ArrayList;
 
-public class Player extends Character{
+public class Player {
+    private String name;
+    private String username;
+    private final Gender gender;
     private Integer gold;
     private Position position;
     private String email;
@@ -11,8 +16,15 @@ public class Player extends Character{
     private int energy;
     private final ArrayList<Farm> farms;
     private Backpack backpack;
+    private final Abilities abilities = new Abilities();
+    private final Connections connections = new Connections();
+    private Trading = new Trading(username);
 
-    public Player(Backpack backpack, int energy, Player couple, String email, String password, Position position, Integer gold) {
+    public Player(String name, String username, Gender gender, Backpack backpack, int energy, Player couple,
+                  String email, String password, Position position, Integer gold) {
+        this.name = name;
+        this.username = username;
+        this.gender = gender;
         this.farms = new ArrayList<>();
         this.backpack = backpack;
         this.energy = energy;
@@ -21,6 +33,26 @@ public class Player extends Character{
         this.password = password;
         this.position = position;
         this.gold = gold;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Gender getGender() {
+        return gender;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public Integer getGold() {
@@ -81,6 +113,14 @@ public class Player extends Character{
 
     public void setPosition(Position position) {
         this.position = position;
+    }
+
+    public Abilities getAbilities() {
+        return abilities;
+    }
+
+    public Connections getConnections() {
+        return connections;
     }
 
     public void passOut() {}
