@@ -18,7 +18,8 @@ public class Player {
     private Backpack backpack;
     private final Abilities abilities = new Abilities();
     private final Connections connections = new Connections();
-    private Trading = new Trading(username);
+    private final Trading myTrading = new Trading(this);
+    private final ArrayList<Recipe> recipes = new ArrayList<>();
 
     public Player(String name, String username, Gender gender, Backpack backpack, int energy, Player couple,
                   String email, String password, Position position, Integer gold) {

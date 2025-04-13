@@ -11,6 +11,8 @@ public class Farm {
     private final Position lakePosition;
     private final ArrayList<Position> doorPositions;
     private final NormalFarming farming = new NormalFarming();
+    private final ArrayList<Animal> animals = new ArrayList<>();
+    private final ArrayList<AnimalShelter> animalShelters = new ArrayList<>();
 
     public Farm(House house, Mine mine, GreenHouse greenHouse, Position lakePosition, ArrayList<Position> doorPositions, Position position, Player owner) {
         this.house = house;
