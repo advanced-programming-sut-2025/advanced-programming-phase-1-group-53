@@ -7,7 +7,7 @@ public class Animal {
     private final String name;
     private Position position;
     private int friendship = 0;
-    private int hungry = 0;
+    private int hunger = 0;
 
     public Animal(AnimalType animalType, String name, Position position) {
         this.animalType = animalType;
@@ -40,11 +40,11 @@ public class Animal {
     }
 
     public int getHungry() {
-        return hungry;
+        return hunger;
     }
 
     public void setHungry(int hungry) {
-        this.hungry = hungry;
+        this.hunger = hungry;
     }
 
     public int calculateProduct() {
