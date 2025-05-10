@@ -17,5 +17,4 @@ public enum ToolType {
     public int getInitialEnergyConsumed() {
         return initialEnergyConsumed;
     }
-    // TODO اضافه کردن اری لیست برای لول هر ابزار به چای اینام
 }

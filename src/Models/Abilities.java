@@ -57,22 +57,4 @@ public class Abilities {
     }
 
     public void fishing() {}
-
-    public void showCraftingRecipe() {}
-
-    public void crafting() {}
-
-    public void placeItem() {}
-
-    public void learnCraftingRecipe() {}
-
-    public void showCookingRecipe() {}
-
-    public void learnCookingRecipe() {}
-
-    public void cooking() {}
-
-    public void eating() {}
-
-    public void useMachine() {}
 }

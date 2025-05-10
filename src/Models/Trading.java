@@ -3,10 +3,10 @@ package Models;
 import Enums.Product;
 
 public class Trading {
-    private Player starterPlayer;
+    private String starterPlayer;
 
-    public Trading(Player player) {
-        this.starterPlayer = player;
+    public Trading(String starterPlayer) {
+        this.starterPlayer = starterPlayer;
     }
     public void displayTradingMenu() {}
     public void trader(Player tradingPlayer, boolean isRequest, Product product, int amount) {
