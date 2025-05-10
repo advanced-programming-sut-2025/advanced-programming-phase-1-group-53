@@ -24,5 +24,4 @@ public abstract class Building {
     public Position getDoorPosition() {
         return doorPosition;
     }
-    //
 }
