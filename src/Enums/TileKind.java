@@ -7,7 +7,8 @@ public enum TileKind {
     rock(false, true),
     tree(false, true),
     grass(true, true),
-    plantation(true, true);
+    plantation(true, true),
+    wall(false, false);
 
     private final boolean isWalkable;
     private final boolean isChangeable;

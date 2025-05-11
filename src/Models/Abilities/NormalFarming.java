@@ -1,7 +1,6 @@
 package Models.Abilities;
 
 import Enums.ItemType;
-import Models.Game.App;
 import Models.Items.Foragings.ForagingMineral;
 import Models.Items.Foragings.Plant;
 import Models.Items.Foragings.PlantAbleCrop;
