@@ -2,6 +2,7 @@ package Models;
 
 import Enums.BackpackLevel;
 import Enums.Fish;
+import Enums.ItemType;
 import Models.Items.CraftingRecipe;
 import Models.Items.Item;
 import Models.Items.Tool;
@@ -65,6 +66,15 @@ public class Backpack {
 
     public void addToBackPack(Tool tool) {}
 
+    public boolean isInventoryFull(){
+
+        return false;
+    }
+
+    public void addItem(Item item){
+        items.compute(item, (k, v) -> (v==null)? 1 : v+1);
+    }
+
     public Map<Item, Integer> getTools(){
         return items.entrySet().stream()
                 .filter(entry -> entry.getKey() instanceof Tool)
@@ -81,5 +91,19 @@ public class Backpack {
                         entry -> (CraftingRecipe) entry.getKey(),
                         Map.Entry::getValue
                 ));
+    }
+
+    public boolean areItemsAvailable(Map<Item, Integer> needs){
+        for(Item item : needs.keySet()){
+            if(items.get(item) < needs.get(item))
+                return false;
+        }
+        return true;
+    }
+
+    public boolean areItemsAvailable(Item item, int amount){
+        if(items.get(item) < amount)
+            return false;
+        return true;
     }
 }
