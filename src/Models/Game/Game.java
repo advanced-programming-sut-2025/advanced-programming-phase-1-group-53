@@ -1,10 +1,8 @@
 package Models.Game;
 
 import Enums.ItemType;
-import Models.DateAndTime;
+import Models.*;
 import Models.Items.Item;
-import Models.Product;
-import Models.Weather;
 
 import java.util.ArrayList;
 
@@ -15,6 +13,8 @@ public class Game {
     public final DateAndTime dateAndTime = new DateAndTime();
     public final Weather weather = new Weather();
     public final ArrayList<Product> sellAbleProducts = new ArrayList<>();//sellable By Players
+    private final GameMap gameMap = new GameMap();
+    private Tile[][] currentMap = gameMap.getTiles();
 
 
 
@@ -70,5 +70,17 @@ public class Game {
     }
     public boolean isInField(int x, int y){
         return false;
+    }
+
+    public GameMap getGameMap() {
+        return gameMap;
+    }
+
+    public Tile[][] getCurrentMap() {
+        return currentMap;
+    }
+
+    public void setCurrentMap(Tile[][] currentMap) {
+        this.currentMap = currentMap;
     }
 }

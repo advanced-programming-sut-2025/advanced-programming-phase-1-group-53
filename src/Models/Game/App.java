@@ -2,13 +2,14 @@ package Models.Game;
 
 import Enums.Menu;
 
+import java.util.ArrayList;
+
 public class App {
     private static App app = null;
     private Menu menu;
     private static Game game = new Game();
-    private App(){
-
-    }
+    private final ArrayList<Player> players = new ArrayList<>();
+    private App(){}
 
     public static App getInstance(){
         if(app == null){

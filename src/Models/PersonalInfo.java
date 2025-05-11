@@ -6,9 +6,16 @@ public class PersonalInfo {
     private String email;
     private String name;
     private String password;
-    private String coupleEmail;
+    private String coupleEmail = null;
     private Gender gender;
-    private int gold;
+    private int gold = 0;
+
+    public PersonalInfo(String email, String name, String password, Gender gender) {
+        this.email = email;
+        this.name = name;
+        this.password = password;
+        this.gender = gender;
+    }
 
     public String getEmail() {
         return email;

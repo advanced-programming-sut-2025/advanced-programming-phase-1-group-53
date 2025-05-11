@@ -2,10 +2,13 @@ package Models;
 
 import Enums.TileKind;
 import Enums.Season;
+import Models.Game.App;
+import Models.Game.Game;
 import Models.Items.Foragings.ForagingMineral;
 import Models.Items.Foragings.ForagingSeed;
 import Models.Items.Foragings.ForagingTree;
 import Models.Items.Foragings.ForagingCrop;
+import Models.Items.Buildings.*;
 
 import java.util.Random;
 
@@ -74,6 +77,23 @@ public class GameMap {
         for (int y = startY; y < startY + VILLAGE_SIZE; y++) {
             for (int x = startX; x < startX + VILLAGE_SIZE; x++) {
                 tiles[y][x] = new Tile(new Position(x, y, 1, 1), TileKind.asphalt);
+            }
+        }
+
+        // Set shop tiles to STRUCTURE
+        setShopTiles(Shop.TheStardropSaloon.getPosition());
+        setShopTiles(Shop.JojaMart.getPosition());
+        setShopTiles(Shop.PierreGeneralStore.getPosition());
+        setShopTiles(Shop.Blacksmith.getPosition());
+        setShopTiles(Shop.CarpenterShop.getPosition());
+        setShopTiles(Shop.FishShop.getPosition());
+        setShopTiles(Shop.MarineRanch.getPosition());
+    }
+
+    private void setShopTiles(Position position) {
+        for (int y = position.getY(); y < position.getY() + position.getHeight(); y++) {
+            for (int x = position.getX(); x < position.getX() + position.getWidth(); x++) {
+                tiles[y][x] = new Tile(new Position(x, y, 1, 1), TileKind.structure);
             }
         }
     }
@@ -155,7 +175,7 @@ public class GameMap {
 
     public void generateForagingSeeds() {
         // Temporary season variable (replace with actual game season later)
-        Season currentSeason = Season.SPRING;
+        Season currentSeason = App.getGame().dateAndTime.getSeason();
 
         Random random = new Random();
         for (int y = 0; y < MAP_SIZE; y++) {
@@ -181,7 +201,7 @@ public class GameMap {
 
     public void generateForagingTrees() {
         // Temporary season variable (replace with actual game season later)
-        Season currentSeason = Season.SPRING;
+        Season currentSeason = App.getGame().dateAndTime.getSeason();
 
         Random random = new Random();
         for (int y = 0; y < MAP_SIZE; y++) {
@@ -207,7 +227,7 @@ public class GameMap {
 
     public void generateForagingCrops() {
         // Temporary season variable (replace with actual game season later)
-        Season currentSeason = Season.SPRING;
+        Season currentSeason = App.getGame().dateAndTime.getSeason();
 
         Random random = new Random();
         for (int y = 0; y < MAP_SIZE; y++) {
@@ -229,5 +249,9 @@ public class GameMap {
                 }
             }
         }
+    }
+
+    public Tile[][] getTiles() {
+        return tiles;
     }
 }
