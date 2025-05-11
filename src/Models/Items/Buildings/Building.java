@@ -44,7 +44,7 @@ public abstract class Building {
         for (int y = 0; y < 10; y++) {
             ArrayList<Tile> row = new ArrayList<>();
             for (int x = 0; x < 10; x++) {
-                row.add(new Tile(new Position(x, y, 1, 1), TileKind.empty, null));
+                row.add(new Tile(new Position(x, y, 1, 1), TileKind.empty));
             }
             buildingMap.add(row);
         }

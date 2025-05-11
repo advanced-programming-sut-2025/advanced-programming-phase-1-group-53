@@ -27,6 +27,10 @@ public class ForagingCrop  extends Plant{
         return new ForagingCrop(this.getItemType(), this.seasons, this.energy);
     }
 
+    public ArrayList<Season> getSeasons() {
+        return seasons;
+    }
+
     public static final ForagingCrop commonMushroom = new ForagingCrop(ItemType.CommonMushroom, Plant.specialSeasons, 38);
     public static final ForagingCrop daffodil = new ForagingCrop(ItemType.Daffodil,  Plant.spring, 0);
     public static final ForagingCrop dandelion = new ForagingCrop(ItemType.Dandelion,  Plant.spring, 25);

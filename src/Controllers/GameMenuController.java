@@ -2,7 +2,6 @@ package Controllers;
 
 import Models.Farm;
 import Models.GameMap;
-import Models.Player;
 import Models.Position;
 
 public class GameMenuController {

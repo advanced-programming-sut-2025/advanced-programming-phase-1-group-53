@@ -26,6 +26,10 @@ public class ForagingSeed  extends Plant{
         return new ForagingSeed(getItemType(), seasons);
     }
 
+    public ArrayList<Season> getSeasons() {
+        return seasons;
+    }
+
     public static final ForagingSeed JazzSeeds = new ForagingSeed(ItemType.JazzSeed,  Plant.spring);
     public static final ForagingSeed CarrotSeeds = new ForagingSeed(ItemType.CarrotSeed,  Plant.spring);
     public static final ForagingSeed CauliflowerSeeds = new ForagingSeed(ItemType.CauliFlowerSeed,  Plant.spring);
@@ -176,3 +180,4 @@ public class ForagingSeed  extends Plant{
        add(MixedSeeds);
     }};
 }
+

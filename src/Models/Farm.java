@@ -4,6 +4,7 @@ import Models.Items.Buildings.GreenHouse;
 import Models.Items.Buildings.House;
 import Models.Items.Buildings.Mine;
 import Models.Items.Buildings.Lake;
+import Models.Game.Player;
 
 import java.util.ArrayList;
 
@@ -20,7 +21,7 @@ public class Farm {
     public Farm(Position position, Player owner) {
         this.position = position;
         this.owner = owner;
-        this.doorPositions = new ArrayList<>();
+        this.doorPositions = createDoors();
         this.house = createHouse();
         this.mine = createMine();
         this.greenHouse = createGreenHouse();
@@ -45,6 +46,11 @@ public class Farm {
     private Lake createLake() {
         // Initialize the lake with its position
         return new Lake(new Position(position.getX() + 10, position.getY() + 10, STRUCTURE_SIZE, STRUCTURE_SIZE));
+    }
+
+    private ArrayList<Position> createDoors() {
+        ArrayList<Position> doors = new ArrayList<>();
+
     }
 
     public Player getOwner() {

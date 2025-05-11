@@ -23,6 +23,10 @@ public class ForagingTree  extends Plant{
         return new ForagingTree(getItemType(), seasons);
     }
 
+    public ArrayList<Season> getSeasons() {
+        return seasons;
+    }
+
     public static final ForagingTree acorns = new ForagingTree(ItemType.Acorns,  Plant.specialSeasons);
     public static final ForagingTree mapleSeed = new ForagingTree(ItemType.MapleSeed,  Plant.specialSeasons);
     public static final ForagingTree pineCone = new ForagingTree(ItemType.PineCone,  Plant.specialSeasons);

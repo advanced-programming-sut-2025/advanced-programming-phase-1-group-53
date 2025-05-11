@@ -1,7 +1,6 @@
 package Models.Items.CraftAbles;
 
 import Enums.ItemType;
-import Models.Abilities.Crafting;
 import Models.Items.CraftingRecipe;
 import Models.Items.Item;
 

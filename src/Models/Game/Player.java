@@ -1,10 +1,7 @@
 package Models.Game;
 
 import Models.*;
-import Models.Abilities.Activity;
 import Models.Abilities.Abilities;
-
-import java.util.ArrayList;
 
 public class Player {
     public final Farm farm = new Farm();
