@@ -20,4 +20,12 @@ public class Energy {
             this.energy -= energy;
         this.energy = Math.min(0, this.energy);
     }
+
+    public int getEnergy() {
+        return energy;
+    }
+
+    public void setEnergy(int energy) {
+        this.energy = energy;
+    }
 }

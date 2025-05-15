@@ -88,6 +88,25 @@ public class GameMap {
         setShopTiles(Shop.CarpenterShop.getPosition());
         setShopTiles(Shop.FishShop.getPosition());
         setShopTiles(Shop.MarineRanch.getPosition());
+
+        addVillageDoors(startY, startX);
+    }
+
+    private void addVillageDoors(int startY, int startX) {
+        int middleY = startY + VILLAGE_SIZE / 2;
+        int middleX = startX + VILLAGE_SIZE / 2;
+
+        // Top side door
+        tiles[startY][middleX] = new Tile(new Position(middleX, startY, 1, 1), TileKind.door);
+
+        // Bottom side door
+        tiles[startY + VILLAGE_SIZE - 1][middleX] = new Tile(new Position(middleX, startY + VILLAGE_SIZE - 1, 1, 1), TileKind.door);
+
+        // Left side door
+        tiles[middleY][startX] = new Tile(new Position(startX, middleY, 1, 1), TileKind.door);
+
+        // Right side door
+        tiles[middleY][startX + VILLAGE_SIZE - 1] = new Tile(new Position(startX + VILLAGE_SIZE - 1, middleY, 1, 1), TileKind.door);
     }
 
     private void setShopTiles(Position position) {
