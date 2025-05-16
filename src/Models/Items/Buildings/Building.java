@@ -38,13 +38,50 @@ public abstract class Building {
         initializeBuildingMap();
     }
 
-    // Helper method to initialize a 10x10 building map
+    // Helper method to initialize a 10x10 mining map with walls and a door
     private void initializeBuildingMap() {
         buildingMap.clear();
-        for (int y = 0; y < 10; y++) {
+        int size = 10;
+        int doorWall = 0; // 0: top, 1: bottom, 2: left, 3: right (choose any, here top)
+        int doorPos = size / 2; // center position
+
+        // Determine tile kind for interior based on building type
+        boolean isGreenhouse = this instanceof GreenHouse;
+        boolean isHouse = this instanceof House;
+        TileKind interiorKind;
+        if (isGreenhouse) {
+            interiorKind = TileKind.grass;
+        } else if (isHouse) {
+            interiorKind = TileKind.asphalt;
+        } else {
+            interiorKind = TileKind.empty;
+        }
+
+        for (int y = 0; y < size; y++) {
             ArrayList<Tile> row = new ArrayList<>();
-            for (int x = 0; x < 10; x++) {
-                row.add(new Tile(new Position(x, y, 1, 1), TileKind.empty));
+            for (int x = 0; x < size; x++) {
+                TileKind kind;
+                // Top wall with door
+                if (y == 0) {
+                    if (x == doorPos) {
+                        kind = TileKind.door;
+                    } else {
+                        kind = TileKind.wall;
+                    }
+                }
+                // Bottom wall
+                else if (y == size - 1) {
+                    kind = TileKind.wall;
+                }
+                // Left and right walls
+                else if (x == 0 || x == size - 1) {
+                    kind = TileKind.wall;
+                }
+                // Interior
+                else {
+                    kind = interiorKind;
+                }
+                row.add(new Tile(new Position(x, y, 1, 1), kind));
             }
             buildingMap.add(row);
         }
