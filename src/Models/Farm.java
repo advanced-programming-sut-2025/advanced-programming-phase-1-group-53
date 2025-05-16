@@ -1,5 +1,6 @@
 package Models;
 
+import Enums.MapsNames;
 import Models.Items.Buildings.GreenHouse;
 import Models.Items.Buildings.House;
 import Models.Items.Buildings.Mine;
@@ -9,6 +10,7 @@ import Models.Game.Player;
 import java.util.ArrayList;
 
 public class Farm {
+    private final int FARM_SIZE = 20;
     private final int STRUCTURE_SIZE = 5;
     private final Player owner;
     private final Position position;
@@ -50,7 +52,11 @@ public class Farm {
 
     private ArrayList<Position> createDoors() {
         ArrayList<Position> doors = new ArrayList<>();
-
+        doors.add(new Position((position.getX() + FARM_SIZE) / 2, position.getY(), 1, 1));
+        doors.add(new Position(position.getX(), (position.getY() + FARM_SIZE) / 2, 1, 1));
+        doors.add(new Position((position.getX() + FARM_SIZE) / 2, position.getY() + FARM_SIZE, 1, 1));
+        doors.add(new Position(position.getX() + FARM_SIZE, (position.getY() + FARM_SIZE) / 2, 1, 1));
+        return doors;
     }
 
     public Player getOwner() {

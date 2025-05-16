@@ -1,16 +1,20 @@
 package Models.Items.Foragings;
 
 import Enums.ItemType;
+import Models.Game.App;
+import Models.Items.CraftAbleAndArtisan.CraftAble;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 public class Fruit extends Plant{
-    private int energy = 0;
 
     private Fruit(ItemType itemType){
         super(itemType);
     }
 
     @Override
-    Fruit makeEdible(int energy){
+    public Fruit makeEdible(double energy){
         this.setEdible();
         this.energy = energy;
         return this;
@@ -39,5 +43,45 @@ public class Fruit extends Plant{
     public static final Fruit CommonMushroom = new Fruit(ItemType.CommonMushroom).makeEdible(38);
     public static final Fruit MysticSyrup = new Fruit(ItemType.MysticSyrup).makeEdible(500);
 
+
+    public static final ArrayList<Fruit> allFruits = new ArrayList<>(){{
+        add(Apricot);
+        add(Cherry);
+        add(Peach);
+        add(Orange);
+        add(Apple);
+        add(Banana);
+        add(Pomegranate);
+        add(Mango);
+        add(OakResin);
+        add(MapleSyrup);
+        add(PineTar);
+        add(Sap);
+        add(CommonMushroom);
+        add(MysticSyrup);
+    }};
+
+    public static final ArrayList<Plant> Fruits = new ArrayList<>(){{
+        add(Apricot);
+        add(Cherry);
+        add(Peach);
+        add(Orange);
+        add(Apple);
+        add(Banana);
+        add(Pomegranate);
+        add(Mango);
+        add(Peach);
+        add(MysticSyrup);
+        add(MapleSyrup);
+        add(PlantAbleCrop.Grape);
+        add(PlantAbleCrop.Strawberry);
+        add(PlantAbleCrop.AncientFruit);
+        add(PlantAbleCrop.Cranberry);
+        add(PlantAbleCrop.Blueberry);
+        add(PlantAbleCrop.Melon);
+        add(PlantAbleCrop.Starfruit);
+        add(PlantAbleCrop.PowderMelon);
+        add(PlantAbleCrop.SweetGemBerry);
+    }};
 
 }

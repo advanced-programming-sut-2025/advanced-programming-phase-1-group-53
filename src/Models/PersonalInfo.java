@@ -64,4 +64,8 @@ public class PersonalInfo {
     public void setGold(int gold) {
         this.gold = gold;
     }
+
+    public void updateGold(int a){
+        gold += a;
+    }
 }

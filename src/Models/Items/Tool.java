@@ -2,13 +2,16 @@ package Models.Items;
 
 import Enums.ItemType;
 import Enums.ToolLevel;
+import Models.Game.App;
+import Models.Game.Game;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Tool extends Item {
-    private ToolLevel level;
-    private int energyConsumed;
+    protected ToolLevel level;
+    protected int energyConsumed;
 
 
     public Tool(ItemType itemType, ToolLevel toolLevel) {
@@ -20,6 +23,10 @@ public class Tool extends Item {
 
     public ToolLevel getLevel() {
         return level;
+    }
+
+    protected void changeToolLevel(ToolLevel toolLevel){
+        this.level = toolLevel;
     }
 
     public void setLevel(ToolLevel level) {
@@ -41,7 +48,13 @@ public class Tool extends Item {
 
     @Override
     public Tool clone(){
-        return new Tool(getItemType(), level);
+        return new Tool(getItemType(), level).makeSellPrice(baseSellPrice);
+    }
+
+    @Override
+    public Tool makeSellPrice(double price) {
+        baseSellPrice = price;
+        return this;
     }
 
     public void setEnergyConsumed(int energyConsumed) {
@@ -79,11 +92,21 @@ public class Tool extends Item {
     public static final Tool goldAxe = new Tool(ItemType.Axe, ToolLevel.gold);
     public static final Tool iridiumAxe = new Tool(ItemType.Axe, ToolLevel.iridium);
     public static final Tool scythe = new Tool(ItemType.Scythe, ToolLevel.normal);
-    public static final Tool milkPail = new Tool(ItemType.MilkPail, ToolLevel.normal);
-    public static final Tool shear = new Tool(ItemType.Shear, ToolLevel.normal);
-    public static final Tool normalFishingPole = new Tool(ItemType.FishingPole, ToolLevel.normal);
-    public static final Tool bambooFishingPole = new Tool(ItemType.FishingPole, ToolLevel.bamboo);
-    public static final Tool fiberglassFishingPole = new Tool(ItemType.FishingPole, ToolLevel.fiberglass);
-    public static final Tool iridiumFishingPole = new Tool(ItemType.FishingPole, ToolLevel.iridium);
+    public static final Tool milkPail = new Tool(ItemType.MilkPail, ToolLevel.normal).makeSellPrice(1000);
+    public static final Tool shear = new Tool(ItemType.Shear, ToolLevel.normal).makeSellPrice(1000);
+    public static final Tool normalFishingPole = new Tool(ItemType.FishingPole, ToolLevel.normal).makeSellPrice(25);
+    public static final Tool bambooFishingPole = new Tool(ItemType.FishingPole, ToolLevel.bamboo).makeSellPrice(500);
+    public static final Tool fiberglassFishingPole = new Tool(ItemType.FishingPole, ToolLevel.fiberglass).makeSellPrice(1800);
+    public static final Tool iridiumFishingPole = new Tool(ItemType.FishingPole, ToolLevel.iridium).makeSellPrice(7500);
 
+
+    public static final ArrayList<Tool> allTools = new ArrayList<>(){{
+        add(normalHoe);
+        add(normalAxe);
+        add(normalPickaxe);
+        add(scythe);
+        add(shear);
+        add(milkPail);
+        add(normalFishingPole);
+    }};
 }

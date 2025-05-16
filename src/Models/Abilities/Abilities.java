@@ -4,11 +4,11 @@ package Models.Abilities;
 public class Abilities {
     public final Cooking cooking = new Cooking();
     public final Fishing fishing = new Fishing();
-    public final Mining mining = new Mining();
     public final NormalFarming normalFarming = new NormalFarming();
     public final Foraging foraging = new Foraging();
     public final GreenhouseFarming greenhouseFarming = new GreenhouseFarming();
-    public final Crafting crafting = new Crafting();
+    public final CraftingAndArtisan crafting = new CraftingAndArtisan();
+    public final DairyFarming dairyFarming = new DairyFarming();
 
     private final int[] abilities = new int[4];// 0 for mining 1 for fishing 2 for farming 3 for foraging
 

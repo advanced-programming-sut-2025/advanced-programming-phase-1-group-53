@@ -6,6 +6,7 @@ import Models.Game.App;
 import Models.MessageManager;
 import Models.Result;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class TrashCan extends Tool{
@@ -29,7 +30,11 @@ public class TrashCan extends Tool{
             MessageManager.getMessage(Result.failure("Not enough quantity of the product is available."));
             return;
         }
-        App.getGame().getCurrentPlayer().personalInfo.setGold(gold + returnPercent * quantity * App.getGame().getProductByItemType(itemType).getPrice());
+        if(App.getGame().getItemByItemType(itemType).getBaseSellPrice() == 0){
+            MessageManager.getMessage(Result.failure("The item is not sell able."));
+            return;
+        }
+        App.getGame().getCurrentPlayer().personalInfo.setGold((int) (gold + returnPercent * quantity * App.getGame().getItemByItemType(itemType).getBaseSellPrice()));
     }
 
     public static final TrashCan normalTrashCan = new TrashCan(ItemType.Trashcan, ToolLevel.normal, 0);
@@ -38,4 +43,11 @@ public class TrashCan extends Tool{
     public static final TrashCan goldTrashCan = new TrashCan(ItemType.Trashcan, ToolLevel.gold, 45);
     public static final TrashCan iridiumTrashCan = new TrashCan(ItemType.Trashcan, ToolLevel.iridium, 60);
 
+    public static final ArrayList<TrashCan> allTrashCans = new ArrayList<>(){{
+        add(normalTrashCan);
+        add(copperTrashCan);
+        add(ironTrashCan);
+        add(goldTrashCan);
+        add(iridiumTrashCan);
+    }};
 }

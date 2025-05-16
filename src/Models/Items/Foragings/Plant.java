@@ -8,13 +8,18 @@ import Models.Items.Item;
 import java.util.ArrayList;
 
 public abstract class Plant extends Item {
-    protected boolean isEdible = false;
+    protected boolean hasDeluxe = false;
+    protected boolean hasSpeed = false;
 
     Plant(ItemType itemType){
         super(itemType);
     }
 
-    abstract Plant makeEdible(int energy);
+    @Override
+    public Plant makeEdible(double energy){
+        this.energy = energy;
+        return this;
+    }
 
     void setEdible(){
         isEdible = true;
@@ -28,6 +33,21 @@ public abstract class Plant extends Item {
         return "Name: " + itemType.name();
     }
 
+    public boolean HasDeluxe() {
+        return hasDeluxe;
+    }
+
+    public void setHasDeluxe(boolean hasDeluxe) {
+        this.hasDeluxe = hasDeluxe;
+    }
+
+    public boolean HasSpeed() {
+        return hasSpeed;
+    }
+
+    public void setHasSpeed(boolean hasSpeed) {
+        this.hasSpeed = hasSpeed;
+    }
 
     static final ArrayList<Season> specialSeasons = new ArrayList<>() {{
         add(Season.FALL);

@@ -14,17 +14,13 @@ public class ForagingTree  extends Plant{
     }
 
     @Override
-    ForagingTree makeEdible(int energy){
+    public ForagingTree makeEdible(double energy){
         return this;
     }
 
     @Override
     public ForagingTree clone(){
         return new ForagingTree(getItemType(), seasons);
-    }
-
-    public ArrayList<Season> getSeasons() {
-        return seasons;
     }
 
     public static final ForagingTree acorns = new ForagingTree(ItemType.Acorns,  Plant.specialSeasons);
@@ -40,4 +36,8 @@ public class ForagingTree  extends Plant{
         add(mahoganySeed);
         add(mushroomTreeSeed);
     }};
+
+    public ArrayList<Season> getSeasons() {
+        return seasons;
+    }
 }

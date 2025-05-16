@@ -4,22 +4,21 @@ import Models.Position;
 import Models.Tile;
 import Enums.TileKind;
 
-import java.util.ArrayList;
-
 public abstract class Building {
     protected final Position position;
-    protected final ArrayList<ArrayList<Tile>> buildingMap;
+    protected final int SIZE = 10;
+    protected final Tile[][] buildingMap;
 
     public Building(Position position) {
-        this.buildingMap = new ArrayList<>();
         this.position = position;
+        this.buildingMap = new Tile[SIZE][SIZE];
     }
 
     public Position getPosition() {
         return position;
     }
 
-    public ArrayList<ArrayList<Tile>> getBuildingMap() {
+    public Tile[][] getBuildingMap() {
         return buildingMap;
     }
 
@@ -40,14 +39,12 @@ public abstract class Building {
 
     // Helper method to initialize a 10x10 mining map with walls and a door
     private void initializeBuildingMap() {
-        buildingMap.clear();
-        int size = 10;
-        int doorWall = 0; // 0: top, 1: bottom, 2: left, 3: right (choose any, here top)
-        int doorPos = size / 2; // center position
+        int doorWall = 0; // 0: top, 1: bottom, 2: left, 3: right
+        int doorPos = SIZE / 2; // center door
 
-        // Determine tile kind for interior based on building type
         boolean isGreenhouse = this instanceof GreenHouse;
         boolean isHouse = this instanceof House;
+
         TileKind interiorKind;
         if (isGreenhouse) {
             interiorKind = TileKind.grass;
@@ -57,33 +54,20 @@ public abstract class Building {
             interiorKind = TileKind.empty;
         }
 
-        for (int y = 0; y < size; y++) {
-            ArrayList<Tile> row = new ArrayList<>();
-            for (int x = 0; x < size; x++) {
+        for (int y = 0; y < SIZE; y++) {
+            for (int x = 0; x < SIZE; x++) {
                 TileKind kind;
-                // Top wall with door
+
                 if (y == 0) {
-                    if (x == doorPos) {
-                        kind = TileKind.door;
-                    } else {
-                        kind = TileKind.wall;
-                    }
-                }
-                // Bottom wall
-                else if (y == size - 1) {
+                    kind = (x == doorPos) ? TileKind.door : TileKind.wall;
+                } else if (y == SIZE - 1 || x == 0 || x == SIZE - 1) {
                     kind = TileKind.wall;
-                }
-                // Left and right walls
-                else if (x == 0 || x == size - 1) {
-                    kind = TileKind.wall;
-                }
-                // Interior
-                else {
+                } else {
                     kind = interiorKind;
                 }
-                row.add(new Tile(new Position(x, y, 1, 1), kind));
+
+                buildingMap[y][x] = new Tile(new Position(x, y, 1, 1), kind);
             }
-            buildingMap.add(row);
         }
     }
 }

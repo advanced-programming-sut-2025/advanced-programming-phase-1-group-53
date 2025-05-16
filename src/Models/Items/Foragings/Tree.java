@@ -25,7 +25,6 @@ public class Tree  extends Plant{
         this.growthStages = growthStages;
         this.remainingHarvestCycle = remainingHarvestCycle;
         this.seasons = seasons;
-        startTimeOfGrowth = App.getGame().dateAndTime.getTime();
     }
 
     public void setRemainingHarvestCycle(int remainingHarvestCycle) {
@@ -86,11 +85,13 @@ public class Tree  extends Plant{
 
     @Override
     public Tree clone(){
-        return new Tree(getItemType(), this.fruit, this.source, this.growthStages, this.remainingHarvestCycle, this.seasons);
+        Tree tree = new Tree(getItemType(), this.fruit, this.source, this.growthStages, this.remainingHarvestCycle, this.seasons);
+        tree.startTimeOfGrowth = App.getGame().dateAndTime.getTime();
+        return tree;
     }
 
     @Override
-    Tree makeEdible(int energy){
+    public Tree makeEdible(double energy){
         return this;
     }
 
@@ -105,9 +106,10 @@ public class Tree  extends Plant{
                 startTimeOfGrowth = App.getGame().dateAndTime.getTime();
             }
         }
-        if(App.getGame().dateAndTime.isADayPassed())
+        if(App.getGame().dateAndTime.isADayPassed() && !hasDeluxe)
             notWateredDays ++;
-        if(currentGrowthStage == growthStages.length)
+        int a = hasSpeed? 0 : 1;
+        if(currentGrowthStage == growthStages.length-a)
             isReadyForHarvest = true;
     }
 
@@ -140,4 +142,21 @@ public class Tree  extends Plant{
             ForagingSeed.MushroomTreeSeed, new int[]{7,7,7,7}, 1, Plant.specialSeasons);
     public static final Tree MysticTree = new Tree(ItemType.MysticTree,  Fruit.MysticSyrup,
             ForagingSeed.MysticTreeSeed, new int[]{7,7,7,7}, 1, Plant.specialSeasons);
+
+    public static final ArrayList<Tree> allTrees = new ArrayList<>(){{
+        add(MysticTree);
+        add(ApricotTree);
+        add(CherryTree);
+        add(BananaTree);
+        add(MangoTree);
+        add(OrangeTree);
+        add(PeachTree);
+        add(AppleTree);
+        add(PomegranateTree);
+        add(OakTree);
+        add(MapleTree);
+        add(MahoganyTree);
+        add(MushroomTree);
+        add(PineTree);
+    }};
 }

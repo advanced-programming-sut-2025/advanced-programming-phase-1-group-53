@@ -6,17 +6,16 @@ import Enums.Season;
 import java.util.ArrayList;
 
 public class ForagingCrop  extends Plant{
-    private int energy;
     private ArrayList<Season> seasons;
 
-    private ForagingCrop(ItemType itemType, ArrayList<Season> seasons, int energy){
+    private ForagingCrop(ItemType itemType, ArrayList<Season> seasons, double energy){
         super(itemType);
         this.seasons = seasons;
         makeEdible(energy);
     }
 
     @Override
-    ForagingCrop makeEdible(int energy){
+    public ForagingCrop makeEdible(double energy){
         this.setEdible();
         this.energy = energy;
         return this;
@@ -25,10 +24,6 @@ public class ForagingCrop  extends Plant{
     @Override
     public ForagingCrop clone(){
         return new ForagingCrop(this.getItemType(), this.seasons, this.energy);
-    }
-
-    public ArrayList<Season> getSeasons() {
-        return seasons;
     }
 
     public static final ForagingCrop commonMushroom = new ForagingCrop(ItemType.CommonMushroom, Plant.specialSeasons, 38);
@@ -80,4 +75,14 @@ public class ForagingCrop  extends Plant{
         add(snowYam);
         add(winterRoot);
     }};
+
+    public static final ArrayList<ForagingCrop> Mushrooms = new ArrayList<>(){{
+        add(commonMushroom);
+        add(redMushroom);
+        add(purpleMushroom);
+    }};
+
+    public ArrayList<Season> getSeasons() {
+        return seasons;
+    }
 }

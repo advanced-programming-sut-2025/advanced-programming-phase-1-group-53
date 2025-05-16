@@ -4,12 +4,14 @@ import Enums.TileKind;
 import Enums.Season;
 import Models.Game.App;
 import Models.Game.Game;
+import Models.Game.Player;
 import Models.Items.Foragings.ForagingMineral;
 import Models.Items.Foragings.ForagingSeed;
 import Models.Items.Foragings.ForagingTree;
 import Models.Items.Foragings.ForagingCrop;
 import Models.Items.Buildings.*;
 
+import java.util.List;
 import java.util.Random;
 
 public class GameMap {
@@ -21,12 +23,12 @@ public class GameMap {
 
     private final Tile[][] tiles;
 
-    public GameMap() {
+    public GameMap(List<Player> players) {
         this.tiles = new Tile[MAP_SIZE][MAP_SIZE];
-        initializeMap();
+        initializeMap(players);
     }
 
-    private void initializeMap() {
+    private void initializeMap(List<Player> players) {
         // Fill the entire map with "wall" tiles
         for (int y = 0; y < MAP_SIZE; y++) {
             for (int x = 0; x < MAP_SIZE; x++) {
@@ -35,16 +37,16 @@ public class GameMap {
         }
 
         // Initialize farms in the four corners
-        initializeFarm(0, 0); // Top-left
-        initializeFarm(0, MAP_SIZE - FARM_SIZE); // Top-right
-        initializeFarm(MAP_SIZE - FARM_SIZE, 0); // Bottom-left
-        initializeFarm(MAP_SIZE - FARM_SIZE, MAP_SIZE - FARM_SIZE); // Bottom-right
+        initializeFarm(0, 0, players.get(0)); // Top-left
+        initializeFarm(0, MAP_SIZE - FARM_SIZE, players.get(1)); // Top-right
+        initializeFarm(MAP_SIZE - FARM_SIZE, 0, players.get(2)); // Bottom-left
+        initializeFarm(MAP_SIZE - FARM_SIZE, MAP_SIZE - FARM_SIZE, players.get(3)); // Bottom-right
 
         // Initialize the village at the center
         initializeVillage();
     }
 
-    private void initializeFarm(int startY, int startX) {
+    private void initializeFarm(int startY, int startX, Player owner) {
         // Fill the farm area with "empty" tiles
         for (int y = startY; y < startY + FARM_SIZE; y++) {
             for (int x = startX; x < startX + FARM_SIZE; x++) {
@@ -59,6 +61,10 @@ public class GameMap {
         placeStructure(startY, startX + FARM_SIZE - STRUCTURE_WIDTH); // Top-right
         placeStructure(startY + FARM_SIZE - STRUCTURE_HEIGHT, startX); // Bottom-left
         placeStructure(startY + FARM_SIZE - STRUCTURE_HEIGHT, startX + FARM_SIZE - STRUCTURE_WIDTH); // Bottom-right
+        owner.position.setX((startX + FARM_SIZE) / 2);
+        owner.position.setY((startY + FARM_SIZE) / 2);
+        Farm farm = new Farm((new Position(startX, startY, FARM_SIZE, FARM_SIZE)), owner);
+        owner.setFarm(farm);
     }
 
     private void placeStructure(int startY, int startX) {
@@ -143,7 +149,7 @@ public class GameMap {
 
     public void generateRandomThings() {
         generateWoodAndStone();
-        generateMineralsInMine();
+        generateMineralsInMine(App.getGame().getCurrentPlayer().getFarm().getMine().getBuildingMap());
         generateForagingSeeds();
         generateForagingTrees();
         generateForagingCrops();

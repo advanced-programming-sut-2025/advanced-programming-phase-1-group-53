@@ -21,13 +21,14 @@ public class Player {
     private MapsNames currentMap = MapsNames.House;
     private final HashMap<Player, Integer> friendship = new HashMap<>();
     private final HashMap<Player, StringBuilder> conversation = new HashMap<>();
+    public final FoodBuff foodBuff = new FoodBuff();
 
     public Player(String name, String password, String email, Gender gender) {
         this.personalInfo = new PersonalInfo(name, password, email, gender);
-        for (Player player : App.getGame().players) {
+        /*for (Player player : App.getGame().players) {
             this.friendship.put(player, 0);
             this.conversation.put(player, new StringBuilder());
-        }
+        }*/
     }
 
     public Farm getFarm() {
@@ -67,7 +68,7 @@ public class Player {
      * Moves the player to the specified destination using shortest path (BFS).
      * Returns the energy cost of the move, or Double.MAX_VALUE if no path exists.
      */
-    public double moveTo(int destX, int destY) {
+    public int moveTo(int destX, int destY) {
         Tile[][] map = App.getGame().getCurrentMap();
         int rows = map.length;
         int cols = map[0].length;
@@ -100,7 +101,7 @@ public class Player {
             Node node = queue.poll();
             if (node.x == destX && node.y == destY) {
                 // Path found, calculate energy cost
-                return ((double)(node.steps + 10 * node.turns)) / 20.0;
+                return ((node.steps + 10 * node.turns)) / 20;
             }
             for (int dir = 0; dir < 8; dir++) {
                 int nx = node.x + dx[dir];

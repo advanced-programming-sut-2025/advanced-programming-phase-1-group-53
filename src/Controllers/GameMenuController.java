@@ -10,7 +10,7 @@ public class GameMenuController {
         createGameMap();
     }
     private void createGameMap() {
-        GameMap gameMap = new GameMap();
+        //GameMap gameMap = new GameMap();
     }
     private void createFarm(Position position, Player player) {
         Farm farm = new Farm(position, player);

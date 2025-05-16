@@ -1,6 +1,7 @@
 package Models;
 
 import Enums.Season;
+import Models.Game.App;
 
 public class DateAndTime {
     private long passedHours;

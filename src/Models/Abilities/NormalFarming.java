@@ -1,6 +1,7 @@
 package Models.Abilities;
 
 import Enums.ItemType;
+import Models.Game.App;
 import Models.Items.Foragings.ForagingMineral;
 import Models.Items.Foragings.Plant;
 import Models.Items.Foragings.PlantAbleCrop;
@@ -12,7 +13,7 @@ import Models.Result;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class NormalFarming extends Farming {
+public class NormalFarming{
     private final ArrayList<Plant> plantedPlants = new ArrayList<>();
 
 
@@ -102,6 +103,12 @@ public class NormalFarming extends Farming {
             for(Plant plant: removedProducts){
                 plantedPlants.remove(plant);
             }
+        }
+    }
+
+    public void showCraftInfo(ItemType itemType){
+        if(App.getGame().getItemByItemType(itemType) instanceof Plant){
+            MessageManager.getMessage(Result.success(( (Plant) App.getGame().getItemByItemType(itemType)).details()));
         }
     }
 

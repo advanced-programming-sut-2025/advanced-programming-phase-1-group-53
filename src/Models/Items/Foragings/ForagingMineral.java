@@ -15,7 +15,7 @@ public class ForagingMineral  extends Plant{
     }
 
     @Override
-    ForagingMineral makeEdible(int energy){
+    public ForagingMineral makeEdible(double energy){
         return this;
     }
 
@@ -29,11 +29,10 @@ public class ForagingMineral  extends Plant{
     public static final ForagingMineral amethyst = new ForagingMineral(ItemType.Amethyst);
     public static final ForagingMineral topaz = new ForagingMineral(ItemType.Topaz);
     public static final ForagingMineral aquamarine = new ForagingMineral(ItemType.Aquamarine);
-    public static final ForagingMineral copperOre = new ForagingMineral(ItemType.CooperOre);
+    public static final ForagingMineral copperOre = new ForagingMineral(ItemType.CopperOre);
     public static final ForagingMineral ironOre = new ForagingMineral(ItemType.IronOre);
     public static final ForagingMineral goldOre = new ForagingMineral(ItemType.GoldOre);
     public static final ForagingMineral iridiumOre = new ForagingMineral(ItemType.IridiumOre);
-    public static final ForagingMineral coal = new ForagingMineral(ItemType.Coal);
     public static final ForagingMineral diamond = new ForagingMineral(ItemType.Diamond);
     public static final ForagingMineral prismaticShard = new ForagingMineral(ItemType.PrismaticShard);
     public static final ForagingMineral Wood = new ForagingMineral(ItemType.Wood);
@@ -56,9 +55,11 @@ public class ForagingMineral  extends Plant{
         add(ironOre);
         add(goldOre);
         add(iridiumOre);
-        add(coal);
         add(diamond);
         add(prismaticShard);
+        add(Stone);
+        add(Wood);
+        add(Fiber);
     }};
 
 

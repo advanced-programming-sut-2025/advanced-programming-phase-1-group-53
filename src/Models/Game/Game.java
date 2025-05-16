@@ -2,32 +2,66 @@ package Models.Game;
 
 import Enums.ItemType;
 import Models.*;
-import Models.Items.Item;
-
+import Models.Items.*;
+import Models.Items.CraftAbleAndArtisan.Artisan;
+import Models.Items.CraftAbleAndArtisan.*;
+import Models.Items.Foragings.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Game {
     private int numOfPlayers;
     private int numOfTurn;
     public final ArrayList<Player> players = new ArrayList<>();
+    private final ArrayList<Item> allItemsInTheGame = new ArrayList<>();
     public final DateAndTime dateAndTime = new DateAndTime();
     public final Weather weather = new Weather();
     public final ArrayList<Product> sellAbleProducts = new ArrayList<>();//sellable By Players
-    private final GameMap gameMap = new GameMap();
-    private Tile[][] currentMap = gameMap.getTiles();
+    private final GameMap gameMap;
+    private Tile[][] currentMap;
+
+    Game(List<Player> players){
+        this.players.addAll(players);
+        numOfTurn = 0;
+        numOfPlayers = players.size();
+        allItemsInTheGame.addAll(Artisan.allArtisan);
+        allItemsInTheGame.addAll(ArtisanGood.allArtisanGoods);
+        allItemsInTheGame.addAll(Bomb.allBombs);
+        allItemsInTheGame.addAll(CraftAble.allCraftables);
+        allItemsInTheGame.addAll(ScareCrow.allScareCrows);
+        allItemsInTheGame.addAll(Sprinkler.allSprinklers);
+        allItemsInTheGame.addAll(ForagingCrop.foragingCrops);
+        allItemsInTheGame.addAll(ForagingMineral.minerals);
+        allItemsInTheGame.addAll(ForagingSeed.foragingSeeds);
+        allItemsInTheGame.addAll(ForagingTree.allItems);
+        allItemsInTheGame.addAll(Fruit.allFruits);
+        allItemsInTheGame.addAll(PlantAbleCrop.allPlantAbleCrops);
+        allItemsInTheGame.addAll(Tree.allTrees);
+        allItemsInTheGame.addAll(Animal.allAnimals);
+        allItemsInTheGame.addAll(AnimalProduct.allAnimalProducts);
+        allItemsInTheGame.addAll(CoopAndBarn.COOP_AND_BARN);
+        allItemsInTheGame.addAll(CraftingRecipe.craftingRecipes);
+        allItemsInTheGame.addAll(Fish.fishes);
+        allItemsInTheGame.addAll(Recipe.allRecipes);
+        allItemsInTheGame.addAll(Food.allFoods);
+        allItemsInTheGame.addAll(Item.allItems);
+        allItemsInTheGame.addAll(Tool.allTools);
+        allItemsInTheGame.add(TrashCan.normalTrashCan);
+        allItemsInTheGame.add(WateringCan.normalWateringCan);
+        this.gameMap = new GameMap(players);
+        this.currentMap = gameMap.getTiles();
+    }
 
     public Player getCurrentPlayer(){
         return players.get(numOfTurn);
     }
 
     public Item getItemByItemType(ItemType itemType){
-
-    }
-
-    public Product getProductByItemType(ItemType itemType){
-        for(Product product : sellAbleProducts){
-            if(product.)
+        for(Item item : allItemsInTheGame){
+            if(item.getItemType().equals(itemType))
+                return item;
         }
+        return null;
     }
 
     public int getNumOfPlayers() {
@@ -44,10 +78,6 @@ public class Game {
 
     public void setNumOfTurn(int numOfTurn) {
         numOfTurn = numOfTurn;
-    }
-
-    Game(){
-
     }
     public Player getPlayer(int playerIndex){
         if(playerIndex > players.size() || playerIndex < 0){

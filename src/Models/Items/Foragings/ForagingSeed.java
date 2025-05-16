@@ -17,17 +17,13 @@ public class ForagingSeed  extends Plant{
     }
 
     @Override
-    ForagingSeed makeEdible(int energy){
+    public ForagingSeed makeEdible(double energy){
         return this;
     }
 
     @Override
     public ForagingSeed clone(){
         return new ForagingSeed(getItemType(), seasons);
-    }
-
-    public ArrayList<Season> getSeasons() {
-        return seasons;
     }
 
     public static final ForagingSeed JazzSeeds = new ForagingSeed(ItemType.JazzSeed,  Plant.spring);
@@ -179,5 +175,8 @@ public class ForagingSeed  extends Plant{
        add(AncientSeeds);
        add(MixedSeeds);
     }};
-}
 
+    public ArrayList<Season> getSeasons() {
+        return seasons;
+    }
+}
