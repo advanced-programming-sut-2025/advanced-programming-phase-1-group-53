@@ -170,4 +170,48 @@ public class NPC {
         }
         return null; // NPC not found
     }
+
+    public static void gift(NPC npc, Player player, Item item) {
+        if (player.backpack.areItemsAvailable(item, 1)) {
+            if (npc.getFavoriteItems().contains(item)) {
+                System.out.println("You gave " + npc.getName() + " a kheili khoob item " + ". They loved it!");
+                player.changeNPCsFriendship(50, npc);
+            } else {
+                System.out.println("You gave " + npc.getName() + " a na kheili khoob item" + ". They didn't like it.");
+                player.changeNPCsFriendship(20, npc);
+            }
+        }
+        else {
+            System.out.println("badbakht");
+        }
+        player.backpack.getItems().compute(item, (k, v) ->(v-1));
+    }
+
+    public static void doRequest(Player player, NPC npc, int requestNumber) {
+        int friendShipLevel = player.calculateNPCsFriendship(npc);
+        if (requestNumber > friendShipLevel || requestNumber > 2) {
+            System.out.println("we are moving to soon");
+            return;
+        }
+        Request request = npc.getRequests().get(requestNumber);
+        if (request == null) {
+            System.out.println("dige dire");
+            return;
+        }
+        if (!player.backpack.areItemsAvailable(request.giveAwayItem(), request.numberOfGiveAwayItem())) {
+            System.out.println("faghiri");
+            return;
+        }
+        player.backpack.getItems().compute(request.giveAwayItem(), (k, v) ->(v-request.numberOfGiveAwayItem()));
+        player.backpack.addItem(request.giveAwayItem(), request.numberOfRewardItem());
+        player.personalInfo.updateGold(request.goldReward());
+        player.NPCsFriendship.put(npc, player.NPCsFriendship.get(npc) + 50);
+        npc.getRequests().remove(requestNumber);
+    }
+
+    public static void showRequests(NPC npc) {
+        for (Request request : npc.getRequests()) {
+            System.out.println(request.toString());
+        }
+    }
 }

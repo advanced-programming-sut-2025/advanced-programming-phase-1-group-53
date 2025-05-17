@@ -1,5 +1,6 @@
 package Models;
 
+import Enums.ItemType;
 import Enums.MapsNames;
 import Enums.TileKind;
 import Enums.Season;
@@ -385,5 +386,80 @@ public class GameMap {
     private boolean isInside(int x, int y, Position pos) {
         return x >= pos.getX() && x < pos.getX() + pos.getWidth()
             && y >= pos.getY() && y < pos.getY() + pos.getHeight();
+    }
+
+    public boolean amINearPlayer(ItemType itemType) {
+        int[] dx = {-1, -1, -1, 0, 0, 1, 1, 1};
+        int[] dy = {-1, 0, 1, -1, 1, -1, 0, 1};
+        Player player = App.getGame().getCurrentPlayer();
+        Position myPosition = player.position;
+        for (int i = 0; i < dx.length; i++) {
+            int newX = myPosition.getX() + dx[i];
+            int newY = myPosition.getY() + dy[i];
+            if (newX >= 0 && newX < MAP_SIZE && newY >= 0 && newY < MAP_SIZE) {
+                Tile tile = tiles[newY][newX];
+                if (tile.getItem() != null && tile.getItem().getItemType() == itemType) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean amINearPlayer(NPC npc) {
+        int[] dx = {-1, -1, -1, 0, 0, 1, 1, 1};
+        int[] dy = {-1, 0, 1, -1, 1, -1, 0, 1};
+        Player player = App.getGame().getCurrentPlayer();
+        Position myPosition = player.position;
+        for (int i = 0; i < dx.length; i++) {
+            int newX = myPosition.getX() + dx[i];
+            int newY = myPosition.getY() + dy[i];
+            int NPCx = npc.getPosition().getX();
+            int NPCy = npc.getPosition().getY();
+            if (newX >= 0 && newX < MAP_SIZE && newY >= 0 && newY < MAP_SIZE) {
+                if (newX == NPCx && newY == NPCy) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean amINearPlayer(Shop shop) {
+        int[] dx = {-1, -1, -1, 0, 0, 1, 1, 1};
+        int[] dy = {-1, 0, 1, -1, 1, -1, 0, 1};
+        Player player = App.getGame().getCurrentPlayer();
+        Position myPosition = player.position;
+        for (int i = 0; i < dx.length; i++) {
+            int newX = myPosition.getX() + dx[i];
+            int newY = myPosition.getY() + dy[i];
+            Position shopPosition = shop.getPosition();
+            if (newX >= 0 && newX < MAP_SIZE && newY >= 0 && newY < MAP_SIZE) {
+                if (newX >= shopPosition.getX() && newX < shopPosition.getX() + shop.getPosition().getX() &&
+                        newY >= shopPosition.getY() && newY < shopPosition.getY() + shop.getPosition().getY()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean amINearPlayer(Lake lake) {
+        int[] dx = {-1, -1, -1, 0, 0, 1, 1, 1};
+        int[] dy = {-1, 0, 1, -1, 1, -1, 0, 1};
+        Player player = App.getGame().getCurrentPlayer();
+        Position myPosition = player.position;
+        for (int i = 0; i < dx.length; i++) {
+            int newX = myPosition.getX() + dx[i];
+            int newY = myPosition.getY() + dy[i];
+            Position lakePosition = lake.getPosition();
+            if (newX >= 0 && newX < MAP_SIZE && newY >= 0 && newY < MAP_SIZE) {
+                if (newX >= lakePosition.getX() && newX < lakePosition.getX() + lake.getPosition().getX() &&
+                        newY >= lakePosition.getY() && newY < lakePosition.getY() + lake.getPosition().getY()) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

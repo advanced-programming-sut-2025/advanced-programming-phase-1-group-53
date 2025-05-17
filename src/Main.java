@@ -2,6 +2,7 @@ import Enums.ItemType;
 import Models.Game.App;
 import Models.Game.Game;
 import Models.Items.Item;
+import Models.NPC;
 
 import java.util.List;
 import java.util.Scanner;
@@ -35,5 +36,6 @@ public class Main {
         game.printMap();
         game.mapHelper();
         System.out.println(game.getCurrentPlayer().energy.getEnergy());
+        NPC.showRequests(NPC.Sebastian);
     }
 }
