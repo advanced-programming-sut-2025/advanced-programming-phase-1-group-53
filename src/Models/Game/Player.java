@@ -7,10 +7,7 @@ import Models.*;
 import Models.Abilities.Abilities;
 import Models.Abilities.Activity;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Player {
@@ -23,16 +20,14 @@ public class Player {
     public final Position position = new Position(0, 0, 1, 1);
     private MapsNames currentMap = null;
     private MapsNames myFarm = null;
-    private final HashMap<Player, Integer> friendship = new HashMap<>();
+    private final HashMap<Player, Friendship> friendship = new HashMap<>();
     private final HashMap<Player, StringBuilder> conversation = new HashMap<>();
+    private final HashMap<Player, StringBuilder> giftHistory = new HashMap<>();
     public final FoodBuff foodBuff = new FoodBuff();
+    public final HashMap<NPC, Integer> NPCsFriendship = new HashMap<>();
 
     public Player(String name, String password, String email, Gender gender) {
         this.personalInfo = new PersonalInfo(name, password, email, gender);
-        /*for (Player player : App.getGame().players) {
-            this.friendship.put(player, 0);
-            this.conversation.put(player, new StringBuilder());
-        }*/
     }
 
     public Farm getFarm() {
@@ -59,68 +54,31 @@ public class Player {
         this.myFarm = myFarm;
     }
 
-    public void changeFriendship(Player player, int xp) {
-        Player currentPlayer = this;
-        currentPlayer.friendship.put(player, currentPlayer.friendship.get(player) + xp);
-        player.friendship.put(currentPlayer, player.friendship.get(currentPlayer) + xp);
-    }
-
-    public int getFriendshipLevel(Player player) {
-        int xp = this.friendship.get(player);
-        return (xp / 100) - 1;
-    }
-
     public HashMap<Player, StringBuilder> getConversation() {
         return conversation;
+    }
+
+    public HashMap<Player, Friendship> getFriendship() {
+        return friendship;
+    }
+
+    public HashMap<Player, StringBuilder> getGiftHistory() {
+        return giftHistory;
+    }
+
+    public void changeNPCsFriendship(int amount, NPC npc) {
+        this.NPCsFriendship.put(npc, this.NPCsFriendship.get(npc) + amount);
+    }
+
+    public int calculateNPCsFriendship(NPC npc) {
+        int friendshipXP = NPCsFriendship.get(npc);
+        return Math.min(friendshipXP, 800) / 200;
     }
 
     /**
      * Moves the player to the specified destination using shortest path (BFS).
      * Returns the energy cost of the move, or Double.MAX_VALUE if no path exists.
      */
-    /*public int findPath(int destX, int destY) {
-        MapsNames currentMap = this.currentMap;
-        if (currentMap == MapsNames.Farm1 || currentMap == MapsNames.Farm2 || currentMap == MapsNames.Farm3 ||
-                currentMap == MapsNames.Farm4 || currentMap == MapsNames.Village) {
-            MapsNames desMap = App.getGame().getGameMap().findLocationInGameMap(destX, destY);
-            if (desMap == null) return Integer.MAX_VALUE;
-            if (desMap == currentMap) return moveTo(destX, destY);
-            if ((desMap == MapsNames.Farm1 || desMap == MapsNames.Farm2 || desMap == MapsNames.Farm3 || desMap == MapsNames.Farm4) &&
-                    desMap != this.myFarm) return Integer.MAX_VALUE;
-            Position nearestDoor = findNearestDoor(this.position);
-            if (nearestDoor == null) return Integer.MAX_VALUE;
-            int hereToDoor = moveTo(nearestDoor.getX(), nearestDoor.getY());
-        }
-    }
-
-    private Position findNearestDoor(Position currentPosition) {
-        MapsNames currentMap = this.currentMap;
-        ArrayList<Position> doorPositions = null;
-        if (currentMap == MapsNames.Farm1 || currentMap == MapsNames.Farm2 ||
-                currentMap == MapsNames.Farm3 || currentMap == MapsNames.Farm4) {
-            Farm farm = this.farm;
-            doorPositions = farm.getDoorPositions();
-            if (doorPositions == null || doorPositions.isEmpty()) return null;
-        }
-        else if (currentMap == MapsNames.Village) {
-            doorPositions = App.getGame().getGameMap().getVillageDoors();
-            if (doorPositions == null || doorPositions.isEmpty()) return null;
-        }
-        else return null;
-        Position nearestDoor = null;
-        int minDistance = Integer.MAX_VALUE;
-
-        for (Position door : doorPositions) {
-            int distance = Math.abs(door.getX() - currentPosition.getX()) +
-                    Math.abs(door.getY() - currentPosition.getY());
-
-            if (distance < minDistance) {
-                minDistance = distance;
-                nearestDoor = door;
-            }
-        }
-        return nearestDoor;
-    }*/
 
     private void teleport() {
         MapsNames currentMap = this.currentMap;
@@ -258,6 +216,37 @@ public class Player {
         // To be implemented
     }
 
+    public static void initializePlayerRelations(List<Player> players) {
+        for (Player p1 : players) {
+            for (Player p2 : players) {
+                if (p1 != p2) {
+                    // Friendship: ensure both directions have the same Friendship object
+                    if (!p1.getFriendship().containsKey(p2)) {
+                        Friendship sharedFriendship = new Friendship();
+                        p1.getFriendship().put(p2, sharedFriendship);
+                        p2.getFriendship().put(p1, sharedFriendship);
+                    }
+                    // Conversation
+                    if (!p1.getConversation().containsKey(p2)) {
+                        p1.getConversation().put(p2, new StringBuilder());
+                    }
+                    if (!p2.getConversation().containsKey(p1)) {
+                        p2.getConversation().put(p1, new StringBuilder());
+                    }
+                    // Gift history
+                    if (!p1.getGiftHistory().containsKey(p2)) {
+                        p1.getGiftHistory().put(p2, new StringBuilder());
+                    }
+                    if (!p2.getGiftHistory().containsKey(p1)) {
+                        p2.getGiftHistory().put(p1, new StringBuilder());
+                    }
+                }
+            }
+            for (NPC npc : new NPC[]{NPC.Sebastian, NPC.Abigail, NPC.Harvey, NPC.Lia, NPC.Robin}) {
+                p1.NPCsFriendship.put(npc, 0);
+            }
+        }
+    }
 
 }
 

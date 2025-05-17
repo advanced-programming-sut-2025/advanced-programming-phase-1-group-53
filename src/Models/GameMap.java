@@ -22,6 +22,11 @@ public class GameMap {
     private static final int STRUCTURE_WIDTH = 5;
     private static final int STRUCTURE_HEIGHT = 5;
     private static final int VILLAGE_SIZE = 20;
+    public static final Position SEBASTIAN_POSITION = new Position(31, 31, 1, 1);
+    public static final Position ABIGAIL_POSITION   = new Position(35, 32, 1, 1);
+    public static final Position HARVEY_POSITION    = new Position(25, 34, 1, 1);
+    public static final Position LIA_POSITION       = new Position(28, 36, 1, 1);
+    public static final Position ROBIN_POSITION     = new Position(30, 37, 1, 1);
 
     private final Tile[][] tiles;
     private final ArrayList<Position> villageDoors = new ArrayList<>();
@@ -99,6 +104,13 @@ public class GameMap {
         setShopTiles(Shop.CarpenterShop.getPosition());
         setShopTiles(Shop.FishShop.getPosition());
         setShopTiles(Shop.MarineRanch.getPosition());
+
+        // Set NPC tiles to NPC
+        tiles[SEBASTIAN_POSITION.getY()][SEBASTIAN_POSITION.getX()] = new Tile(SEBASTIAN_POSITION, TileKind.NPC);
+        tiles[ABIGAIL_POSITION.getY()][ABIGAIL_POSITION.getX()] = new Tile(ABIGAIL_POSITION, TileKind.NPC);
+        tiles[HARVEY_POSITION.getY()][HARVEY_POSITION.getX()] = new Tile(HARVEY_POSITION, TileKind.NPC);
+        tiles[LIA_POSITION.getY()][LIA_POSITION.getX()] = new Tile(LIA_POSITION, TileKind.NPC);
+        tiles[ROBIN_POSITION.getY()][ROBIN_POSITION.getX()] = new Tile(ROBIN_POSITION, TileKind.NPC);
 
         addVillageDoors(startY, startX);
     }

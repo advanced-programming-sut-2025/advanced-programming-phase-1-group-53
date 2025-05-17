@@ -20,6 +20,8 @@ public class Game {
     private final GameMap gameMap;
     private Tile[][] currentMap;
 
+    // Helper to initialize player relationship HashMaps
+
     Game(List<Player> players){
         this.players.addAll(players);
         numOfTurn = 0;
@@ -129,6 +131,7 @@ public class Game {
         final String CYAN = "\u001B[36m";
         final String WHITE = "\u001B[37m";
         final String BG_GRAY = "\u001B[47m";
+        final String BG_YELLOW = "\u001B[43m"; // New color for NPC tiles
 
         for (int y = 0; y < map.length; y++) {
             for (int x = 0; x < map[y].length; x++) {
@@ -212,6 +215,9 @@ public class Game {
                     case door:
                         color = PURPLE;
                         break;
+                    case NPC:
+                        color = BG_YELLOW + BLACK;
+                        break;
                     default:
                         color = WHITE;
                 }
@@ -249,6 +255,7 @@ public class Game {
         message.append("  \u001B[47m\u001B[30mGRAY\u001B[0m    : Asphalt\n");
         message.append("  \u001B[31mRED\u001B[0m     : Plowed\n");
         message.append("  \u001B[35mPURPLE\u001B[0m  : Door\n");
+        message.append("  \u001B[43m\u001B[30mYELLOW\u001B[0m  : NPC\n");
         message.append("\n");
         message.append("The map is displayed as a grid. Each cell shows a symbol (see above) colored according to the tile type.\n");
         message.append("Priority: Player > Item > Empty. If the player is on a tile, 'P' is shown regardless of items.\n");

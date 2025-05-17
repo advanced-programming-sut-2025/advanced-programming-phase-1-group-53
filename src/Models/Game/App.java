@@ -25,6 +25,7 @@ public class App {
 
     public void newGame(){
         game = new Game(List.of(players.get(0), players.get(1), players.get(2), players.get(3)));
+        Player.initializePlayerRelations(App.getGame().players);
     }
 
     public static App getInstance(){

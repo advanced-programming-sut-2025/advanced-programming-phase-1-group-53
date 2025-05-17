@@ -8,7 +8,8 @@ public enum TileKind {
     wall(false, false),
     asphalt(true, false),
     plowed(true, true),
-    door(true, false);
+    door(true, false),
+    NPC(false, false);
 
     private final boolean isWalkable;
     private final boolean isChangeable;
