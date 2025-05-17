@@ -140,7 +140,48 @@ public class Game {
                 if (playerX == x && playerY == y) {
                     symbol = 'P';
                 } else if (tile.getItem() != null) {
-                    symbol = 'T';
+                    Item item = tile.getItem();
+                    if (item instanceof Tool || item instanceof WateringCan) {
+                        symbol = 'T';
+                    } else if (item instanceof Animal) {
+                        symbol = 'A';
+                    } else if (item instanceof PlantAbleCrop) {
+                        symbol = 'C';
+                    } else if (item instanceof ForagingCrop) {
+                        symbol = 'F';
+                    } else if (item instanceof ForagingMineral) {
+                        symbol = 'M';
+                    } else if (item instanceof ForagingSeed) {
+                        symbol = 'S';
+                    } else if (item instanceof ForagingTree) {
+                        symbol = 'T';
+                    } else if (item instanceof Fruit) {
+                        symbol = 'R';
+                    } else if (item instanceof Tree) {
+                        symbol = 'T';
+                    } else if (item instanceof TrashCan) {
+                        symbol = 'J';
+                    } else if (item instanceof Recipe) {
+                        symbol = 'R';
+                    } else if (item instanceof Food) {
+                        symbol = 'E';
+                    } else if (item instanceof Fish) {
+                        symbol = 'F';
+                    } else if (item instanceof CraftAble) {
+                        symbol = 'C';
+                    } else if (item instanceof ArtisanGood) {
+                        symbol = 'G';
+                    } else if (item instanceof AnimalProduct) {
+                        symbol = 'P';
+                    } else if (item instanceof CoopAndBarn) {
+                        symbol = 'B';
+                    } else if (item instanceof ScareCrow) {
+                        symbol = 'S';
+                    } else if (item instanceof Sprinkler) {
+                        symbol = 'S';
+                    } else {
+                        symbol = '?'; // Unknown item
+                    }
                 } else {
                     symbol = 'X';
                 }
@@ -178,5 +219,41 @@ public class Game {
             }
             System.out.println();
         }
+    }
+
+    public void mapHelper() {
+        StringBuilder message = new StringBuilder();
+        message.append("Map Legend:\n");
+        message.append("Symbols:\n");
+        message.append("  P : Player (your current position)\n");
+        message.append("  T : Tool, ForagingTree, or Tree\n");
+        message.append("  A : Animal\n");
+        message.append("  C : Plantable Crop or Craftable\n");
+        message.append("  F : Foraging Crop or Fish\n");
+        message.append("  M : Foraging Mineral\n");
+        message.append("  S : Foraging Seed, ScareCrow, or Sprinkler\n");
+        message.append("  R : Fruit or Recipe\n");
+        message.append("  J : Trash Can\n");
+        message.append("  G : Artisan Good\n");
+        message.append("  P : Animal Product (when not player)\n");
+        message.append("  B : Coop or Barn\n");
+        message.append("  E : Food\n");
+        message.append("  X : Empty tile (no player, no item)\n");
+        message.append("  ? : Unknown item\n\n");
+        message.append("Colors (tile background/type):\n");
+        message.append("  \u001B[30mBLACK\u001B[0m   : Wall\n");
+        message.append("  \u001B[37mWHITE\u001B[0m   : Empty\n");
+        message.append("  \u001B[32mGREEN\u001B[0m   : Grass\n");
+        message.append("  \u001B[36mCYAN\u001B[0m    : Plantation\n");
+        message.append("  \u001B[34mBLUE\u001B[0m    : Structure (buildings, shops, etc.)\n");
+        message.append("  \u001B[47m\u001B[30mGRAY\u001B[0m    : Asphalt\n");
+        message.append("  \u001B[31mRED\u001B[0m     : Plowed\n");
+        message.append("  \u001B[35mPURPLE\u001B[0m  : Door\n");
+        message.append("\n");
+        message.append("The map is displayed as a grid. Each cell shows a symbol (see above) colored according to the tile type.\n");
+        message.append("Priority: Player > Item > Empty. If the player is on a tile, 'P' is shown regardless of items.\n");
+        message.append("If you see a symbol other than 'P' or 'X', it represents the type of item on that tile.\n");
+        message.append("Use the colors to understand the terrain or structure type of each tile.\n");
+        System.out.println(message);
     }
 }

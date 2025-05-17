@@ -23,16 +23,17 @@ public class Main {
         game.getCurrentPlayer().backpack.showInventory();
         game.getCurrentPlayer().abilities.crafting.artisanUse(ItemType.Furnace, List.of(ItemType.IronOre, ItemType.Coal));
         game.getCurrentPlayer().backpack.showInventory();
-        int energy = game.getCurrentPlayer().moveTo(3, 3);
-        game.getCurrentPlayer().applyMovementCost(energy, 3, 3);
+        int energy = game.getCurrentPlayer().moveTo(2, 2);
+        game.getCurrentPlayer().applyMovementCost(energy, 2, 2);
         game.printMap();
         scanner.nextLine();
-        game.getCurrentPlayer().applyMovementCost(5, 20, 30);
+        game.getCurrentPlayer().applyMovementCost(5, 5, 0);
         System.out.println(game.getCurrentPlayer().position.getX() + " " + game.getCurrentPlayer().position.getY());
         game.getGameMap().generateRandomThings();
         game.getGameMap().generateRandomThings();
         game.getGameMap().generateRandomThings();
         game.printMap();
+        game.mapHelper();
         System.out.println(game.getCurrentPlayer().energy.getEnergy());
     }
 }

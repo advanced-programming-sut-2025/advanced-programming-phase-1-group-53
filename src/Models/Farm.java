@@ -37,17 +37,17 @@ public class Farm {
 
     private Mine createMine() {
         // Initialize the mine with its position
-        return new Mine(new Position(position.getX() + 10, position.getY(), STRUCTURE_SIZE, STRUCTURE_SIZE));
+        return new Mine(new Position(position.getX() + 15, position.getY(), STRUCTURE_SIZE, STRUCTURE_SIZE));
     }
 
     private GreenHouse createGreenHouse() {
         // Initialize the greenhouse with its position
-        return new GreenHouse(new Position(position.getX(), position.getY() + 10, STRUCTURE_SIZE, STRUCTURE_SIZE));
+        return new GreenHouse(new Position(position.getX(), position.getY() + 15, STRUCTURE_SIZE, STRUCTURE_SIZE));
     }
 
     private Lake createLake() {
         // Initialize the lake with its position
-        return new Lake(new Position(position.getX() + 10, position.getY() + 10, STRUCTURE_SIZE, STRUCTURE_SIZE));
+        return new Lake(new Position(position.getX() + 15, position.getY() + 15, STRUCTURE_SIZE, STRUCTURE_SIZE));
     }
 
     /*private ArrayList<Position> createDoors() {

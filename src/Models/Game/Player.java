@@ -229,11 +229,28 @@ public class Player {
             energy.setEnergy(0);
             faint();
         }
-        if (App.getGame().getGameMap().getTile(position.getX(), position.getY()).getTileKind() == TileKind.door) {
-            teleport();
+        Tile currentTile = App.getGame().getCurrentMap()[position.getY()][position.getX()];
+        // If on a door tile
+        if (currentTile.getTileKind() == TileKind.door) {
+            // If we are in a building map (House, GreenHouse, Mine), teleport to farm
+            MapsNames mapName = this.currentMap;
+            if (mapName == Enums.MapsNames.House || mapName == Enums.MapsNames.GreenHouse || mapName == Enums.MapsNames.Mine) {
+                // Teleport to farm: pick a random farm door
+                ArrayList<Position> farmDoors = this.farm.getDoorPositions();
+                if (farmDoors != null && !farmDoors.isEmpty()) {
+                    Position farmDoor = farmDoors.get(ThreadLocalRandom.current().nextInt(farmDoors.size()));
+                    this.position.setX(farmDoor.getX());
+                    this.position.setY(farmDoor.getY());
+                    this.currentMap = this.myFarm;
+                    App.getGame().setCurrentMap(App.getGame().getGameMap().getTiles());
+                }
+            } else {
+                // Normal teleport between farm and village
+                teleport();
+            }
         }
         if (App.getGame().getGameMap().getTile(position.getX(), position.getY()).getTileKind() == TileKind.structure) {
-            App.getGame().getGameMap().changeMapIfEnterBuilding(destX, destY);
+            App.getGame().getGameMap().changeMapIfEnterBuilding(position.getX(), position.getY());
         }
     }
 
@@ -243,3 +260,4 @@ public class Player {
 
 
 }
+
