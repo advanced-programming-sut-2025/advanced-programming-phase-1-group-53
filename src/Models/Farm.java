@@ -23,7 +23,7 @@ public class Farm {
     public Farm(Position position, Player owner) {
         this.position = position;
         this.owner = owner;
-        this.doorPositions = createDoors();
+        this.doorPositions = new ArrayList<>();
         this.house = createHouse();
         this.mine = createMine();
         this.greenHouse = createGreenHouse();
@@ -50,14 +50,14 @@ public class Farm {
         return new Lake(new Position(position.getX() + 10, position.getY() + 10, STRUCTURE_SIZE, STRUCTURE_SIZE));
     }
 
-    private ArrayList<Position> createDoors() {
+    /*private ArrayList<Position> createDoors() {
         ArrayList<Position> doors = new ArrayList<>();
         doors.add(new Position((position.getX() + FARM_SIZE) / 2, position.getY(), 1, 1));
         doors.add(new Position(position.getX(), (position.getY() + FARM_SIZE) / 2, 1, 1));
         doors.add(new Position((position.getX() + FARM_SIZE) / 2, position.getY() + FARM_SIZE, 1, 1));
         doors.add(new Position(position.getX() + FARM_SIZE, (position.getY() + FARM_SIZE) / 2, 1, 1));
         return doors;
-    }
+    }*/
 
     public Player getOwner() {
         return owner;
@@ -79,7 +79,7 @@ public class Farm {
         return greenHouse;
     }
 
-    public Lake getLakePosition() {
+    public Lake getLake() {
         return lake;
     }
 

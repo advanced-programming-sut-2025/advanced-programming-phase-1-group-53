@@ -4,9 +4,11 @@ import Models.Game.Game;
 import Models.Items.Item;
 
 import java.util.List;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
         App app = App.getInstance();
         app.signupGame();
         app.newGame();
@@ -21,8 +23,12 @@ public class Main {
         game.getCurrentPlayer().backpack.showInventory();
         game.getCurrentPlayer().abilities.crafting.artisanUse(ItemType.Furnace, List.of(ItemType.IronOre, ItemType.Coal));
         game.getCurrentPlayer().backpack.showInventory();
-        int energy = (int)game.getCurrentPlayer().moveTo(10, 5);
-        game.getCurrentPlayer().applyMovementCost(energy, 1, 7);
+        int energy = game.getCurrentPlayer().moveTo(3, 3);
+        game.getCurrentPlayer().applyMovementCost(energy, 3, 3);
+        game.printMap();
+        scanner.nextLine();
+        game.getCurrentPlayer().applyMovementCost(5, 20, 30);
+        System.out.println(game.getCurrentPlayer().position.getX() + " " + game.getCurrentPlayer().position.getY());
         game.getGameMap().generateRandomThings();
         game.getGameMap().generateRandomThings();
         game.getGameMap().generateRandomThings();

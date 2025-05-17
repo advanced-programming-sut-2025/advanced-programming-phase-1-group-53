@@ -1,7 +1,10 @@
 package Enums;
 
 public enum MapsNames {
-    Farm,
+    Farm1,
+    Farm2,
+    Farm3,
+    Farm4,
     Village,
     House,
     Mine,

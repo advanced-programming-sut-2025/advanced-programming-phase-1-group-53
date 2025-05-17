@@ -1,5 +1,6 @@
 package Models;
 
+import Enums.MapsNames;
 import Enums.TileKind;
 import Enums.Season;
 import Models.Game.App;
@@ -11,6 +12,7 @@ import Models.Items.Foragings.ForagingTree;
 import Models.Items.Foragings.ForagingCrop;
 import Models.Items.Buildings.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -22,6 +24,7 @@ public class GameMap {
     private static final int VILLAGE_SIZE = 20;
 
     private final Tile[][] tiles;
+    private final ArrayList<Position> villageDoors = new ArrayList<>();
 
     public GameMap(List<Player> players) {
         this.tiles = new Tile[MAP_SIZE][MAP_SIZE];
@@ -54,8 +57,6 @@ public class GameMap {
             }
         }
 
-        addFarmDoors(startY, startX);
-
         // Place structures in the four corners of the farm
         placeStructure(startY, startX); // Top-left
         placeStructure(startY, startX + FARM_SIZE - STRUCTURE_WIDTH); // Top-right
@@ -63,8 +64,12 @@ public class GameMap {
         placeStructure(startY + FARM_SIZE - STRUCTURE_HEIGHT, startX + FARM_SIZE - STRUCTURE_WIDTH); // Bottom-right
         owner.position.setX((startX + FARM_SIZE) / 2);
         owner.position.setY((startY + FARM_SIZE) / 2);
+        MapsNames location = findLocationInGameMap(owner.position.getX(), owner.position.getY());
+        owner.setCurrentMap(location);
+        owner.setMyFarm(location);
         Farm farm = new Farm((new Position(startX, startY, FARM_SIZE, FARM_SIZE)), owner);
         owner.setFarm(farm);
+        addFarmDoors(startY, startX, owner);
     }
 
     private void placeStructure(int startY, int startX) {
@@ -104,15 +109,19 @@ public class GameMap {
 
         // Top side door
         tiles[startY][middleX] = new Tile(new Position(middleX, startY, 1, 1), TileKind.door);
+        villageDoors.add(new Position(middleX, startY, 1, 1));
 
         // Bottom side door
         tiles[startY + VILLAGE_SIZE - 1][middleX] = new Tile(new Position(middleX, startY + VILLAGE_SIZE - 1, 1, 1), TileKind.door);
+        villageDoors.add(new Position(middleX, startY + VILLAGE_SIZE - 1, 1, 1));
 
         // Left side door
         tiles[middleY][startX] = new Tile(new Position(startX, middleY, 1, 1), TileKind.door);
+        villageDoors.add(new Position(startX, middleY, 1, 1));
 
         // Right side door
         tiles[middleY][startX + VILLAGE_SIZE - 1] = new Tile(new Position(startX + VILLAGE_SIZE - 1, middleY, 1, 1), TileKind.door);
+        villageDoors.add(new Position(startX + VILLAGE_SIZE - 1, middleY, 1, 1));
     }
 
     private void setShopTiles(Position position) {
@@ -130,21 +139,29 @@ public class GameMap {
         return tiles[y][x];
     }
 
-    private void addFarmDoors(int startY, int startX) {
+    public ArrayList<Position> getVillageDoors() {
+        return villageDoors;
+    }
+
+    private void addFarmDoors(int startY, int startX, Player owner) {
         int middleY = startY + FARM_SIZE / 2;
         int middleX = startX + FARM_SIZE / 2;
 
         // Top side door
         tiles[startY][middleX] = new Tile(new Position(middleX, startY, 1, 1), TileKind.door);
+        owner.getFarm().getDoorPositions().add(new Position(middleX, startY, 1, 1));
 
         // Bottom side door
         tiles[startY + FARM_SIZE - 1][middleX] = new Tile(new Position(middleX, startY + FARM_SIZE - 1, 1, 1), TileKind.door);
+        owner.getFarm().getDoorPositions().add(new Position(middleX, startY + FARM_SIZE - 1, 1, 1));
 
         // Left side door
         tiles[middleY][startX] = new Tile(new Position(startX, middleY, 1, 1), TileKind.door);
+        owner.getFarm().getDoorPositions().add(new Position(startX, middleY, 1, 1));
 
         // Right side door
         tiles[middleY][startX + FARM_SIZE - 1] = new Tile(new Position(startX + FARM_SIZE - 1, middleY, 1, 1), TileKind.door);
+        owner.getFarm().getDoorPositions().add(new Position(startX + FARM_SIZE - 1, middleY, 1, 1));
     }
 
     public void generateRandomThings() {
@@ -278,5 +295,83 @@ public class GameMap {
 
     public Tile[][] getTiles() {
         return tiles;
+    }
+
+    public MapsNames findLocationInGameMap(int x, int y) {
+        if (x < 0 || x >= MAP_SIZE || y < 0 || y >= MAP_SIZE) {
+            return null; // Invalid position
+        }
+        else if (x < FARM_SIZE && y < FARM_SIZE) {
+            return MapsNames.Farm1;
+        } else if (y < FARM_SIZE && x >= MAP_SIZE - FARM_SIZE) {
+            return MapsNames.Farm2;
+        } else if (y >= MAP_SIZE - FARM_SIZE && x < FARM_SIZE) {
+            return MapsNames.Farm3;
+        } else if (x >= MAP_SIZE - FARM_SIZE && y >= MAP_SIZE - FARM_SIZE) {
+            return MapsNames.Farm4;
+        } else if (x >= FARM_SIZE && x < MAP_SIZE - FARM_SIZE && y >= FARM_SIZE && y < MAP_SIZE - FARM_SIZE) {
+            return MapsNames.Village;
+        } else {
+            return null; // Not in any defined location
+        }
+    }
+
+    public void changeMapIfEnterBuilding(int x, int y) {
+        Player player = App.getGame().getCurrentPlayer();
+        MapsNames mapsName = player.getCurrentMap();
+        if (mapsName == player.getMyFarm()) {
+            Tile tile = App.getGame().getGameMap().getTile(x, y);
+            if (tile.getTileKind() == TileKind.structure) {
+                Building building = findBuilding(x, y);
+                if (building == null || building.getBuildingMap() == null) return;
+                App.getGame().setCurrentMap(building.getBuildingMap());
+                player.position.setX(building.getPosition().getX() + building.getBuildingMap()[0].length / 2);
+                player.position.setY(building.getPosition().getY() + building.getBuildingMap().length / 2);
+                player.setCurrentMap(building.getMapsName());
+            }
+        }
+    }
+    
+    private Building findBuilding(int x, int y) {
+        // Check if in the village area
+        if (x >= FARM_SIZE && x < MAP_SIZE - FARM_SIZE && y >= FARM_SIZE && y < MAP_SIZE - FARM_SIZE) {
+            // Check each shop's area
+            if (isInside(x, y, Shop.CarpenterShop.getPosition())) {
+                return Shop.CarpenterShop;
+            } else if (isInside(x, y, Shop.FishShop.getPosition())) {
+                return Shop.FishShop;
+            } else if (isInside(x, y, Shop.Blacksmith.getPosition())) {
+                return Shop.Blacksmith;
+            } else if (isInside(x, y, Shop.JojaMart.getPosition())) {
+                return Shop.JojaMart;
+            } else if (isInside(x, y, Shop.PierreGeneralStore.getPosition())) {
+                return Shop.PierreGeneralStore;
+            } else if (isInside(x, y, Shop.MarineRanch.getPosition())) {
+                return Shop.MarineRanch;
+            } else if (isInside(x, y, Shop.TheStardropSaloon.getPosition())) {
+                return Shop.TheStardropSaloon;
+            }
+        } else {
+            // Check for buildings in the current player's farm
+            Farm farm = App.getGame().getCurrentPlayer().getFarm();
+            if (farm != null) {
+                if (isInside(x, y, farm.getHouse().getPosition())) {
+                    return farm.getHouse();
+                } else if (isInside(x, y, farm.getGreenHouse().getPosition())) {
+                    return farm.getGreenHouse();
+                } else if (isInside(x, y, farm.getMine().getPosition())) {
+                    return farm.getMine();
+                } else if (isInside(x, y, farm.getLake().getPosition())) {
+                    return farm.getLake();
+                }
+            }
+        }
+        // Not in any known building
+        return null;
+    }
+
+    private boolean isInside(int x, int y, Position pos) {
+        return x >= pos.getX() && x < pos.getX() + pos.getWidth()
+            && y >= pos.getY() && y < pos.getY() + pos.getHeight();
     }
 }

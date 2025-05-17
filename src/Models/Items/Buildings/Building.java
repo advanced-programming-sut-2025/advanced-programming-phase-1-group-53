@@ -1,5 +1,6 @@
 package Models.Items.Buildings;
 
+import Enums.MapsNames;
 import Models.Position;
 import Models.Tile;
 import Enums.TileKind;
@@ -8,6 +9,7 @@ public abstract class Building {
     protected final Position position;
     protected final int SIZE = 10;
     protected final Tile[][] buildingMap;
+    protected MapsNames mapsName; // Changed from final to non-final for flexibility
 
     public Building(Position position) {
         this.position = position;
@@ -20,6 +22,10 @@ public abstract class Building {
 
     public Tile[][] getBuildingMap() {
         return buildingMap;
+    }
+
+    public MapsNames getMapsName() {
+        return mapsName;
     }
 
     // Build function for a House

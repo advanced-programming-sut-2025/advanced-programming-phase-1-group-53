@@ -2,13 +2,16 @@ package Models.Game;
 
 import Enums.Gender;
 import Enums.MapsNames;
+import Enums.TileKind;
 import Models.*;
 import Models.Abilities.Abilities;
 import Models.Abilities.Activity;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Player {
     private Farm farm;
@@ -17,8 +20,9 @@ public class Player {
     public final Backpack backpack = new Backpack();
     public final Energy energy = new Energy();
     public final Activity activity = new Activity();
-    public final Position position = new Position(0, 0, 0, 0);
-    private MapsNames currentMap = MapsNames.House;
+    public final Position position = new Position(0, 0, 1, 1);
+    private MapsNames currentMap = null;
+    private MapsNames myFarm = null;
     private final HashMap<Player, Integer> friendship = new HashMap<>();
     private final HashMap<Player, StringBuilder> conversation = new HashMap<>();
     public final FoodBuff foodBuff = new FoodBuff();
@@ -47,7 +51,13 @@ public class Player {
         this.currentMap = currentMap;
     }
 
+    public MapsNames getMyFarm() {
+        return myFarm;
+    }
 
+    public void setMyFarm(MapsNames myFarm) {
+        this.myFarm = myFarm;
+    }
 
     public void changeFriendship(Player player, int xp) {
         Player currentPlayer = this;
@@ -68,8 +78,83 @@ public class Player {
      * Moves the player to the specified destination using shortest path (BFS).
      * Returns the energy cost of the move, or Double.MAX_VALUE if no path exists.
      */
+    /*public int findPath(int destX, int destY) {
+        MapsNames currentMap = this.currentMap;
+        if (currentMap == MapsNames.Farm1 || currentMap == MapsNames.Farm2 || currentMap == MapsNames.Farm3 ||
+                currentMap == MapsNames.Farm4 || currentMap == MapsNames.Village) {
+            MapsNames desMap = App.getGame().getGameMap().findLocationInGameMap(destX, destY);
+            if (desMap == null) return Integer.MAX_VALUE;
+            if (desMap == currentMap) return moveTo(destX, destY);
+            if ((desMap == MapsNames.Farm1 || desMap == MapsNames.Farm2 || desMap == MapsNames.Farm3 || desMap == MapsNames.Farm4) &&
+                    desMap != this.myFarm) return Integer.MAX_VALUE;
+            Position nearestDoor = findNearestDoor(this.position);
+            if (nearestDoor == null) return Integer.MAX_VALUE;
+            int hereToDoor = moveTo(nearestDoor.getX(), nearestDoor.getY());
+        }
+    }
+
+    private Position findNearestDoor(Position currentPosition) {
+        MapsNames currentMap = this.currentMap;
+        ArrayList<Position> doorPositions = null;
+        if (currentMap == MapsNames.Farm1 || currentMap == MapsNames.Farm2 ||
+                currentMap == MapsNames.Farm3 || currentMap == MapsNames.Farm4) {
+            Farm farm = this.farm;
+            doorPositions = farm.getDoorPositions();
+            if (doorPositions == null || doorPositions.isEmpty()) return null;
+        }
+        else if (currentMap == MapsNames.Village) {
+            doorPositions = App.getGame().getGameMap().getVillageDoors();
+            if (doorPositions == null || doorPositions.isEmpty()) return null;
+        }
+        else return null;
+        Position nearestDoor = null;
+        int minDistance = Integer.MAX_VALUE;
+
+        for (Position door : doorPositions) {
+            int distance = Math.abs(door.getX() - currentPosition.getX()) +
+                    Math.abs(door.getY() - currentPosition.getY());
+
+            if (distance < minDistance) {
+                minDistance = distance;
+                nearestDoor = door;
+            }
+        }
+        return nearestDoor;
+    }*/
+
+    private void teleport() {
+        MapsNames currentMap = this.currentMap;
+
+        if (currentMap == MapsNames.Farm1 || currentMap == MapsNames.Farm2 ||
+                currentMap == MapsNames.Farm3 || currentMap == MapsNames.Farm4) {
+
+            ArrayList<Position> villageDoors = App.getGame().getGameMap().getVillageDoors();
+            if (villageDoors == null || villageDoors.isEmpty()) return;
+
+            int randomIndex = ThreadLocalRandom.current().nextInt(villageDoors.size());
+            Position des = villageDoors.get(randomIndex);
+            this.position.setX(des.getX());
+            this.position.setY(des.getY());
+            this.currentMap = MapsNames.Village;
+
+        } else if (currentMap == MapsNames.Village) {
+
+            ArrayList<Position> farmDoors = this.farm.getDoorPositions();
+            if (farmDoors == null || farmDoors.isEmpty()) return;
+
+            int randomIndex = ThreadLocalRandom.current().nextInt(farmDoors.size());
+            Position des = farmDoors.get(randomIndex);
+            this.position.setX(des.getX());
+            this.position.setY(des.getY());
+            this.currentMap = this.myFarm;
+        }
+    }
+
     public int moveTo(int destX, int destY) {
         Tile[][] map = App.getGame().getCurrentMap();
+        if (map[destY][destX].getTileKind() == TileKind.structure && this.currentMap == this.myFarm) {
+            return 5;
+        }
         int rows = map.length;
         int cols = map[0].length;
 
@@ -143,6 +228,12 @@ public class Player {
         } else {
             energy.setEnergy(0);
             faint();
+        }
+        if (App.getGame().getGameMap().getTile(position.getX(), position.getY()).getTileKind() == TileKind.door) {
+            teleport();
+        }
+        if (App.getGame().getGameMap().getTile(position.getX(), position.getY()).getTileKind() == TileKind.structure) {
+            App.getGame().getGameMap().changeMapIfEnterBuilding(destX, destY);
         }
     }
 
