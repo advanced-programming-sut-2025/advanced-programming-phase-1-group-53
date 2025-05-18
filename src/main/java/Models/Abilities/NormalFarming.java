@@ -28,6 +28,7 @@ public class NormalFarming{
                     MessageManager.getMessage(Result.failure(plantAbleCrop.getItemType().name() + " at " +plantAbleCrop.getPosition().getX()+", "
                             + plantAbleCrop.getPosition().getY()+ " dried out because of lack of water"));
                     removedProducts.add(plantAbleCrop);
+                    App.getGame().findTile(plantAbleCrop.getPosition().getX(), plantAbleCrop.getPosition().getY()).setItem(null);
                 }
                 plantedPlants.set(i, plantAbleCrop);
             }
@@ -60,6 +61,17 @@ public class NormalFarming{
                         Plant plant1 = crop.clone();
                         plant1.getPosition().setX(x);
                         plant1.getPosition().setY(y);
+                        if(App.getGame().findTile(x, y).getItem()!= null) {
+                            if (App.getGame().findTile(x, y).getItem().getItemType().equals(ItemType.DeluxeSoil)) {
+                                plant1.setHasDeluxe(true);
+                            }
+                        }
+                        if(App.getGame().findTile(x, y).getItem()!= null) {
+                            if (App.getGame().findTile(x, y) != null &&
+                                    App.getGame().findTile(x, y).getItem().getItemType().equals(ItemType.SpeedGro)) {
+                                plant1.setHasSpeed(true);
+                            }
+                        }
                         plantedPlants.add(plant1);
                         App.getGame().findTile(x, y).setItem(plant1);
                     }
@@ -70,6 +82,12 @@ public class NormalFarming{
                         Plant plant1 = crop.clone();
                         plant1.getPosition().setX(x);
                         plant1.getPosition().setY(y);
+                        if(App.getGame().findTile(x, y).getItem().getItemType().equals(ItemType.DeluxeSoil)){
+                            plant1.setHasDeluxe(true);
+                        }
+                        if(App.getGame().findTile(x, y).getItem().getItemType().equals(ItemType.SpeedGro)){
+                            plant1.setHasSpeed(true);
+                        }
                         plantedPlants.add(plant1);
                         App.getGame().findTile(x, y).setItem(plant1);
                     }
@@ -114,7 +132,7 @@ public class NormalFarming{
             return;
         }
         if(App.getGame().findTile(x, y).getItem() == null){
-            MessageManager.getMessage(Result.failure("No item here."));
+            App.getGame().findTile(x, y).setItem(App.getGame().getItemByItemType(itemType));
             return;
         }
         if(!(App.getGame().findTile(x, y).getItem() instanceof Tree || App.getGame().findTile(x, y).getItem() instanceof PlantAbleCrop)){

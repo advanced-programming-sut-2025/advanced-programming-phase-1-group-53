@@ -11,6 +11,7 @@ public class Energy {
 
 
     public void setUnlimitedEnergy(){
+        energy = maxEnergy;
         isLimited = false;
     }
 
@@ -51,13 +52,12 @@ public class Energy {
     }
 
     public void showEnergy(){
-        System.out.println("Remained energy : " + energy + "(out of " + maxEnergy + ").");
         MessageManager.getMessage(Result.success("Remained energy : " + energy + "(out of " + maxEnergy + ")."));
     }
 
     public void update(){
         if(energy == 0){
-            //TODO : go to sleep
+            App.getGame().dateAndTime.setMorning();
         }
         if(energyConsumedThisTurn == 50)
             App.getGame().goToNextPlayer();

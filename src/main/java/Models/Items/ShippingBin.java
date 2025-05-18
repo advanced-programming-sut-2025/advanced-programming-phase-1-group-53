@@ -14,6 +14,10 @@ public class ShippingBin extends Item{
         super(itemType);
     }
 
+    public Map<Item, Integer> getItems() {
+        return items;
+    }
+
     @Override
     public ShippingBin clone(){
         return new ShippingBin(itemType);

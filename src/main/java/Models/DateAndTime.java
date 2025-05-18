@@ -2,6 +2,7 @@ package Models;
 
 import Enums.Season;
 import Models.Game.App;
+import Models.Game.Player;
 
 public class DateAndTime {
     private long passedHours;
@@ -45,6 +46,9 @@ public class DateAndTime {
     }
 
     public void setMorning(){
+        for(Player player : App.getGame().players){
+            player.energy.setEnergy(player.energy.getMaxEnergy());
+        }
         if(hour < 9){
             passedHours += (hour -9);
             hour = 9;
@@ -58,6 +62,21 @@ public class DateAndTime {
 
     public void showTime(){
         MessageManager.getMessage(Result.success("Hour : " + hour));
+    }
+
+    public void showDay(){
+        int y = day%7;
+        String s = switch (y){
+            case 0 -> "Sunday";
+            case 1 -> "Monday";
+            case 2 -> " Thursday";
+            case 3 -> "Wednesday";
+            case 4 -> "Thursday";
+            case 5 -> "Friday";
+            case 6 -> "Saturday";
+            default -> "ajnsc";
+        };
+        MessageManager.getMessage(Result.success(s));
     }
 
     public void showSeason(){

@@ -22,7 +22,8 @@ public class DairyFarming {
             return;
         }
 
-        if(/*! next to the animal*/true){
+        if(!areNextToEachOther(animal.getPosition().getX(), animal.getPosition().getY(),
+                App.getGame().getCurrentPlayer().position.getX(), App.getGame().getCurrentPlayer().position.getY())){
             MessageManager.getMessage(Result.failure("You must be next to the animal to pet it."));
             return;
         }
@@ -123,5 +124,15 @@ public class DairyFarming {
 
         App.getGame().getCurrentPlayer().backpack.getAnimals().remove(animal);
         App.getGame().getCurrentPlayer().personalInfo.updateGold((int)(animal.getBaseSellPrice() * ((double) animal.getFriendship()/1000 + 0.3)));
+    }
+
+    public boolean areNextToEachOther(int x1, int y1, int x2, int y2){
+        int[] dx = {0, 1, 0, -1};
+        int[] dy = {1, 0, -1, 0};
+        for(int i = 0; i<4; i++){
+            if(dx[i] + x1 == x2 && dy[i] + y1 == y2)
+                return true;
+        }
+        return false;
     }
 }

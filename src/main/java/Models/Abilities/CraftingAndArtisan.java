@@ -75,19 +75,15 @@ public class CraftingAndArtisan {
 
     public void artisanUse(ItemType itemType, List<ItemType> ingredients){
         if(!(App.getGame().getItemByItemType(itemType) instanceof Artisan artisan)){
-            System.out.println("The called item is not an artisan machine.");/////
             MessageManager.getMessage(Result.failure("The called item is not an artisan machine."));
             return;
         }
-        if(App.getGame().getCurrentPlayer().backpack.getItems().containsKey(App.getGame().getItemByItemType(itemType))){
+        if(!App.getGame().getCurrentPlayer().backpack.getItems().containsKey(App.getGame().getItemByItemType(itemType))){
             MessageManager.getMessage(Result.failure("You don't have the artisan machine."));
-            System.out.println("You don't have the artisan machine.");/////
             return;
         }
 
         artisan.useArtisan(ingredients);
-
-        System.out.println("Artisan worked successfully. Come later to collect the product");/////
     }
 
     public void artisanGet(ItemType itemType){
@@ -102,8 +98,8 @@ public class CraftingAndArtisan {
             if(item.getItemType().equals(itemType)){
                 ArtisanGood artisanGood = (ArtisanGood) item;
                 if((!artisanGood.isPicked()) && artisanGood.getProcessingTimeLeft() == 0){
-                    App.getGame().getCurrentPlayer().backpack.getItems().remove(artisanGood);
-                    MessageManager.getMessage(Result.success("a" + itemType.name()+"was added to your inventory"));
+                    artisanGood.setPicked(true);
+                    MessageManager.getMessage(Result.success("a " + itemType.name()+" was added to your inventory"));
                 }
                 if((!artisanGood.isPicked()) && artisanGood.getProcessingTimeLeft() > 0){
                     MessageManager.getMessage(Result.failure("The item isn't prepared yet."));

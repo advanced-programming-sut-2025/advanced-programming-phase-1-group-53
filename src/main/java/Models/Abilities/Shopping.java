@@ -2,11 +2,16 @@ package Models.Abilities;
 
 import Enums.ItemType;
 import Models.Game.App;
+import Models.Items.Animal;
 import Models.Items.Buildings.Shop;
+import Models.Items.CoopAndBarn;
 import Models.Items.Item;
+import Models.Items.ShippingBin;
 import Models.MessageManager;
 import Models.Product;
 import Models.Result;
+
+import java.util.Map;
 
 public class Shopping {
 
@@ -63,7 +68,50 @@ public class Shopping {
                     return;
                 }
                 if(App.getGame().getCurrentPlayer().personalInfo.hasEnoughGold(count * product.getPrice())){
+                    App.getGame().getCurrentPlayer().personalInfo.updateGold(count * product.getPrice());
                     App.getGame().getCurrentPlayer().backpack.addItem(App.getGame().getItemByItemType(itemType), count);
+                    return;
+                }
+                MessageManager.getMessage(Result.failure("Insufficient balance."));
+                return;
+            }
+        }
+        MessageManager.getMessage(Result.failure("No product with such name in " + shop.getShopName()));
+    }
+
+    public void purchase(ItemType itemType, String name){
+        if(! (App.getGame().getGameMap().findBuilding(App.getGame().getCurrentPlayer().position.getX(),
+                App.getGame().getCurrentPlayer().position.getY()) instanceof Shop shop)){
+            MessageManager.getMessage(Result.failure("You must be inside a shop."));
+            return;
+        }
+
+        for(Product product : shop.getProducts()){
+            if(product.getItemType().equals(itemType)){
+                if(product.getAvailableToday() < 1){
+                    MessageManager.getMessage(Result.success("The product is not available today, maybe tomorrow."));
+                    return;
+                }
+                if(!(App.getGame().getItemByItemType(itemType) instanceof Animal animal)){
+                    MessageManager.getMessage(Result.failure("hsjab"));
+                    return;
+                }
+                if(App.getGame().getCurrentPlayer().personalInfo.hasEnoughGold( product.getPrice())){
+                    for(CoopAndBarn coopAndBarn : App.getGame().getCurrentPlayer().backpack.getCoopsAndBarns()){
+                        if(coopAndBarn.getItemType().name().contains("Coop")){
+                            if(animal.getItemType().equals(ItemType.Hen) || animal.getItemType().equals(ItemType.Duck)
+                                    || animal.getItemType().equals(ItemType.Dino) || animal.getItemType().equals(ItemType.Rabbit)){
+                                Animal animal1 = animal.clone(name);
+                                animal1.getPosition().setX(coopAndBarn.getPosition().getX());
+                                animal1.getPosition().setY(coopAndBarn.getPosition().getY());
+                                coopAndBarn.getAnimals().add(animal1);
+                                App.getGame().getCurrentPlayer().personalInfo.updateGold((int) animal1.getBaseSellPrice());
+                                App.getGame().getCurrentPlayer().backpack.addItem(animal.clone(name), 1);
+                                return;
+                            }
+                        }
+                    }
+                    App.getGame().getCurrentPlayer().backpack.addItem(animal.clone(name), 1);
                     return;
                 }
                 MessageManager.getMessage(Result.failure("Insufficient balance."));
@@ -84,15 +132,28 @@ public class Shopping {
             return;
         }
 
-        /*if(!/*not next to the shipping bin){
+        if(nextToShippingBin(App.getGame().getCurrentPlayer().position.getX(),
+                App.getGame().getCurrentPlayer().position.getY()) == null){
             MessageManager.getMessage(Result.failure("You must be next to a shipping bin."));
             return;
         }
 
         Item item = App.getGame().getItemByItemType(itemType);
 
-        App.getGame().getCurrentPlayer().backpack.getItems().compute(item, (k, v) -> (v - count));
-        App.*/
+        App.getGame().getCurrentPlayer().backpack.getItems().compute(item, (k, v) -> (v - count));((ShippingBin) nextToShippingBin(App.getGame().getCurrentPlayer().position.getX(),
+                App.getGame().getCurrentPlayer().position.getY())).getItems().compute(App.getGame().getItemByItemType(itemType),
+                (k, v) -> ( (v==null)? count : (v + count)));
+    }
+
+    public ShippingBin nextToShippingBin(int x, int y){
+        int[] dx = {0, 1, 0, -1};
+        int[] dy = {1, 0, -1, 0};
+        for(int i =0; i< 4; i++){
+            if(App.getGame().findTile(x + dx[i], y+ dy[i]).getItem().getItemType().equals(ItemType.ShippingBin)){
+                return (ShippingBin) App.getGame().findTile(x + dx[i], y+ dy[i]).getItem();
+            }
+        }
+        return null;
     }
 
 }

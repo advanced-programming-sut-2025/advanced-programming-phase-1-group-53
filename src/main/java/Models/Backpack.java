@@ -2,6 +2,7 @@ package Models;
 
 import Enums.BackpackLevel;
 import Enums.ItemType;
+import Models.Game.App;
 import Models.Items.*;
 import Models.Items.CraftAbleAndArtisan.Artisan;
 import Models.Items.CraftAbleAndArtisan.ArtisanGood;
@@ -25,7 +26,7 @@ public class Backpack {
         for(Tool tool : Tool.allTools){
             if(tool.getItemType().equals(ItemType.FishingPole))
                 continue;
-            items.put(tool, 1);
+            items.put(tool.clone(), 1);
         }
         items.put(Recipe.FriedEggRecipe, 1);
         items.put(Recipe.BakedFishRecipe, 1);
@@ -42,10 +43,23 @@ public class Backpack {
 
         for(CraftingRecipe recipe : CraftingRecipe.craftingRecipes){
             if(!(recipe.getItemType().equals(ItemType.DehydratorCR) || recipe.getItemType().equals(ItemType.FishSmokerCR)
-            || recipe.getItemType().equals(ItemType.GrassStarterCR)))
+                    || recipe.getItemType().equals(ItemType.GrassStarterCR)))
                 items.put(recipe, 1);
         }
         this.level = BackpackLevel.small;
+    }
+
+
+    public void update(){
+        for(Item item : items.keySet()){
+            item.update();
+        }
+    }
+    public void useTrashCan(ItemType itemType, int count){
+        if(areItemsAvailable(App.getGame().getItemByItemType(itemType), count)){
+            TrashCan trashCan = (TrashCan) App.getGame().getItemByItemType(ItemType.Trashcan);
+            trashCan.useTrashCan(itemType, count);
+        }
     }
 
     public ArrayList<CoopAndBarn> getCoopsAndBarns() {
@@ -81,6 +95,14 @@ public class Backpack {
         return itemInHand;
     }
 
+    public void howMuchWater(){
+        for(Item item : items.keySet()){
+            if(item.getItemType().equals(ItemType.WateringCan)) {
+                MessageManager.getMessage(Result.success("level : " + ((WateringCan) item).getCurrentWaterLevel()));
+            }
+        }
+    }
+
 
     public void showInventory(){
         if(items.isEmpty()){
@@ -91,6 +113,8 @@ public class Backpack {
             if(item instanceof Artisan || item instanceof ScareCrow || item instanceof Sprinkler
                     || item instanceof Animal || item instanceof CoopAndBarn || item instanceof CraftingRecipe || item instanceof Recipe
                     || item instanceof Tool)
+                continue;
+            if(item instanceof ArtisanGood artisanGood && !artisanGood.isPicked())
                 continue;
             if(items.get(item) != 0){
                 MessageManager.getMessage(Result.success(item.getItemType().name() + ", Quantity : " + items.get(item)));
@@ -139,8 +163,8 @@ public class Backpack {
         int num = 0;
         for(Item item : items.keySet()){
             if(!(item instanceof Artisan || item instanceof ScareCrow || item instanceof Sprinkler
-            || item instanceof Animal || item instanceof CoopAndBarn || item instanceof CraftingRecipe || item instanceof Recipe
-            || item instanceof Tool))
+                    || item instanceof Animal || item instanceof CoopAndBarn || item instanceof CraftingRecipe || item instanceof Recipe
+                    || item instanceof Tool))
                 num ++;
             if(num >= level.getSize())
                 return true;

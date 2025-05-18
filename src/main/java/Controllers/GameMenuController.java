@@ -2,20 +2,38 @@ package Controllers;
 
 import Enums.ItemType;
 import Enums.Menu;
+import Enums.WeatherType;
 import Models.Friendship;
 import Models.Game.App;
 import Models.Game.Game;
 import Models.Game.Player;
+import Models.Items.Foragings.ForagingSeed;
 import Models.Items.Item;
+import Models.MessageManager;
 import Models.NPC;
+import Models.Result;
 
 import java.util.AbstractList;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public class GameMenuController {
+    int[] dx = {0, 1, 0, -1, 1, 1, -1, -1};
+    int[] dy = {1, 0, -1, 0, -1, 1, 1, -1};
     public void gameLoop() {
+        App.getGame().getGameMap().generateRandomThings();
+        updateGame();
+    }
 
+    public void updateGame(){
+        App.getGame().dateAndTime.timeCheat(1);
+        for(Player player : App.getGame().getPlayers()){
+            App.getGame().setNumOfTurn(App.getGame().getPlayers().indexOf(player));
+            player.backpack.update();
+        }
+
+        App.getGame().weather.update();
     }
 
     public void exitGame() {
@@ -55,57 +73,70 @@ public class GameMenuController {
     public void selectMap(String mapNumber) {
 
     }
+    public void weather(){
+        MessageManager.getMessage(Result.success(App.getGame().weather.getWeather().name()));
+    }
+
 
     public void nextTurn() {
 
     }
 
-    public void time() {
-
+    public void date(){
+        App.getGame().dateAndTime.showDate();
     }
 
-    public void date() {
-
+    public void time(){
+        App.getGame().dateAndTime.showTime();
     }
 
-    public void dateTime() {
-
+    public void dateTime(){
+        App.getGame().dateAndTime.showDateAndTime();
     }
 
-    public void dayOfTheWeek() {
-
+    public void dayOfTheWeek(){
+        App.getGame().dateAndTime.showDay();
     }
 
-    public void advanceTime(String time) {
-
+    public void advanceTime(int hour){
+        App.getGame().dateAndTime.timeCheat(hour);
     }
 
-    public void advanceDate(String date) {
-
+    public void advanceDate(int day){
+        App.getGame().dateAndTime.timeCheat(day*24);
     }
 
-    public void season() {
-
+    public void season(){
+        App.getGame().dateAndTime.getSeason();
     }
 
-    public void thor(String x, String y) {
-
+    public void thor(int x, int y){
+        App.getGame().weather.thundering(x, y);
     }
 
-    public void weather() {
 
+    public void weatherForecast(){
+        App.getGame().weather.weatherForecast();
     }
 
-    public void weatherForeCast() {
-
+    public void setWeather(String weather){
+        for(WeatherType weatherType : WeatherType.values()){
+            if(weatherType.name().equals(weather)){
+                App.getGame().weather.setWeather(weatherType);
+            }
+        }
     }
 
     public void weatherSet(String weather) {
+        for(WeatherType weatherType : WeatherType.values()){
+            if(weatherType.name().equals(weather))
+                App.getGame().weather.setWeather(weatherType);
 
+        }
     }
 
     public void buildGreenHouse() {
-
+        App.getCurrentPlayer().getFarm().getGreenHouse().buildGreenhouse();
     }
 
     public void walk(String x, String y) {
@@ -130,172 +161,276 @@ public class GameMenuController {
         App.getGame().mapHelper();
     }
 
-    public void showEnergy() {
+    public void showEnergy(){
+        App.getGame().getCurrentPlayer().energy.showEnergy();
+    }
+
+    public void setEnergy(int energy){
+        App.getGame().getCurrentPlayer().energy.setEnergy(energy);
+    }
+
+    public void setEnergyUnlimited(){
+        App.getGame().getCurrentPlayer().energy.setUnlimitedEnergy();
+    }
+
+    public void showInventory(){
+        App.getGame().getCurrentPlayer().backpack.showInventory();
+    }
+
+
+    public void inventoryTrash(String name, int number){
+        if(getItemByName(name) != null)
+            App.getGame().getCurrentPlayer().backpack.useTrashCan(getItemByName(name), number);
+    }
+
+    public void equipTool(String tool){
+        if(getItemByName(tool) != null)
+            App.getGame().getCurrentPlayer().activity.equipTool(getItemByName(tool));
+    }
+
+    public void showCurrentTools(){
+        App.getGame().getCurrentPlayer().activity.showCurrentTool();
+    }
+
+    public void showAvailableTools(){
+        App.getGame().getCurrentPlayer().activity.showAvailableTools();
+    }
+
+    public void upgradeTool(String name){
+        if(getItemByName(name) != null)
+            App.getGame().getCurrentPlayer().activity.upgradeTool(getItemByName(name));
+    }
+
+    public void useTool(String direction){
+        int dir = switch (direction){
+            case "W" -> 0;
+            case "D" -> 1;
+            case "S" -> 2;
+            case "A" ->3;
+            case "Q" ->4;
+            case "E" ->5;
+            case "Z" -> 6;
+            case "X" ->7;
+            default -> -1;
+        };
+        if(dir == -1)
+            return;
+
+        App.getGame().getCurrentPlayer().activity.useTool(App.getGame().getCurrentPlayer().position
+                .getX()+dx[dir], App.getGame().getCurrentPlayer().position
+                .getY()+dy[dir]);
+    }
+
+    public void craftInfo(String name){
+        if(getItemByName(name) != null)
+            App.getGame().getCurrentPlayer().abilities.normalFarming.showCraftInfo(getItemByName(name));
+    }
+
+    public void plant(String seed, String direction){
+        int dir = switch (direction){
+            case "W" -> 0;
+            case "D" -> 1;
+            case "S" -> 2;
+            case "A" ->3;
+            case "Q" ->4;
+            case "E" ->5;
+            case "Z" -> 6;
+            case "X" ->7;
+            default -> -1;
+        };
+        if(dir == -1)
+            return;
+
+
+        if(getItemByName(seed) != null) {
+            if(getItemByName(seed).equals(ItemType.MixedSeed)){
+                ForagingSeed foragingSeed = (ForagingSeed) App.getGame().getItemByItemType(getItemByName(seed));
+                foragingSeed = foragingSeed.randomiseMixedSeed();
+                App.getGame().getCurrentPlayer().abilities.normalFarming.plant(foragingSeed.getItemType(),
+                        App.getGame().getCurrentPlayer().position
+                                .getX() + dx[dir], App.getGame().getCurrentPlayer().position
+                                .getY() + dy[dir]);
+            }
+            else {
+                App.getGame().getCurrentPlayer().abilities.normalFarming.plant(getItemByName(seed),
+                        App.getGame().getCurrentPlayer().position
+                                .getX() + dx[dir], App.getGame().getCurrentPlayer().position
+                                .getY() + dy[dir]);
+            }
+        }
+    }
+
+    public void showPlant(int x, int y){
+        App.getGame().getCurrentPlayer().abilities.normalFarming.showPlants(x, y);
+    }
+
+    public void fertilize(String name, String direction){
+        int dir = switch (direction){
+            case "W" -> 0;
+            case "D" -> 1;
+            case "S" -> 2;
+            case "A" ->3;
+            case "Q" ->4;
+            case "E" ->5;
+            case "Z" -> 6;
+            case "X" ->7;
+            default -> -1;
+        };
+        if(dir == -1)
+            return;
+
+        App.getGame().getCurrentPlayer().abilities.normalFarming.fertilize(getItemByName(name),
+                App.getGame().getCurrentPlayer().position
+                        .getX()+dx[dir], App.getGame().getCurrentPlayer().position
+                        .getY()+dy[dir]);
+    }
+
+    public void howMuchWater(){
+        App.getGame().getCurrentPlayer().backpack.howMuchWater();
+    }
+
+    public void craftingShowRecipes(){
+        App.getGame().getCurrentPlayer().abilities.crafting.showCraftingRecipes(true);
+    }
+
+    public void craft(String name){
+        if(getItemByName(name) != null)
+            App.getGame().getCurrentPlayer().abilities.crafting.craft(getItemByName(name));
+    }
+
+    public void placeItem(String name, String direction){
+        if(getItemByName(name) == null)
+            return;
+        int dir = switch (direction){
+            case "W" -> 0;
+            case "D" -> 1;
+            case "S" -> 2;
+            case "A" ->3;
+            case "Q" ->4;
+            case "E" ->5;
+            case "Z" -> 6;
+            case "X" ->7;
+            default -> -1;
+        };
+        if(dir == -1)
+            return;
+        App.getGame().getCurrentPlayer().activity.placeItem(getItemByName(name), App.getGame().getCurrentPlayer().position
+                .getX()+dx[dir], App.getGame().getCurrentPlayer().position
+                .getY()+dy[dir]);
+    }
+
+    public void addItem(String name, int count){
+        if(getItemByName(name) != null && (App.getGame().getItemByItemType(getItemByName(name))!= null))
+            App.getGame().getCurrentPlayer().backpack.addItem(App.getGame().getItemByItemType(getItemByName(name))
+                    , count);
+    }
+
+    public void refrigerator(boolean pick, String item){
+        if(getItemByName(item) != null){
+            if(pick)
+                App.getGame().getCurrentPlayer().abilities.cooking.pickItemFromRef(getItemByName(item));
+            else
+                App.getGame().getCurrentPlayer().abilities.cooking.putItemInRef(getItemByName(item));
+        }
+    }
+
+    public void showCookingRecipes(){
+        App.getGame().getCurrentPlayer().abilities.cooking.showCookingRecipes();
+    }
+
+    public void prepareFood(String name){
+        if(getItemByName(name) != null)
+            App.getGame().getCurrentPlayer().abilities.cooking.prepare(getItemByName(name));
+    }
+
+    public void eat(String name){
+        if(getItemByName(name) != null)
+            App.getGame().getCurrentPlayer().abilities.cooking.eat(getItemByName(name));
+    }
+
+    public void build(){
 
     }
 
-    public void setEnergy(String energy) {
-
+    public void buyAnimal(String animal, String name){
+        if(getItemByName(animal) != null)
+            App.getGame().getCurrentPlayer().abilities.shopping.purchase(getItemByName(animal), name);
     }
 
-    public void setEnergyUnlimited() {
-
+    public void pet(String name){
+        App.getGame().getCurrentPlayer().abilities.dairyFarming.pet(name);
     }
 
-    public void showInventory() {
 
+    public void setFriendship(String name, int amount){
+        App.getGame().getCurrentPlayer().abilities.dairyFarming.cheatSetFriendship(name, amount);
     }
 
-    public void inventoryTrash(String name, String number) {
-
+    public void animals(){
+        App.getGame().getCurrentPlayer().abilities.dairyFarming.animalsShowDetails();
     }
 
-    public void equipTools(String name) {
-
+    public void shepherdAnimal(String name, int x, int y){
+        App.getGame().getCurrentPlayer().abilities.dairyFarming.shepherdAnimal(name, x, y);
     }
 
-    public void showCurrentTool() {
-
+    public  void feed(String name){
+        App.getGame().getCurrentPlayer().abilities.dairyFarming.feed(name);
     }
 
-    public void showAvailableTools() {
-
+    public void produces(){
+        App.getGame().getCurrentPlayer().abilities.dairyFarming.showNotCollectedProducts();
     }
 
-    public void upgradeTool(String name) {
-
+    public void collectProduce(String name){
+        App.getGame().getCurrentPlayer().abilities.dairyFarming.collectProduct(name);
     }
 
-    public void useTool(String direction) {
-
+    public void sellAnimal(String name){
+        App.getGame().getCurrentPlayer().abilities.dairyFarming.sellAnimal(name);
     }
 
-    public void craftInfo(String name) {
-
+    public void fishing(String pole){
+        if(getItemByName(pole) != null){
+            App.getGame().getCurrentPlayer().backpack.setItemInHand(App.getGame().getItemByItemType(getItemByName(pole)));
+            App.getGame().getCurrentPlayer().abilities.fishing.fishing();
+        }
     }
 
-    public void plant(String seedName, String direction) {
-
+    public void artisanUse(String artisan, List<ItemType> items){
+        if(getItemByName(artisan) != null){
+            App.getGame().getCurrentPlayer().abilities.crafting.artisanUse(getItemByName(artisan), items);
+        }
     }
 
-    public void showPlant(String x, String y) {
-
+    public void artisanGet(String name){
+        if(getItemByName(name) != null){
+            App.getGame().getCurrentPlayer().abilities.crafting.artisanGet(getItemByName(name));
+        }
     }
 
-    public void fertilize(String fertilizer, String direction) {
 
+    public void showAvailableProducts(){
+        App.getGame().getCurrentPlayer().abilities.shopping.showAvailableProducts();
+    }
+    public void showAllProducts(){
+        App.getGame().getCurrentPlayer().abilities.shopping.showAllProducts();
     }
 
-    public void howMuchWater() {
-
+    public void Purchase(String name, int count){
+        if(getItemByName(name) != null){
+            App.getGame().getCurrentPlayer().abilities.shopping.purchase(getItemByName(name), count);
+        }
     }
 
-    public void showCraftingRecipes() {
-
+    public void addDollars(int count){
+        App.getGame().getCurrentPlayer().personalInfo.updateGold(count);
     }
 
-    public void craftCraftings(String name) {
-
-    }
-
-    public void placeItem(String ItemName, String direction) {
-
-    }
-
-    public void addItem(String ItemName, String count) {
-
-    }
-
-    public void refigratoratorPut(String ItemName) {
-
-    }
-
-    public void refigratoratorPick(String ItemName) {
-
-    }
-
-    public void showCookingRecipes() {
-
-    }
-
-    public void prepareFood(String recipeName) {
-
-    }
-
-    public void eat(String foodName) {
-
-    }
-
-    public void build(String buildingName, String x, String y) {
-
-    }
-
-    public void buyAnimal(String animal, String animalName) {
-
-    }
-
-    public void pet(String animalName) {
-
-    }
-
-    public void setFreindship(String animalName, String value) {
-
-    }
-
-    public void animals() {
-
-    }
-
-    public void shepherdAnimals(String animalName, String x, String y) {
-
-    }
-
-    public void feedHay(String animalName) {
-
-    }
-
-    public void produces() {
-
-    }
-
-    public void collectProduces(String animalName) {
-
-    }
-
-    public void sellAnimal(String animalName) {
-
-    }
-
-    public void fishing(String fishingPole) {
-
-    }
-
-    public void artisanUse(String artisanName, String itemName) {
-
-    }
-
-    public void artisanGet(String artisanName) {
-
-    }
-
-    public void showAllProducts() {
-
-    }
-
-    public void showAllAvailableProducts() {
-
-    }
-
-    public void purchase(String productName, String count) {
-
-    }
-
-    public void addDollars(String count) {
-
-    }
-
-    public void sell(String productName, String count) {
-
+    public void sell(String name, int count){
+        if(getItemByName(name) != null){
+            App.getGame().getCurrentPlayer().abilities.shopping.sell(getItemByName(name), count);
+        }
     }
 
     public void friendships() {
@@ -473,5 +608,14 @@ public class GameMenuController {
         }
         Player me = App.getGame().getCurrentPlayer();
         NPC.doRequest(me, npc, questIndex);
+    }
+
+    private ItemType getItemByName(String name){
+        for(Item item : App.getGame().getAllItemsInTheGame()){
+            if(item.getItemType().name().equals(name))
+                return item.getItemType();
+        }
+        MessageManager.getMessage(Result.failure("No item with such name."));
+        return null;
     }
 }

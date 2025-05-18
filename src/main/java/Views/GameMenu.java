@@ -3,7 +3,10 @@ package Views;
 import Controllers.GameMenuController;
 import Controllers.ShareController;
 import Enums.GameMenuCommand;
+import Enums.ItemType;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 
@@ -40,17 +43,17 @@ public class GameMenu implements AppMenu {
         } else if ((matcher = GameMenuCommand.dayOfTheWeek.getMatcher(input)) != null) {
             controller.dayOfTheWeek();
         } else if ((matcher = GameMenuCommand.advanceTime.getMatcher(input)) != null) {
-            controller.advanceTime(matcher.group("time"));
+            controller.advanceTime(Integer.parseInt(matcher.group("time")));
         } else if ((matcher = GameMenuCommand.advanceDate.getMatcher(input)) != null) {
-            controller.advanceDate(matcher.group("date"));
+            controller.advanceDate(Integer.parseInt(matcher.group("date")));
         } else if ((matcher = GameMenuCommand.season.getMatcher(input)) != null) {
             controller.season();
         } else if ((matcher = GameMenuCommand.thor.getMatcher(input)) != null) {
-            controller.thor(matcher.group("x"), matcher.group("y"));
+            controller.thor(Integer.parseInt(matcher.group("x")), Integer.parseInt(matcher.group("y")));
         } else if ((matcher = GameMenuCommand.weather.getMatcher(input)) != null) {
             controller.weather();
         } else if ((matcher = GameMenuCommand.weatherForeCast.getMatcher(input)) != null) {
-            controller.weatherForeCast();
+            controller.weatherForecast();
         } else if ((matcher = GameMenuCommand.weatherSet.getMatcher(input)) != null) {
             controller.weatherSet(matcher.group("weather"));
         } else if ((matcher = GameMenuCommand.buildGreenHouse.getMatcher(input)) != null) {
@@ -64,17 +67,17 @@ public class GameMenu implements AppMenu {
         } else if ((matcher = GameMenuCommand.showEnergy.getMatcher(input)) != null) {
             controller.showEnergy();
         } else if ((matcher = GameMenuCommand.setEnergy.getMatcher(input)) != null) {
-            controller.setEnergy(matcher.group("energy"));
+            controller.setEnergy(Integer.parseInt(matcher.group("energy")));
         } else if ((matcher = GameMenuCommand.setEnergyUnlimited.getMatcher(input)) != null) {
             controller.setEnergyUnlimited();
         } else if ((matcher = GameMenuCommand.showInventory.getMatcher(input)) != null) {
             controller.showInventory();
         } else if ((matcher = GameMenuCommand.InventoryTrash.getMatcher(input)) != null) {
-            controller.inventoryTrash(matcher.group("name"), matcher.group("number"));
+            controller.inventoryTrash(matcher.group("name"), Integer.parseInt(matcher.group("number")));
         } else if ((matcher = GameMenuCommand.equipTools.getMatcher(input)) != null) {
-            controller.equipTools(matcher.group("name"));
+            controller.equipTool(matcher.group("name"));
         } else if ((matcher = GameMenuCommand.showCurrentTool.getMatcher(input)) != null) {
-            controller.showCurrentTool();
+            controller.showCurrentTools();
         } else if ((matcher = GameMenuCommand.showAvailableTools.getMatcher(input)) != null) {
             controller.showAvailableTools();
         } else if ((matcher = GameMenuCommand.upgradeTool.getMatcher(input)) != null) {
@@ -86,23 +89,23 @@ public class GameMenu implements AppMenu {
         } else if ((matcher = GameMenuCommand.plant.getMatcher(input)) != null) {
             controller.plant(matcher.group("seedName"), matcher.group("direction"));
         } else if ((matcher = GameMenuCommand.showPlant.getMatcher(input)) != null) {
-            controller.showPlant(matcher.group("x"), matcher.group("y"));
+            controller.showPlant(Integer.parseInt(matcher.group("x")), Integer.parseInt(matcher.group("y")));
         } else if ((matcher = GameMenuCommand.fertilize.getMatcher(input)) != null) {
             controller.fertilize(matcher.group("fertilizer"), matcher.group("direction"));
         } else if ((matcher = GameMenuCommand.howMuchWater.getMatcher(input)) != null) {
             controller.howMuchWater();
         } else if ((matcher = GameMenuCommand.showCraftingRecipes.getMatcher(input)) != null) {
-            controller.showCraftingRecipes();
+            controller.craftingShowRecipes();
         } else if ((matcher = GameMenuCommand.craftCraftings.getMatcher(input)) != null) {
-            controller.craftCraftings(matcher.group("name"));
+            controller.craft(matcher.group("name"));
         } else if ((matcher = GameMenuCommand.placeItem.getMatcher(input)) != null) {
             controller.placeItem(matcher.group("ItemName"), matcher.group("direction"));
         } else if ((matcher = GameMenuCommand.addItem.getMatcher(input)) != null) {
-            controller.addItem(matcher.group("ItemName"), matcher.group("count"));
+            controller.addItem(matcher.group("ItemName"), Integer.parseInt(matcher.group("count")));
         } else if ((matcher = GameMenuCommand.refigratoratorPut.getMatcher(input)) != null) {
-            controller.refigratoratorPut(matcher.group("ItemName"));
+            controller.refrigerator(false, matcher.group("ItemName"));
         } else if ((matcher = GameMenuCommand.refigratoratorPick.getMatcher(input)) != null) {
-            controller.refigratoratorPick(matcher.group("ItemName"));
+            controller.refrigerator(true, matcher.group("ItemName"));
         } else if ((matcher = GameMenuCommand.showCookingRecipes.getMatcher(input)) != null) {
             controller.showCookingRecipes();
         } else if ((matcher = GameMenuCommand.prepareFood.getMatcher(input)) != null) {
@@ -110,41 +113,46 @@ public class GameMenu implements AppMenu {
         } else if ((matcher = GameMenuCommand.eat.getMatcher(input)) != null) {
             controller.eat(matcher.group("foodName"));
         } else if ((matcher = GameMenuCommand.build.getMatcher(input)) != null) {
-            controller.build(matcher.group("buildingName"), matcher.group("x"), matcher.group("y"));
+            controller.build();
         } else if ((matcher = GameMenuCommand.buyAnimal.getMatcher(input)) != null) {
             controller.buyAnimal(matcher.group("animal"), matcher.group("animalName"));
         } else if ((matcher = GameMenuCommand.pet.getMatcher(input)) != null) {
             controller.pet(matcher.group("animalName"));
         } else if ((matcher = GameMenuCommand.setFreindship.getMatcher(input)) != null) {
-            controller.setFreindship(matcher.group("animalName"), matcher.group("value"));
+            controller.setFriendship(matcher.group("animalName"), Integer.parseInt(matcher.group("value")));
         } else if ((matcher = GameMenuCommand.Animals.getMatcher(input)) != null) {
             controller.animals();
         } else if ((matcher = GameMenuCommand.shepherdAnimals.getMatcher(input)) != null) {
-            controller.shepherdAnimals(matcher.group("animalName"), matcher.group("x"), matcher.group("y"));
+            controller.shepherdAnimal(matcher.group("animalName"), Integer.parseInt(matcher.group("x")), Integer.parseInt(matcher.group("y")));
         } else if ((matcher = GameMenuCommand.feedHay.getMatcher(input)) != null) {
-            controller.feedHay(matcher.group("animalName"));
+            controller.feed(matcher.group("animalName"));
         } else if ((matcher = GameMenuCommand.produces.getMatcher(input)) != null) {
             controller.produces();
         } else if ((matcher = GameMenuCommand.collectProduces.getMatcher(input)) != null) {
-            controller.collectProduces(matcher.group("animalName"));
+            controller.collectProduce(matcher.group("animalName"));
         } else if ((matcher = GameMenuCommand.sellAnimal.getMatcher(input)) != null) {
             controller.sellAnimal(matcher.group("animalName"));
         } else if ((matcher = GameMenuCommand.fishing.getMatcher(input)) != null) {
             controller.fishing(matcher.group("fishingPole"));
         } else if ((matcher = GameMenuCommand.artisanUse.getMatcher(input)) != null) {
-            controller.artisanUse(matcher.group("artisanName"), matcher.group("itemName"));
+            List<ItemType> types = new ArrayList<>();
+            for (ItemType itemType : ItemType.values()) {
+                if (itemType.name().equalsIgnoreCase(matcher.group("itemName")))
+                    types.add(itemType);
+            }
+            controller.artisanUse(matcher.group("artisanName"), types);
         } else if ((matcher = GameMenuCommand.artisanGet.getMatcher(input)) != null) {
             controller.artisanGet(matcher.group("artisanName"));
         } else if ((matcher = GameMenuCommand.showAllProducts.getMatcher(input)) != null) {
             controller.showAllProducts();
         } else if ((matcher = GameMenuCommand.showAllAvailableProducts.getMatcher(input)) != null) {
-            controller.showAllAvailableProducts();
+            controller.showAvailableProducts();
         } else if ((matcher = GameMenuCommand.purchase.getMatcher(input)) != null) {
-            controller.purchase(matcher.group("productName"), matcher.group("count"));
+            controller.Purchase(matcher.group("productName"), Integer.parseInt(matcher.group("count")));
         } else if ((matcher = GameMenuCommand.addDollars.getMatcher(input)) != null) {
-            controller.addDollars(matcher.group("count"));
+            controller.addDollars(Integer.parseInt(matcher.group("count")));
         } else if ((matcher = GameMenuCommand.sell.getMatcher(input)) != null) {
-            controller.sell(matcher.group("productName"), matcher.group("count"));
+            controller.sell(matcher.group("productName"),Integer.parseInt( matcher.group("count")));
         } else if ((matcher = GameMenuCommand.friendships.getMatcher(input)) != null) {
             controller.friendships();
         } else if ((matcher = GameMenuCommand.talk.getMatcher(input)) != null) {
