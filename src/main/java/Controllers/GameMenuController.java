@@ -31,6 +31,10 @@ public class GameMenuController {
             player.backpack.update();
         }
 
+        while (App.getGame().dateAndTime.getDiff()!=0){
+            App.getGame().dateAndTime.updateTime();
+        }
+
         App.getGame().weather.update();
     }
 
@@ -113,7 +117,7 @@ public class GameMenuController {
     }
 
     public void season(){
-        App.getGame().dateAndTime.getSeason();
+        System.out.println(App.getGame().dateAndTime.getSeason());
     }
 
     public void thor(int x, int y){

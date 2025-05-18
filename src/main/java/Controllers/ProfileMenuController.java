@@ -10,7 +10,7 @@ import java.util.List;
 
 public class ProfileMenuController {
     private final List<Player> players = App.getInstance().getPlayers();
-    private Player currentPlayer = null;
+    private Player currentPlayer;
 
     public Player getCurrentPlayer() {
         return currentPlayer;
@@ -28,6 +28,7 @@ public class ProfileMenuController {
     }
 
     public void changeUsername(String newUsername) {
+        currentPlayer = App.getCurrentPlayer();
         if (currentPlayer == null) {
             System.out.println("No player is currently logged in.");
             return;
@@ -45,6 +46,7 @@ public class ProfileMenuController {
         }
     }
     public void changeNickname(String newNickname) {
+        currentPlayer = App.getCurrentPlayer();
         if (currentPlayer == null) {
             System.out.println("No player is currently logged in.");
             return;
@@ -58,6 +60,7 @@ public class ProfileMenuController {
         }
     }
     public void changeEmail(String newEmail) {
+        currentPlayer = App.getCurrentPlayer();
         if (currentPlayer == null) {
             System.out.println("No player is currently logged in.");
             return;
@@ -76,6 +79,7 @@ public class ProfileMenuController {
 
     }
     public void changePassword(String newPassword, String oldPassword) {
+        currentPlayer = App.getCurrentPlayer();
         if (currentPlayer == null) {
             System.out.println("No player is currently logged in.");
             return;
@@ -110,6 +114,11 @@ public class ProfileMenuController {
         }
     }
     public void showUserInfo() {
+        currentPlayer = App.getCurrentPlayer();
+        if (currentPlayer == null) {
+            System.out.println("aval bia dakhel");
+            return;
+        }
         System.out.println(String.format("Username: %s\nNickname: %s\nEmail: %s\nGender: %s", currentPlayer.personalInfo.getName(),
                 currentPlayer.personalInfo.getNickname(), currentPlayer.personalInfo.getEmail(), currentPlayer.personalInfo.getGender().toString()));
     }

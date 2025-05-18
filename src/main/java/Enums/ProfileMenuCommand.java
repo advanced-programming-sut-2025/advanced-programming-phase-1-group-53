@@ -7,7 +7,7 @@ public enum ProfileMenuCommand implements Command {
     exit("^exit$"),
     changePassword("^change password$"),
     showCurrentMenu("^show current menu$"),
-    enterMenu("^enter menu -a (?<menu>.+?)$"),
+    enterMenu("^enter menu -m (?<menu>.+?)$"),
     changeUsername("^change username -u (?<username>.+?)$"),
     changeEmail("^change email -e (?<email>.+?)$"),
     changeNickname("^change nickname -n (?<nickname>.+?)$"),
