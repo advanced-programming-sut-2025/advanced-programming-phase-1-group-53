@@ -1,0 +1,73 @@
+package Models.Game;
+
+import Enums.Gender;
+import Enums.Menu;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class App {
+    private static Player currentPlayer = null;
+    private static App app = null;
+    private static Menu currentMenu = Menu.loginRegisterMenu;
+    private static Game game;
+    private final ArrayList<Player> players = new ArrayList<>();
+    private final ArrayList<Game> games = new ArrayList<>();
+
+    /*public void newGame(){
+        game = new Game(List.of(players.get(0), players.get(1), players.get(2), players.get(3)));
+        Player.initializePlayerRelations(App.getGame().players);
+    }*/
+
+    public static App getInstance(){
+        if(app == null){
+            app = new App();
+        }
+        return app;
+    }
+
+    public static Game getGame(){
+        return App.game;
+    }
+
+    public void setGame(Game game){
+        App.game = game;
+    }
+
+    public static Menu getCurrentMenu() {
+        return App.currentMenu;
+    }
+
+    public static void setCurrentMenu(Menu currentMenu) {
+        App.currentMenu = currentMenu;
+    }
+
+    public static Player getCurrentPlayer() {
+        return currentPlayer;
+    }
+    public static void setCurrentPlayer(Player currentPlayer) {
+        App.currentPlayer = currentPlayer;
+    }
+
+    public void setPlayers(List<Player> players) {
+        this.players.clear();
+        this.players.addAll(players);
+    }
+
+    public List<Player> getPlayers() {
+        return new ArrayList<>(players);
+    }
+
+    public ArrayList<Game> getGames() {
+        return games;
+    }
+
+    public Player findPlayerByUsername(String username) {
+        for (Player player : players) {
+            if (player.personalInfo.getName().equals(username)) {
+                return player;
+            }
+        }
+        return null;
+    }
+}
