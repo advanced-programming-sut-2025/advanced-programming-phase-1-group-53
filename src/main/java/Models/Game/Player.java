@@ -113,7 +113,13 @@ public class Player {
     public int moveTo(int destX, int destY) {
         Tile[][] map = App.getGame().getCurrentMap();
         if (map[destY][destX].getTileKind() == TileKind.structure && this.currentMap == this.myFarm) {
-            return 5;
+            moveToBuilding(destX, destY);
+            return -1;
+        }
+        else if (map[destY][destX].getTileKind() != TileKind.empty && map[destY][destX].getTileKind() != TileKind.asphalt &&
+                map[destY][destX].getTileKind() != TileKind.door && map[destY][destX].getTileKind() != TileKind.grass &&
+                map[destY][destX].getTileKind() != TileKind.plowed) {
+            return Integer.MAX_VALUE;
         }
         int rows = map.length;
         int cols = map[0].length;
@@ -175,6 +181,7 @@ public class Player {
     }
 
     public void applyMovementCost(int energyCost, int destX, int destY) {
+        if (energyCost == -1) return;
         int currentEnergy = energy.getEnergy();
         if (currentEnergy > energyCost) {
             energy.setEnergy(currentEnergy - energyCost);
@@ -209,8 +216,38 @@ public class Player {
                 teleport();
             }
         }
-        if (App.getGame().getGameMap().getTile(position.getX(), position.getY()).getTileKind() == TileKind.structure) {
-            App.getGame().getGameMap().changeMapIfEnterBuilding(position.getX(), position.getY());
+    }
+
+    private void moveToBuilding(int x, int y) {
+        Player player = App.getGame().getCurrentPlayer();
+        Farm farm = player.getFarm();
+        if (GameMap.isInside(x, y, farm.getHouse().getPosition())) {
+            App.getGame().setCurrentMap(farm.getHouse().getBuildingMap());
+            player.setCurrentMap(MapsNames.House);
+            player.energy.updateEnergy(-5);
+            player.position.setX(3);
+            player.position.setY(3);
+        } else if (GameMap.isInside(x, y, farm.getGreenHouse().getPosition())) {
+            if (farm.getGreenHouse().isBuild()) {
+                App.getGame().setCurrentMap(farm.getGreenHouse().getBuildingMap());
+                player.setCurrentMap(MapsNames.GreenHouse);
+                player.energy.updateEnergy(-5);
+                player.position.setX(3);
+                player.position.setY(3);
+            }
+            else {
+                System.out.println("GreenHouse is not build yet");
+                return;
+            }
+        } else if (GameMap.isInside(x, y, farm.getMine().getPosition())) {
+            App.getGame().setCurrentMap(farm.getMine().getBuildingMap());
+            player.setCurrentMap(MapsNames.Mine);
+            player.energy.updateEnergy(-5);
+            player.position.setX(3);
+            player.position.setY(3);
+        } else if (GameMap.isInside(x, y, farm.getLake().getPosition())) {
+            System.out.println("you cant go to the lake");
+            return;
         }
     }
 

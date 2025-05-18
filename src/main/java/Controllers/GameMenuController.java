@@ -1,17 +1,15 @@
 package Controllers;
 
 import Enums.ItemType;
+import Enums.MapsNames;
 import Enums.Menu;
 import Enums.WeatherType;
-import Models.Friendship;
+import Models.*;
 import Models.Game.App;
 import Models.Game.Game;
 import Models.Game.Player;
 import Models.Items.Foragings.ForagingSeed;
 import Models.Items.Item;
-import Models.MessageManager;
-import Models.NPC;
-import Models.Result;
 
 import java.util.AbstractList;
 import java.util.ArrayList;
@@ -52,6 +50,7 @@ public class GameMenuController {
         }
         App.getInstance().setGame(new Game(List.of(me,player1, player2, player3)));
         Player.initializePlayerRelations(App.getGame().players);
+        System.out.println("khosh oomadid");
     }
 
     public void loadGame(String index) {
@@ -79,7 +78,14 @@ public class GameMenuController {
 
 
     public void nextTurn() {
-
+        App.getGame().goToNextPlayer();
+        MapsNames mapsNames = App.getGame().getCurrentPlayer().getCurrentMap();
+        Tile[][] map = MapsNames.findMapByMapsName(mapsNames, App.getCurrentPlayer());
+        if (map == null) {
+            System.out.println("bug");
+            return;
+        }
+        App.getGame().setCurrentMap(map);
     }
 
     public void date(){
@@ -136,7 +142,7 @@ public class GameMenuController {
     }
 
     public void buildGreenHouse() {
-        App.getCurrentPlayer().getFarm().getGreenHouse().buildGreenhouse();
+        App.getCurrentPlayer().getFarm().getGreenHouse().letsBuildGreenhouse();
     }
 
     public void walk(String x, String y) {

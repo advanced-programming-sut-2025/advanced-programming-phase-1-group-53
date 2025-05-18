@@ -13,11 +13,10 @@ public class GreenHouse extends Building {
     }
 
     public void build() {}
-    public void buildGreenhouse() {
+    public void letsBuildGreenhouse() {
         this.isBuild = true;
     }
     public boolean isBuild() {
         return isBuild;
     }
-    // getMapsName() is inherited from Building
 }

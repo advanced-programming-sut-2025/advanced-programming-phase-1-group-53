@@ -176,15 +176,22 @@ public class Game {
         final String BG_YELLOW = "\u001B[43m"; // New color for NPC tiles
 
         for (int y = 0; y < map.length; y++) {
+            outer:
             for (int x = 0; x < map[y].length; x++) {
                 Tile tile = map[y][x];
                 String color = "";
                 char symbol;
 
                 // Priority: Player > Item > Empty
-                if (playerX == x && playerY == y) {
-                    symbol = 'P';
-                } else if (tile.getItem() != null) {
+                for (Player p : players) {
+                    if (p.position.getX() == x && p.position.getY() == y) {
+                        symbol = 'P';
+                        color = GREEN; // Player color
+                        System.out.print(color + symbol + RESET);
+                        continue outer;
+                    }
+                }
+                if (tile.getItem() != null) {
                     Item item = tile.getItem();
                     if (item instanceof Tool || item instanceof WateringCan) {
                         symbol = 'T';

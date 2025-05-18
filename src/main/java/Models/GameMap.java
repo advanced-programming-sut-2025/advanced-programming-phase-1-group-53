@@ -68,8 +68,8 @@ public class GameMap {
         placeStructure(startY, startX + FARM_SIZE - STRUCTURE_WIDTH); // Top-right
         placeStructure(startY + FARM_SIZE - STRUCTURE_HEIGHT, startX); // Bottom-left
         placeStructure(startY + FARM_SIZE - STRUCTURE_HEIGHT, startX + FARM_SIZE - STRUCTURE_WIDTH); // Bottom-right
-        owner.position.setX((startX + FARM_SIZE) / 2);
-        owner.position.setY((startY + FARM_SIZE) / 2);
+        owner.position.setX(startX + FARM_SIZE / 2);
+        owner.position.setY(startY + FARM_SIZE / 2);
         MapsNames location = findLocationInGameMap(owner.position.getX(), owner.position.getY());
         owner.setCurrentMap(location);
         owner.setMyFarm(location);
@@ -329,21 +329,16 @@ public class GameMap {
         }
     }
 
-    public void changeMapIfEnterBuilding(int x, int y) {
+    /*public void changeMapIfEnterBuilding(int x, int y) {
         Player player = App.getGame().getCurrentPlayer();
-        MapsNames mapsName = player.getCurrentMap();
-        if (mapsName == player.getMyFarm()) {
-            Tile tile = App.getGame().getGameMap().getTile(x, y);
-            if (tile.getTileKind() == TileKind.structure) {
-                Building building = findBuilding(x, y);
-                if (building == null || building.getBuildingMap() == null) return;
-                App.getGame().setCurrentMap(building.getBuildingMap());
-                player.position.setX(building.getPosition().getX() + building.getBuildingMap()[0].length / 2);
-                player.position.setY(building.getPosition().getY() + building.getBuildingMap().length / 2);
-                player.setCurrentMap(building.getMapsName());
-            }
-        }
-    }
+        Building building = findBuilding(x, y);
+        if (building == null || building.getBuildingMap() == null) return;
+        App.getGame().setCurrentMap(building.getBuildingMap());
+        player.position.setX(building.getPosition().getX() + building.getBuildingMap()[0].length / 2);
+        player.position.setY(building.getPosition().getY() + building.getBuildingMap().length / 2);
+        player.setCurrentMap(building.getMapsName());
+    }*/
+
 
     public Building findBuilding(int x, int y) {
         // Check if in the village area
@@ -383,7 +378,7 @@ public class GameMap {
         return null;
     }
 
-    private boolean isInside(int x, int y, Position pos) {
+    public static boolean isInside(int x, int y, Position pos) {
         return x >= pos.getX() && x < pos.getX() + pos.getWidth()
                 && y >= pos.getY() && y < pos.getY() + pos.getHeight();
     }
