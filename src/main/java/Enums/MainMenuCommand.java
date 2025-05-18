@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 public enum MainMenuCommand implements Command {
     exit("^exit$"),
     logout("^logout$"),
-    enterMenu("^enter menu -a (?<menu>.+?)$"),
+    enterMenu("^enter menu -m (?<menu>.+?)$"),
     showCurrentMenu("^show current menu$");
     private final String pattern;
 

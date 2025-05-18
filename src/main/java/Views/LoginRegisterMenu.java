@@ -18,8 +18,7 @@ public class LoginRegisterMenu implements AppMenu {
         if ((matcher = LoginRegisterMenuCommand.login.getMatcher(input)) != null) {
             String username = matcher.group("username");
             String password = matcher.group("password");
-            boolean stayLoggedIn = matcher.group("flag") != null;
-            controller.login(username, password, stayLoggedIn);
+            controller.login(username, password);
         } else if ((matcher = LoginRegisterMenuCommand.exit.getMatcher(input)) != null) {
             ShareController.exit(scanner);
         } else if ((matcher = LoginRegisterMenuCommand.enterMenu.getMatcher(input)) != null) {

@@ -11,7 +11,7 @@ public class PersonalInfo {
     private Gender gender;
     private int gold = 0;
     private String securityQuestion;
-    private String securityAnswer;
+    private int securityAnswer;
 
     public PersonalInfo(String email, String name, String nickname, String password, Gender gender) {
         this.email = email;
@@ -77,11 +77,11 @@ public class PersonalInfo {
         this.securityQuestion = securityQuestion;
     }
 
-    public String getSecurityAnswer() {
+    public int getSecurityAnswer() {
         return securityAnswer;
     }
 
-    public void setSecurityAnswer(String securityAnswer) {
+    public void setSecurityAnswer(int securityAnswer) {
         this.securityAnswer = securityAnswer;
     }
 

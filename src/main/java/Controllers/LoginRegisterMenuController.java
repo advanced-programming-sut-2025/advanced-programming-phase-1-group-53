@@ -1,17 +1,11 @@
 package Controllers;
 
+import Enums.Gender;
 import Enums.Menu;
 import Enums.Regex;
 import Models.Game.App;
 import Models.Game.Player;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.lang.reflect.Type;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -20,36 +14,15 @@ import java.util.List;
 import java.util.Random;
 
 public class LoginRegisterMenuController {
-    private final String playersFilePath = "players.json";
-    private final String sessionFilePath = "session.json";
-    private final Gson gson;
-    private List<Player> players;
+    private final List<Player> players = App.getInstance().getPlayers();
     private Player temporaryPlayer = null;
     Player player = null;
-    public LoginRegisterMenuController() {
-        gson = new Gson();
-        players = loadPlayersFromFile();
-        App.getInstance().setPlayers(players);
-    }
-    private ArrayList<Player> loadPlayersFromFile() {
-        File file = new File(playersFilePath);
-        if (!file.exists()) return new ArrayList<>();
 
-        try (FileReader reader = new FileReader(file)) {
-            Type type = new TypeToken<ArrayList<Player>>() {}.getType();
-            ArrayList<Player> loaded = gson.fromJson(reader, type);
-            return loaded != null ? loaded : new ArrayList<>();
-        } catch (IOException e) {
-            return new ArrayList<>();
-        }
-    }
-
-    public void login(String username, String password, boolean stayLoggedIn) {
+    public void login(String username, String password) {
         for (Player p : players) {
             if (p.personalInfo.getName().equalsIgnoreCase(username)) {
                 String hashedPassword = hashPassword(password);
                 if (p.personalInfo.getPassword().equals(hashedPassword)) {
-                    if (stayLoggedIn) saveSession(p);
                     App.setCurrentPlayer(p);
                     App.setCurrentMenu(Menu.mainMenu);
                     System.out.println("User logged in successfully!");
@@ -57,38 +30,33 @@ public class LoginRegisterMenuController {
                     player = p;
                     System.out.println("Incorrect password.");
                 }
+                return;
             }
         }
         System.out.println("Username not found.");
     }
-    private void saveSession(Player player) {
-        try (FileWriter writer = new FileWriter(sessionFilePath)) {
-            gson.toJson(player, writer);
-        } catch (IOException e) {
-            System.out.println("Failed to save session.");
-        }
-    }
+
     public void handleForgetPassword(String username) {
         for (Player p : players) {
             if (p.personalInfo.getName().equalsIgnoreCase(username)) {
                 temporaryPlayer = p;
-            }else {
-                System.out.println("Username not found.");
+                System.out.println("answer the security question: ");
+                return;
             }
         }
+        System.out.println("Username not found.");
     }
     public boolean handleAnswer(String answer) {
         if (temporaryPlayer == null) {
             System.out.println("No reset in progress. Use 'Forget Password' first.");
             return false;
-        } else
-            System.out.println(player.personalInfo.getSecurityQuestion());
-        if (answer.equalsIgnoreCase(player.personalInfo.getSecurityAnswer())) {
-            System.out.println("Please enter your new password.");
-            return true;
+        } else {
+            if (Integer.parseInt(answer) == temporaryPlayer.personalInfo.getSecurityAnswer()) {
+                System.out.println("Please enter your new password.");
+                return true;
+            }
         }
         temporaryPlayer = null;
-        App.setCurrentMenu(Menu.loginRegisterMenu);
         return false;
     }
 
@@ -101,7 +69,8 @@ public class LoginRegisterMenuController {
             }
         }else {
             password = hashPassword(password);
-            player.personalInfo.setPassword(password);
+            temporaryPlayer.personalInfo.setPassword(password);
+            System.out.println("Password updated successfully!");
         }
 
     }

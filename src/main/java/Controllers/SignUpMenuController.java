@@ -6,46 +6,16 @@ import Enums.Regex;
 import Models.Game.App;
 import Models.Game.Player;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import java.io.FileWriter;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.io.File;
-import java.io.FileReader;
-import java.lang.reflect.Type;
-import java.io.IOException;
 import java.util.Random;
 
 public class SignUpMenuController {
-    private final List<Player> players;
-    private final String playersFilePath = "players.json";
-    private final Gson gson;
+    private final List<Player> players = App.getInstance().getPlayers();
     Player newPlayer;
-
-    public SignUpMenuController() {
-        gson = new Gson();
-        players = loadPlayersFromFile();
-        App.getInstance().setPlayers(players);
-    }
-
-    private List<Player> loadPlayersFromFile() {
-        File file = new File(playersFilePath);
-        if (!file.exists()) {
-            return new ArrayList<>();
-        }
-
-        try (FileReader reader = new FileReader(file)) {
-            Type playerListType = new TypeToken<List<Player>>(){}.getType();
-            List<Player> loadedPlayers = gson.fromJson(reader, playerListType);
-            return loadedPlayers != null ? loadedPlayers : new ArrayList<>();
-        } catch (IOException e) {
-            return new ArrayList<>();
-        }
-    }
 
     public void register(String username, String password, String confirmPassword, String nickname,
                          String email, String gender) {
@@ -100,25 +70,14 @@ public class SignUpMenuController {
         String hashedPassword = hashPassword(password);
         newPlayer = new Player(username, nickname, hashedPassword, email, Gender.getGender(gender));
         finalizeRegistration();
-        App.setCurrentPlayer(newPlayer);
         System.out.println("Registered successfully!");
-
+        listOfQuestions();
     }
 
     public void finalizeRegistration() {
         players.add(newPlayer);
-        try {
-            savePlayersToFile();
-            System.out.println("User data saved successfully.");
-        } catch (IOException e) {
-            System.out.println("Failed to save user data.");
-        }
-    }
-
-    private void savePlayersToFile() throws IOException {
-        try (FileWriter writer = new FileWriter(playersFilePath)) {
-            gson.toJson(players, writer);
-        }
+        App.setCurrentPlayer(newPlayer);
+        System.out.println("User data saved successfully.");
     }
 
     private boolean isUsernameTaken(String username) {
@@ -146,7 +105,7 @@ public class SignUpMenuController {
         }
     }
 
-    public void listOfQuestions() {
+    private void listOfQuestions() {
         final ArrayList<String> questions = new ArrayList<>();
         questions.add("9 + 0 =");
         questions.add("10 - 6/2 =");
@@ -157,8 +116,12 @@ public class SignUpMenuController {
     }
     public void handleQuestions(String Index, String answer, String confirmAnswer){
         int questionIndex;
+        int ans;
+        int confirmAns;
         try {
             questionIndex = Integer.parseInt(Index);
+            ans = Integer.parseInt(answer);
+            confirmAns = Integer.parseInt(confirmAnswer);
         } catch (NumberFormatException e) {
             System.out.println("Invalid question number.");
             return;
@@ -170,22 +133,34 @@ public class SignUpMenuController {
         else {
             switch (questionIndex){
                 case 1:
+                    if (ans != 9) {
+                        System.out.println("Answer is not valid.");
+                        return;
+                    }
                     newPlayer.personalInfo.setSecurityQuestion("9 + 0 =");
-                    newPlayer.personalInfo.setSecurityAnswer("9");
+                    newPlayer.personalInfo.setSecurityAnswer(9);
                     break;
                 case 2:
+                    if (ans != 7) {
+                        System.out.println("Answer is not valid.");
+                        return;
+                    }
                     newPlayer.personalInfo.setSecurityQuestion("10 - 6/2 =");
-                    newPlayer.personalInfo.setSecurityAnswer("3");
+                    newPlayer.personalInfo.setSecurityAnswer(7);
                     break;
                 case 3:
+                    if (ans != 6) {
+                        System.out.println("Answer is not valid.");
+                        return;
+                    }
                     newPlayer.personalInfo.setSecurityQuestion("2 * 3 =");
-                    newPlayer.personalInfo.setSecurityAnswer("6");
+                    newPlayer.personalInfo.setSecurityAnswer(6);
                     break;
                 default:
                     System.out.println("Invalid question number.");
                     return;
             }
-            System.out.println("Security question saved successfully.");
+            System.out.println("Security question saved successfully.\nRedirecting to login menu...");
             App.setCurrentMenu(Menu.loginRegisterMenu);
         }
     }
@@ -217,4 +192,3 @@ public class SignUpMenuController {
         return shuffled.toString();
     }
 }
-

@@ -1,23 +1,15 @@
 package Controllers;
 
 import Enums.Regex;
+import Models.Game.App;
 import Models.Game.Player;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.lang.reflect.Type;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 public class ProfileMenuController {
-    private final String playersFilePath = "players.json";
-    private final List<Player> players;
-    private final Gson gson;
+    private final List<Player> players = App.getInstance().getPlayers();
     private Player currentPlayer = null;
 
     public Player getCurrentPlayer() {
@@ -28,29 +20,6 @@ public class ProfileMenuController {
         this.currentPlayer = currentPlayer;
     }
 
-    public ProfileMenuController() {
-        gson = new Gson();
-        this.players = loadPlayersFromFile();
-    }
-    private List<Player> loadPlayersFromFile() {
-        File file = new File(playersFilePath);
-        if (!file.exists()) return new java.util.ArrayList<>();
-
-        try (FileReader reader = new FileReader(file)) {
-            Type playerListType = new TypeToken<List<Player>>() {}.getType();
-            List<Player> loaded = gson.fromJson(reader, playerListType);
-            return loaded != null ? loaded : new java.util.ArrayList<>();
-        } catch (IOException e) {
-            return new java.util.ArrayList<>();
-        }
-    }
-    private void savePlayersToFile() {
-        try (FileWriter writer = new FileWriter(playersFilePath)) {
-            gson.toJson(players, writer);
-        } catch (IOException e) {
-            System.out.println("Error saving players.");
-        }
-    }
     private Player findPlayerByUsername(String username) {
         for (Player p : players) {
             if (p.personalInfo.getName().equalsIgnoreCase(username)) return p;
@@ -70,7 +39,7 @@ public class ProfileMenuController {
                 System.out.println("Username already taken.");;
             }else {
                 currentPlayer.personalInfo.setName(newUsername);
-                savePlayersToFile();
+                App.getInstance().setPlayers(players);
                 System.out.println("Username updated successfully.");
             }
         }
@@ -84,7 +53,7 @@ public class ProfileMenuController {
             System.out.println("NickName already taken.");
         }else {
             currentPlayer.personalInfo.setNickname(newNickname);
-            savePlayersToFile();
+            App.getInstance().setPlayers(players);
             System.out.println("Nickname updated successfully.");
         }
     }
@@ -100,7 +69,7 @@ public class ProfileMenuController {
                 System.out.println("Email already taken.");
             }else{
                 currentPlayer.personalInfo.setEmail(newEmail);
-                savePlayersToFile();
+                App.getInstance().setPlayers(players);
                 System.out.println("Email updated successfully.");
             }
         }
@@ -119,7 +88,7 @@ public class ProfileMenuController {
                 System.out.println("New password is invalid.");
             }else {
                 currentPlayer.personalInfo.setPassword(hashPassword(newPassword));
-                savePlayersToFile();
+                App.getInstance().setPlayers(players);
                 System.out.println("Password updated successfully.");
             }
         }

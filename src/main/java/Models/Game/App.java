@@ -14,11 +14,6 @@ public class App {
     private final ArrayList<Player> players = new ArrayList<>();
     private final ArrayList<Game> games = new ArrayList<>();
 
-    /*public void newGame(){
-        game = new Game(List.of(players.get(0), players.get(1), players.get(2), players.get(3)));
-        Player.initializePlayerRelations(App.getGame().players);
-    }*/
-
     public static App getInstance(){
         if(app == null){
             app = new App();
@@ -54,8 +49,8 @@ public class App {
         this.players.addAll(players);
     }
 
-    public List<Player> getPlayers() {
-        return new ArrayList<>(players);
+    public ArrayList<Player> getPlayers() {
+        return players;
     }
 
     public ArrayList<Game> getGames() {

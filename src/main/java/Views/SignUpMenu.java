@@ -24,7 +24,6 @@ public class SignUpMenu implements AppMenu {
                 matcher.group("email"),
                 matcher.group("gender")
             );
-            controller.listOfQuestions();
         } else if ((matcher = SignUpMenuCommand.exit.getMatcher(input)) != null) {
             ShareController.exit(scanner);
         } else if ((matcher = SignUpMenuCommand.enterMenu.getMatcher(input)) != null) {

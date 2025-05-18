@@ -7,7 +7,7 @@ public enum LoginRegisterMenuCommand implements Command {
     exit("^exit$"),
     enterMenu("^enter menu -m (?<menu>.+?)$"),
     showCurrentMenu("^show current menu$"),
-    login("^login -u (?<username>.+?) -p (?<password>.+?) -f (?<flag>–stay-logged-in)?$"),
+    login("^login -u (?<username>.+?) -p (?<password>.+?)$"),
     forgetPassword("^forget password -u (?<username>.+?)"),
     answer("^answer -a (?<answer>.+?)$");
     private final String pattern;
