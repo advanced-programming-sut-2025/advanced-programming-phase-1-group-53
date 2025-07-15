@@ -1,0 +1,27 @@
+package com.stardew.Server.Controllers;
+
+import com.stardew.GameLogic.Enums.Menu;
+import com.stardew.GameLogic.Models.Game.App;
+
+import java.util.Scanner;
+
+public class ShareController {
+    public static void exit(Scanner scanner) {
+        scanner.close();
+        App.setCurrentMenu(Menu.exitMenu);
+    }
+
+    public static void showCurrentMenu() {
+        System.out.println(App.getCurrentMenu().toString());
+    }
+
+    public static void enterMenu(String input) {
+        Menu menu = Menu.findMenu(input.toLowerCase());
+        if (menu == null) {
+            System.out.println("Invalid menu name.");
+        } else {
+            App.setCurrentMenu(menu);
+            System.out.println("Entered " + menu.toString());
+        }
+    }
+}
