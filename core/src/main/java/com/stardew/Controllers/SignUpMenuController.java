@@ -1,7 +1,6 @@
 package com.stardew.Controllers;
 
 import com.stardew.Enums.Gender;
-import com.stardew.Enums.Menu;
 import com.stardew.Enums.Regex;
 import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.Player;
@@ -161,7 +160,7 @@ public class SignUpMenuController {
                     return;
             }
             System.out.println("Security question saved successfully.\nRedirecting to login menu...");
-            App.setCurrentMenu(Menu.loginRegisterMenu);
+//            App.setCurrentMenu(Menu.loginRegisterMenu);
         }
     }
     public String generatePassword() {

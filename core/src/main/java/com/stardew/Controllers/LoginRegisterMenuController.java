@@ -1,6 +1,5 @@
 package com.stardew.Controllers;
 
-import com.stardew.Enums.Menu;
 import com.stardew.Enums.Regex;
 import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.Player;
@@ -23,7 +22,7 @@ public class LoginRegisterMenuController {
                 String hashedPassword = hashPassword(password);
                 if (p.personalInfo.getPassword().equals(hashedPassword)) {
                     App.setCurrentPlayer(p);
-                    App.setCurrentMenu(Menu.mainMenu);
+//                    App.setCurrentMenu(Menu.mainMenu);
                     System.out.println("User logged in successfully!");
                 } else {
                     player = p;

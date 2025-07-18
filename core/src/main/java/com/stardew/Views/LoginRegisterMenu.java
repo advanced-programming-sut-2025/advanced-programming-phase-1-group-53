@@ -1,49 +1,61 @@
 package com.stardew.Views;
 
-import com.stardew.Controllers.LoginRegisterMenuController;
-import com.stardew.Controllers.ShareController;
-import com.stardew.Enums.LoginRegisterMenuCommand;
+import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.stardew.Main;
 
 import java.util.Scanner;
-import java.util.regex.Matcher;
 
-public class LoginRegisterMenu implements AppMenu {
-    private final LoginRegisterMenuController controller = new LoginRegisterMenuController();
+public class LoginRegisterMenu extends AppMenu {
+
+    public LoginRegisterMenu(Game main) {
+        super(main);
+    }
 
     @Override
     public void check(Scanner scanner) {
-        String input = scanner.nextLine().trim();
-        Matcher matcher;
 
-        if ((matcher = LoginRegisterMenuCommand.login.getMatcher(input)) != null) {
-            String username = matcher.group("username");
-            String password = matcher.group("password");
-            controller.login(username, password);
-        } else if ((matcher = LoginRegisterMenuCommand.exit.getMatcher(input)) != null) {
-            ShareController.exit(scanner);
-        } else if ((matcher = LoginRegisterMenuCommand.enterMenu.getMatcher(input)) != null) {
-            ShareController.enterMenu(matcher.group("menu"));
-        } else if ((matcher = LoginRegisterMenuCommand.showCurrentMenu.getMatcher(input)) != null) {
-            ShareController.showCurrentMenu();
-        } else if ((matcher = LoginRegisterMenuCommand.forgetPassword.getMatcher(input)) != null) {
-            controller.handleForgetPassword(matcher.group("username"));
-        } else if ((matcher = LoginRegisterMenuCommand.answer.getMatcher(input)) != null) {
-            boolean correctAnswer = controller.handleAnswer(matcher.group("answer"));
-            if (correctAnswer) {
-                System.out.println("wanna we create you password?");
-                String answer = scanner.nextLine().trim();
-                if (answer.equalsIgnoreCase("no")) {
-                    System.out.println("please enter your new password");
-                    String newPassword = scanner.nextLine().trim();
-                    controller.newPassword(newPassword);
-                } else {
-                    String newPassword = controller.generatePassword();
-                    System.out.println("your new password is: " + newPassword);
-                    controller.newPassword(newPassword);
-                }
+    }
+
+    @Override
+    public void show() {
+        super.show();
+        table.clear();
+
+        TextButton loginBtn = new TextButton("Login", skin);
+        TextButton signupBtn = new TextButton("Sign Up", skin);
+        TextButton exitBtn = new TextButton("Exit", skin);
+
+        loginBtn.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                // Replace with real screen
+                System.out.println("Login clicked");
+                // main.setScreen(new GameMenu(main));
             }
-        } else {
-            System.out.println("invalid command");
-        }
+        });
+
+        signupBtn.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                System.out.println("Signup clicked");
+                // main.setScreen(new SignUpMenu(main));
+            }
+        });
+
+        exitBtn.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Gdx.app.exit();
+            }
+        });
+
+        table.add(loginBtn).pad(10).row();
+        table.add(signupBtn).pad(10).row();
+        table.add(exitBtn).pad(10).row();
     }
 }

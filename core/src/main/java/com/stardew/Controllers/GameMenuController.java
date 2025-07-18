@@ -2,7 +2,6 @@ package com.stardew.Controllers;
 
 import com.stardew.Enums.ItemType;
 import com.stardew.Enums.MapsNames;
-import com.stardew.Enums.Menu;
 import com.stardew.Enums.WeatherType;
 import com.stardew.Models.*;
 import com.stardew.Models.Game.App;
@@ -39,7 +38,7 @@ public class GameMenuController {
 
     public void exitGame() {
         App.setCurrentPlayer(App.getGame().players.get(0));
-        App.setCurrentMenu(Menu.mainMenu);
+//        App.setCurrentMenu(Menu.mainMenu);
     }
 
     public void newGame(String username1, String username2, String username3) {

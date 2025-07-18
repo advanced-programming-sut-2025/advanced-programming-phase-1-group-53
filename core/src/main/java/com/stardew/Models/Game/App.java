@@ -1,14 +1,11 @@
 package com.stardew.Models.Game;
 
-import com.stardew.Enums.Menu;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class App {
     private static Player currentPlayer = null;
     private static App app = null;
-    private static Menu currentMenu = Menu.loginRegisterMenu;
     private static Game game;
     private final ArrayList<Player> players = new ArrayList<>();
     private final ArrayList<Game> games = new ArrayList<>();
@@ -26,14 +23,6 @@ public class App {
 
     public void setGame(Game game){
         App.game = game;
-    }
-
-    public static Menu getCurrentMenu() {
-        return App.currentMenu;
-    }
-
-    public static void setCurrentMenu(Menu currentMenu) {
-        App.currentMenu = currentMenu;
     }
 
     public static Player getCurrentPlayer() {
