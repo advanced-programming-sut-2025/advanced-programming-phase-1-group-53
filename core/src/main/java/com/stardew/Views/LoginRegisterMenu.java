@@ -4,6 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.stardew.Main;
@@ -25,6 +26,15 @@ public class LoginRegisterMenu extends AppMenu {
     public void show() {
         super.show();
         table.clear();
+
+        TextField username = new TextField("", skin);
+        TextField email = new TextField("", skin);
+        TextField password = new TextField("", skin);
+        username.setMessageText("Username");
+        email.setMessageText("Email");
+        password.setMessageText("Enter password");
+        password.setPasswordMode(true);
+        password.setPasswordCharacter('*');
 
         TextButton loginBtn = new TextButton("Login", skin);
         TextButton signupBtn = new TextButton("Sign Up", skin);
@@ -54,6 +64,9 @@ public class LoginRegisterMenu extends AppMenu {
             }
         });
 
+        table.add(username);
+        table.add(email);
+        table.add(password);
         table.add(loginBtn).pad(10).row();
         table.add(signupBtn).pad(10).row();
         table.add(exitBtn).pad(10).row();
