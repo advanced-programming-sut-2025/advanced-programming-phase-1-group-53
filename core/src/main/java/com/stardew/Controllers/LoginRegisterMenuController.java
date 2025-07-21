@@ -1,8 +1,10 @@
 package com.stardew.Controllers;
 
+import com.badlogic.gdx.Game;
 import com.stardew.Enums.Regex;
 import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.Player;
+import com.stardew.Views.MainMenu;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -16,13 +18,14 @@ public class LoginRegisterMenuController {
     private Player temporaryPlayer = null;
     Player player = null;
 
-    public void login(String username, String password) {
+    public void login(String username, String password, Game main) {
         for (Player p : players) {
             if (p.personalInfo.getName().equalsIgnoreCase(username)) {
                 String hashedPassword = hashPassword(password);
                 if (p.personalInfo.getPassword().equals(hashedPassword)) {
                     App.setCurrentPlayer(p);
 //                    App.setCurrentMenu(Menu.mainMenu);
+                    main.setScreen(new MainMenu(main));
                     System.out.println("User logged in successfully!");
                 } else {
                     player = p;
