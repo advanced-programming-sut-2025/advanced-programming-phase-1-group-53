@@ -15,17 +15,14 @@ public abstract class AppMenu implements Screen {
     protected Stage stage;
     protected Skin skin;
     protected Table table;
-    public Label messageLabel;
     public AppMenu(Game main) {
         this.main = (Main) main;
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
-        skin = new Skin(Gdx.files.internal("skin/plain-james-ui/plain-james-ui.json"));
+        skin = new Skin(Gdx.files.internal("skin/LibGdx-Skin-main/NzSkin.json"));
         table = new Table();
         table.setFillParent(true);
         stage.addActor(table);
-        messageLabel = new Label("", skin);
-        messageLabel.setColor(Color.RED);
     }
 
     public abstract void check(Scanner scanner);
@@ -57,10 +54,5 @@ public abstract class AppMenu implements Screen {
 
     public Table getTable() {
         return table;
-    }
-
-    public void displayMessage(String message) {
-        messageLabel.setText(message);
-        table.add(messageLabel);
     }
 }

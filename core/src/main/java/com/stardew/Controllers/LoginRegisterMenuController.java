@@ -1,6 +1,5 @@
 package com.stardew.Controllers;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.google.gson.Gson;
@@ -9,7 +8,6 @@ import com.stardew.Enums.Regex;
 import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.Player;
 import com.stardew.Models.PersonalInfo;
-import com.stardew.Views.MainMenu;
 
 import java.lang.reflect.Type;
 import java.security.MessageDigest;
@@ -24,7 +22,7 @@ public class LoginRegisterMenuController {
     private Player temporaryPlayer = null;
     Player player = null;
 
-    public String login(String username, String password, Game main) {
+    public String login(String username, String password) {
         FileHandle userFile = Gdx.files.local("profiles/" + username + ".json");
         if (!userFile.exists()) {
             return "User not found.";

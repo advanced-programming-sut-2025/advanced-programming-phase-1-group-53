@@ -2,7 +2,9 @@ package com.stardew.Views;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -62,12 +64,17 @@ public class LoginRegisterMenu extends AppMenu {
         TextButton exitBtn = new TextButton("Exit", skin);
         exitBtn.setSize(buttonWidth, buttonHeight);
 
+        Label messageLabel = new Label("", skin);
+//        messageLabel.setColor(Color.RED);
+
         // Button listeners
         loginBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
 //                System.out.println("Login clicked");
-                displayMessage(controller.login(username.getText(), password.getText(), main));
+                messageLabel.setText(controller.login(username.getText(), password.getText()));
+                System.out.println(messageLabel.getText());
+//                table.add(messageLabel).width(fieldWidth).height(fieldHeight).pad(pad).row();
             }
         });
 
@@ -87,6 +94,7 @@ public class LoginRegisterMenu extends AppMenu {
         });
 
         // Layout
+        table.add(messageLabel).width(fieldWidth).height(fieldHeight).pad(pad).row();
         table.add(username).width(fieldWidth).height(fieldHeight).pad(pad).row();
 //        table.add(email).width(fieldWidth).height(fieldHeight).pad(pad).row();
         table.add(password).width(fieldWidth).height(fieldHeight).pad(pad).row();
