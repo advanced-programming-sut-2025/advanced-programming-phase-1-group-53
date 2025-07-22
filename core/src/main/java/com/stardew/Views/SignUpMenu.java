@@ -112,8 +112,9 @@ public class SignUpMenu extends AppMenu {
         }
 
         // Pass values to controller
-        controller.register(username, password, confirmPassword, nickname, email, gender);
+        String message = controller.register(username, password, confirmPassword, nickname, email, gender);
 
+        System.out.println(message);
         // You could inspect controller state if needed, or redirect immediately
 //        messageLabel.setText("Account created. Set security question next.");
 //        usernameField.setText("");

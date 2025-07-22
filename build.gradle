@@ -70,4 +70,12 @@ subprojects {
   }
 }
 
+allprojects {
+  repositories {
+    google()
+    mavenCentral()
+  }
+}
+
+
 eclipse.project.name = 'stardew valley' + '-parent'

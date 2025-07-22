@@ -1,5 +1,9 @@
 package com.stardew.Controllers;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.stardew.Enums.Gender;
 import com.stardew.Enums.Regex;
 import com.stardew.Models.Game.App;
@@ -13,70 +17,57 @@ import java.util.List;
 import java.util.Random;
 
 public class SignUpMenuController {
+    private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    private static final String PROFILE_DIR = "profiles/";
     private final List<Player> players = App.getInstance().getPlayers();
     Player newPlayer;
 
-    public void register(String username, String password, String confirmPassword, String nickname,
-                         String email, String gender) {
+    public String register(String username, String password, String confirmPassword,
+                           String nickname, String email, String gender) {
         if (!Regex.username.regexMatcher(username)) {
-            System.out.println("Invalid username. Username can only contain letters, numbers and -");
-            return;
+            return "Invalid username. Username can only contain letters, numbers and -";
         }
         if (isUsernameTaken(username)) {
-            System.out.println("Username already exists. Please try again.");
-            return;
+            return "Username already exists. Please try again.";
         }
-        if (!Regex.email.regexMatcher(email)){
-            String[] parts = email.split("@");
-            if (parts.length != 2) {
-                System.out.println("You can use only one '@'.");
-                return;
-            }
-            String localPart = parts[0];
-            String domain = parts[1];
-            if (Regex.EMAIL_USERNAME_VALID.regexMatcher(localPart) && Regex.NO_DOUBLE_DOTS.regexMatcher(localPart)) {
-                System.out.println("Invalid email username.");
-                return;
-            }else {
-                if (Regex.DOMAIN_VALID.regexMatcher(domain) && Regex.NO_DOUBLE_DOTS.regexMatcher(domain)) {
-                    System.out.println("Invalid email domain.");
-                    return;
-                }else {
-                    System.out.println("Invalid email.");
-                    return;
-                }
-            }
+
+        if (!Regex.email.regexMatcher(email)) {
+            return "Invalid email.";
         }
+
         if (password.equals("accidentally") && confirmPassword.equals("accidentally")) {
             password = generatePassword();
-        }
-        else {
-            if (confirmPassword != null && !password.equals(confirmPassword)) {
-                System.out.println("Confirmed password is not valid.");
-                return;
+        } else {
+            if (!isValidPassword(password)) {
+                return "Password must be at least 8 chars, include upper case, number, special char.";
             }
-            if (!Regex.password.regexMatcher(password)) {
-                if (!Regex.MINIMUM_LENGTH.regexMatcher(password)) {
-                    System.out.println("Password should contain at least 8 characters");
-                    return;
-                } else {
-                    System.out.println("Invalid password");
-                    return;
-                }
+
+            FileHandle profileFile = Gdx.files.local(PROFILE_DIR + username + ".json");
+            if (profileFile.exists()) {
+                return "Username already exists.";
             }
         }
 
         String hashedPassword = hashPassword(password);
         newPlayer = new Player(username, nickname, hashedPassword, email, Gender.getGender(gender));
-        finalizeRegistration();
-        System.out.println("Registered successfully!");
-        listOfQuestions();
+        return finalizeRegistration(username, nickname, hashedPassword, email, Gender.getGender(gender));
     }
 
-    public void finalizeRegistration() {
+
+    public String finalizeRegistration(String username, String nickname, String hashedPassword, String email, Gender gender) {
+        FileHandle profileFile = Gdx.files.local(PROFILE_DIR + username + ".json");
+        newPlayer = new Player(username, nickname, hashedPassword, email, gender);
+
+        if (profileFile.exists()) {
+            return "Username already exists.";
+        }
+        if (!Gdx.files.local(PROFILE_DIR).exists()) {
+            Gdx.files.local(PROFILE_DIR).file().mkdirs();
+        }
+        profileFile.writeString(gson.toJson(newPlayer), false);
         players.add(newPlayer);
         App.setCurrentPlayer(newPlayer);
-        System.out.println("User data saved successfully.");
+        return "User data saved successfully.";
     }
 
     private boolean isUsernameTaken(String username) {
@@ -189,5 +180,12 @@ public class SignUpMenuController {
         for (char c : chars) shuffled.append(c);
 
         return shuffled.toString();
+    }
+
+    private boolean isValidPassword(String password) {
+        return password.length() >= 8 &&
+            password.matches(".*[A-Z].*") &&
+            password.matches(".*[0-9].*") &&
+            password.matches(".*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?].*");
     }
 }

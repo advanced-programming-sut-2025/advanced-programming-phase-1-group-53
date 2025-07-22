@@ -1,6 +1,9 @@
 package com.stardew.Controllers;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
+import com.google.gson.Gson;
 import com.stardew.Enums.Regex;
 import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.Player;
@@ -18,23 +21,31 @@ public class LoginRegisterMenuController {
     private Player temporaryPlayer = null;
     Player player = null;
 
-    public void login(String username, String password, Game main) {
-        for (Player p : players) {
-            if (p.personalInfo.getName().equalsIgnoreCase(username)) {
-                String hashedPassword = hashPassword(password);
-                if (p.personalInfo.getPassword().equals(hashedPassword)) {
-                    App.setCurrentPlayer(p);
+    public String login(String username, String password, Game main) {
+        FileHandle userFile = Gdx.files.local("profiles/" + username + ".json");
+        if (!userFile.exists()) {
+            return "User not found.";
+        }
+
+        String json = userFile.readString();
+        Gson gson = new Gson();
+
+        Player p = gson.fromJson(json, Player.class);
+
+        if (p.personalInfo.getName().equalsIgnoreCase(username)) {
+            String hashedPassword = hashPassword(password);
+            if (p.personalInfo.getPassword().equals(hashedPassword)) {
+                App.setCurrentPlayer(p);
 //                    App.setCurrentMenu(Menu.mainMenu);
-                    main.setScreen(new MainMenu(main));
-                    System.out.println("User logged in successfully!");
-                } else {
-                    player = p;
-                    System.out.println("Incorrect password.");
-                }
-                return;
+                main.setScreen(new MainMenu(main));
+                return "User logged in successfully!";
+            } else {
+                player = p;
+                return "Incorrect password.";
             }
         }
-        System.out.println("Username not found.");
+
+        return "Username not found.";
     }
 
     public void handleForgetPassword(String username) {
