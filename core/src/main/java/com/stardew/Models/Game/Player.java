@@ -34,6 +34,10 @@ public class Player {
         this.personalInfo = new PersonalInfo(email, name, nickName, password, gender);
     }
 
+    public Player(PersonalInfo personalInfo) {
+        this.personalInfo = personalInfo;
+    }
+
     public Farm getFarm() {
         return farm;
     }

@@ -15,7 +15,7 @@ import java.util.Scanner;
 public class LoginRegisterMenu extends AppMenu {
     LoginRegisterMenuController controller = new LoginRegisterMenuController();
 
-    public LoginRegisterMenu(Game main) {
+    public LoginRegisterMenu(Main main) {
         super(main);
     }
 
@@ -67,7 +67,7 @@ public class LoginRegisterMenu extends AppMenu {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
 //                System.out.println("Login clicked");
-                controller.login(username.getText(), password.getText(), main);
+                displayMessage(controller.login(username.getText(), password.getText(), main));
             }
         });
 

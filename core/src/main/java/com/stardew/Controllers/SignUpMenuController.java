@@ -64,7 +64,7 @@ public class SignUpMenuController {
         if (!Gdx.files.local(PROFILE_DIR).exists()) {
             Gdx.files.local(PROFILE_DIR).file().mkdirs();
         }
-        profileFile.writeString(gson.toJson(newPlayer), false);
+        profileFile.writeString(gson.toJson(newPlayer.personalInfo), false);
         players.add(newPlayer);
         App.setCurrentPlayer(newPlayer);
         return "User data saved successfully.";

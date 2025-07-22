@@ -1,6 +1,7 @@
 package com.stardew.Views;
 
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -10,19 +11,21 @@ import com.stardew.Main;
 import java.util.Scanner;
 
 public abstract class AppMenu implements Screen {
-    protected Game main;
+    protected Main main;
     protected Stage stage;
     protected Skin skin;
     protected Table table;
-
+    public Label messageLabel;
     public AppMenu(Game main) {
-        this.main = main;
+        this.main = (Main) main;
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
         skin = new Skin(Gdx.files.internal("skin/plain-james-ui/plain-james-ui.json"));
         table = new Table();
         table.setFillParent(true);
         stage.addActor(table);
+        messageLabel = new Label("", skin);
+        messageLabel.setColor(Color.RED);
     }
 
     public abstract void check(Scanner scanner);
@@ -50,5 +53,14 @@ public abstract class AppMenu implements Screen {
     @Override public void dispose() {
         stage.dispose();
         skin.dispose();
+    }
+
+    public Table getTable() {
+        return table;
+    }
+
+    public void displayMessage(String message) {
+        messageLabel.setText(message);
+        table.add(messageLabel);
     }
 }

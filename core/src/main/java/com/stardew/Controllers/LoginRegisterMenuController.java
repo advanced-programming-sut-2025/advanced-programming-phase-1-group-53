@@ -4,11 +4,14 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.stardew.Enums.Regex;
 import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.Player;
+import com.stardew.Models.PersonalInfo;
 import com.stardew.Views.MainMenu;
 
+import java.lang.reflect.Type;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -30,14 +33,18 @@ public class LoginRegisterMenuController {
         String json = userFile.readString();
         Gson gson = new Gson();
 
-        Player p = gson.fromJson(json, Player.class);
+        Type playerType = new TypeToken<PersonalInfo>() {}.getType();
+
+        PersonalInfo pI = gson.fromJson(json, playerType);
+
+        Player p = new Player(pI);
 
         if (p.personalInfo.getName().equalsIgnoreCase(username)) {
             String hashedPassword = hashPassword(password);
             if (p.personalInfo.getPassword().equals(hashedPassword)) {
                 App.setCurrentPlayer(p);
 //                    App.setCurrentMenu(Menu.mainMenu);
-                main.setScreen(new MainMenu(main));
+//                main.setScreen(new MainMenu(main));
                 return "User logged in successfully!";
             } else {
                 player = p;
