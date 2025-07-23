@@ -1,13 +1,16 @@
 package com.stardew.Controllers;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.stardew.Enums.Gender;
 import com.stardew.Enums.Regex;
+import com.stardew.Main;
 import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.Player;
+import com.stardew.Views.LoginRegisterMenu;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -21,9 +24,13 @@ public class SignUpMenuController {
     private static final String PROFILE_DIR = "profiles/";
     private final List<Player> players = App.getInstance().getPlayers();
     Player newPlayer;
+    Game main;
+    String message;
 
     public String register(String username, String password, String confirmPassword,
-                           String nickname, String email, String gender) {
+                           String nickname, String email, String gender, Game main) {
+        this.main = main;
+
         if (!Regex.username.regexMatcher(username)) {
             return "Invalid username. Username can only contain letters, numbers and -";
         }
@@ -47,6 +54,8 @@ public class SignUpMenuController {
                 return "Username already exists.";
             }
         }
+
+
 
         String hashedPassword = hashPassword(password);
         newPlayer = new Player(username, nickname, hashedPassword, email, Gender.getGender(gender));
@@ -95,63 +104,74 @@ public class SignUpMenuController {
         }
     }
 
-    private void listOfQuestions() {
-        final ArrayList<String> questions = new ArrayList<>();
-        questions.add("9 + 0 =");
-        questions.add("10 - 6/2 =");
-        questions.add("2 * 3 =");
-        for (String question : questions) {
-            System.out.println(question);
+    public static class SecurityQuestion {
+        public final int index;
+        public final String question;
+        public SecurityQuestion(int index, String question) {
+            this.index = index;
+            this.question = question;
         }
     }
-    public void handleQuestions(String Index, String answer, String confirmAnswer){
+
+    public SecurityQuestion getRandomQuestionWithIndex() {
+        List<String> questions = new ArrayList<>();
+        questions.add("9 + 0 ="); // index 0
+        questions.add("10 - 6/2 ="); // index 1
+        questions.add("2 * 3 ="); // index 2
+        int randomIndex = new Random().nextInt(questions.size());
+        return new SecurityQuestion(randomIndex, questions.get(randomIndex));
+    }
+
+    public boolean handleQuestions(String Index, String answer, String confirmAnswer, Player newPlayer) {
         int questionIndex;
         int ans;
         int confirmAns;
+        message = "";
+
         try {
             questionIndex = Integer.parseInt(Index);
             ans = Integer.parseInt(answer);
             confirmAns = Integer.parseInt(confirmAnswer);
         } catch (NumberFormatException e) {
-            System.out.println("Invalid question number.");
-            return;
+            message = "Invalid question number.";
+            return false;
         }
         if (!answer.equals(confirmAnswer)) {
-            System.out.println("Confirmed answer is not valid.");
-            return;
+            message = "Confirmed answer is not valid.";
+            return false;
         }
         else {
             switch (questionIndex){
                 case 1:
                     if (ans != 9) {
-                        System.out.println("Answer is not valid.");
-                        return;
+                        message = "Answer is not valid.";
+                        return false;
                     }
                     newPlayer.personalInfo.setSecurityQuestion("9 + 0 =");
                     newPlayer.personalInfo.setSecurityAnswer(9);
                     break;
                 case 2:
                     if (ans != 7) {
-                        System.out.println("Answer is not valid.");
-                        return;
+                        message = "Answer is not valid.";
+                        return false;
                     }
                     newPlayer.personalInfo.setSecurityQuestion("10 - 6/2 =");
                     newPlayer.personalInfo.setSecurityAnswer(7);
                     break;
                 case 3:
                     if (ans != 6) {
-                        System.out.println("Answer is not valid.");
-                        return;
+                        message = "Answer is not valid.";
+                        return false;
                     }
                     newPlayer.personalInfo.setSecurityQuestion("2 * 3 =");
                     newPlayer.personalInfo.setSecurityAnswer(6);
                     break;
                 default:
-                    System.out.println("Invalid question number.");
-                    return;
+                    message = "Invalid question number.";
+                    return false;
             }
-            System.out.println("Security question saved successfully.\nRedirecting to login menu...");
-//            App.setCurrentMenu(Menu.loginRegisterMenu);
+            message = Index;
+            return true;
         }
     }
     public String generatePassword() {

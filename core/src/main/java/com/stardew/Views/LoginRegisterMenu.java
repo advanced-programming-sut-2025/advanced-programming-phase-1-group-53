@@ -17,7 +17,7 @@ import java.util.Scanner;
 public class LoginRegisterMenu extends AppMenu {
     LoginRegisterMenuController controller = new LoginRegisterMenuController();
 
-    public LoginRegisterMenu(Main main) {
+    public LoginRegisterMenu(Game main) {
         super(main);
     }
 

@@ -20,9 +20,12 @@ public class SignUpMenu extends AppMenu {
     private TextField genderField;
     private TextField passwordField;
     private TextField confirmPasswordField;
+    private TextField securityAnswerField;
+    private Label securityQuestionLabel;
     private Label messageLabel;
 
     private SignUpMenuController controller;
+    private int securityQuestionIndex; // Store the index of the shown question
 
     public SignUpMenu(Game main) {
         super(main);
@@ -67,9 +70,19 @@ public class SignUpMenu extends AppMenu {
         TextButton signupBtn = new TextButton("Sign Up", skin);
         TextButton backBtn = new TextButton("Back", skin);
 
+
+        // Get a random question and its index from the controller
+        SignUpMenuController.SecurityQuestion securityQuestion = controller.getRandomQuestionWithIndex();
+        securityQuestionIndex = securityQuestion.index;
+        securityQuestionLabel = new Label(securityQuestion.question, skin);
+        securityAnswerField = new TextField("", skin);
+        securityAnswerField.setMessageText("Answer");
+
+
         messageLabel = new Label("", skin);
         messageLabel.setAlignment(Align.center);
         messageLabel.setWrap(true);
+
 
         signupBtn.addListener(new ChangeListener() {
             @Override
@@ -92,6 +105,8 @@ public class SignUpMenu extends AppMenu {
         table.add(genderField).width(fieldWidth).height(fieldHeight).pad(pad).row();
         table.add(passwordField).width(fieldWidth).height(fieldHeight).pad(pad).row();
         table.add(confirmPasswordField).width(fieldWidth).height(fieldHeight).pad(pad).row();
+        table.add(securityQuestionLabel).width(fieldWidth).pad(pad).row();
+        table.add(securityAnswerField).width(fieldWidth).height(fieldHeight).pad(pad).row();
         table.add(signupBtn).width(buttonWidth).height(buttonHeight).pad(pad).row();
         table.add(backBtn).width(buttonWidth).height(buttonHeight).pad(pad).row();
         table.add(messageLabel).width(fieldWidth).pad(pad).row();
@@ -104,15 +119,34 @@ public class SignUpMenu extends AppMenu {
         String gender = genderField.getText().trim().toUpperCase();
         String password = passwordField.getText();
         String confirmPassword = confirmPasswordField.getText();
+        String answer = securityAnswerField.getText().trim();
 
         if (username.isEmpty() || nickname.isEmpty() || email.isEmpty() ||
-            gender.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
+            gender.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() || answer.isEmpty()) {
             messageLabel.setText("Please fill in all fields.");
             return;
         }
 
+        // Check the answer for the security question
+        boolean answerCorrect = false;
+        switch (securityQuestionIndex) {
+            case 0:
+                answerCorrect = answer.equals("9");
+                break;
+            case 1:
+                answerCorrect = answer.equals("7");
+                break;
+            case 2:
+                answerCorrect = answer.equals("6");
+                break;
+        }
+        if (!answerCorrect) {
+            messageLabel.setText("Incorrect answer to the security question.");
+            return;
+        }
+
         // Pass values to controller
-        String message = controller.register(username, password, confirmPassword, nickname, email, gender);
+        String message = controller.register(username, password, confirmPassword, nickname, email, gender, main);
 
         System.out.println(message);
         // You could inspect controller state if needed, or redirect immediately
