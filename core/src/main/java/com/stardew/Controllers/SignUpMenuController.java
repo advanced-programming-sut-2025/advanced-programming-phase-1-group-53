@@ -116,7 +116,7 @@ public class SignUpMenuController {
     public SecurityQuestion getRandomQuestionWithIndex() {
         List<String> questions = new ArrayList<>();
         questions.add("9 + 0 ="); // index 0
-        questions.add("10 - 6/2 ="); // index 1
+        questions.add("10 - 6÷2 ="); // index 1
         questions.add("2 * 3 ="); // index 2
         int randomIndex = new Random().nextInt(questions.size());
         return new SecurityQuestion(randomIndex, questions.get(randomIndex));

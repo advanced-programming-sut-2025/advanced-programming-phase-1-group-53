@@ -41,8 +41,7 @@ public class LoginRegisterMenuController {
             String hashedPassword = hashPassword(password);
             if (p.personalInfo.getPassword().equals(hashedPassword)) {
                 App.setCurrentPlayer(p);
-//                    App.setCurrentMenu(Menu.mainMenu);
-//                main.setScreen(new MainMenu(main));
+                saveLastLogin(username); // Save last login
                 return "User logged in successfully!";
             } else {
                 player = p;
@@ -51,6 +50,36 @@ public class LoginRegisterMenuController {
         }
 
         return "Username not found.";
+    }
+
+    public void saveLastLogin(String username) {
+        FileHandle lastLogFile = Gdx.files.local("profiles/LastLog.json");
+        lastLogFile.writeString(username, false);
+    }
+
+    public String getLastLoginUsername() {
+        FileHandle lastLogFile = Gdx.files.local("profiles/LastLog.json");
+        if (!lastLogFile.exists()) return null;
+        return lastLogFile.readString().trim();
+    }
+
+    public String loginWithLastUser() {
+        String lastUsername = getLastLoginUsername();
+        if (lastUsername == null || lastUsername.isEmpty()) {
+            return "No last login found.";
+        }
+        // You may want to skip password check for continue, or require it. Here, we skip.
+        FileHandle userFile = Gdx.files.local("profiles/" + lastUsername + ".json");
+        if (!userFile.exists()) {
+            return "Last user profile not found.";
+        }
+        String json = userFile.readString();
+        Gson gson = new Gson();
+        Type playerType = new TypeToken<PersonalInfo>() {}.getType();
+        PersonalInfo pI = gson.fromJson(json, playerType);
+        Player p = new Player(pI);
+        App.setCurrentPlayer(p);
+        return "Continued as " + lastUsername + ".";
     }
 
     public void handleForgetPassword(String username) {

@@ -64,6 +64,9 @@ public class LoginRegisterMenu extends AppMenu {
         TextButton exitBtn = new TextButton("Exit", skin);
         exitBtn.setSize(buttonWidth, buttonHeight);
 
+        TextButton continueBtn = new TextButton("Continue", skin);
+        continueBtn.setSize(buttonWidth, buttonHeight);
+
         Label messageLabel = new Label("", skin);
 //        messageLabel.setColor(Color.RED);
 
@@ -74,7 +77,6 @@ public class LoginRegisterMenu extends AppMenu {
 //                System.out.println("Login clicked");
                 messageLabel.setText(controller.login(username.getText(), password.getText()));
                 System.out.println(messageLabel.getText());
-//                table.add(messageLabel).width(fieldWidth).height(fieldHeight).pad(pad).row();
             }
         });
 
@@ -93,7 +95,19 @@ public class LoginRegisterMenu extends AppMenu {
             }
         });
 
+        continueBtn.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                String result = controller.loginWithLastUser();
+                messageLabel.setText(result);
+                System.out.println(result);
+                // Optionally, you can redirect to the main menu if login is successful
+                // if (result.startsWith("Continued as ")) main.setScreen(new MainMenu(main));
+            }
+        });
+
         // Layout
+        table.add(continueBtn).width(buttonWidth).height(buttonHeight).pad(pad).row();
         table.add(messageLabel).width(fieldWidth).height(fieldHeight).pad(pad).row();
         table.add(username).width(fieldWidth).height(fieldHeight).pad(pad).row();
 //        table.add(email).width(fieldWidth).height(fieldHeight).pad(pad).row();
