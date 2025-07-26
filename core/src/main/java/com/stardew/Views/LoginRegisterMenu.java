@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.stardew.Controllers.LoginRegisterMenuController;
 import com.stardew.Main;
+import com.stardew.Models.Game.App;
 
 import java.util.Scanner;
 
@@ -67,6 +68,12 @@ public class LoginRegisterMenu extends AppMenu {
         TextButton continueBtn = new TextButton("Continue", skin);
         continueBtn.setSize(buttonWidth, buttonHeight);
 
+        TextButton forgotPasswordBtn = new TextButton("Forgot Password", skin);
+        forgotPasswordBtn.setSize(buttonWidth, buttonHeight);
+
+        TextButton logoutBtn = new TextButton("Logout", skin);
+        logoutBtn.setSize(buttonWidth, buttonHeight);
+
         Label messageLabel = new Label("", skin);
 //        messageLabel.setColor(Color.RED);
 
@@ -106,6 +113,22 @@ public class LoginRegisterMenu extends AppMenu {
             }
         });
 
+        forgotPasswordBtn.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                main.setScreen(new ForgottenPassword(main));
+            }
+        });
+
+        logoutBtn.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                App.setCurrentPlayer(null);
+                messageLabel.setText("Logged out successfully.");
+                System.out.println("Logged out successfully.");
+            }
+        });
+
         // Layout
         table.add(continueBtn).width(buttonWidth).height(buttonHeight).pad(pad).row();
         table.add(messageLabel).width(fieldWidth).height(fieldHeight).pad(pad).row();
@@ -114,6 +137,8 @@ public class LoginRegisterMenu extends AppMenu {
         table.add(password).width(fieldWidth).height(fieldHeight).pad(pad).row();
         table.add(loginBtn).width(buttonWidth).height(buttonHeight).pad(pad).row();
         table.add(signupBtn).width(buttonWidth).height(buttonHeight).pad(pad).row();
+        table.add(forgotPasswordBtn).width(buttonWidth).height(buttonHeight).pad(pad).row();
+        table.add(logoutBtn).width(buttonWidth).height(buttonHeight).pad(pad).row();
         table.add(exitBtn).width(buttonWidth).height(buttonHeight).pad(pad).row();
     }
 }

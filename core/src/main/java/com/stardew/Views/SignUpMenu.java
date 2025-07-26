@@ -129,7 +129,8 @@ public class SignUpMenu extends AppMenu {
 
         // Check the answer for the security question
         boolean answerCorrect = false;
-        switch (securityQuestionIndex) {
+        controller.setSecurityQuestionIndex(securityQuestionIndex);
+        switch (controller.getSecurityQuestionIndex()) {
             case 0:
                 answerCorrect = answer.equals("9");
                 break;

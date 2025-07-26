@@ -162,4 +162,28 @@ public class LoginRegisterMenuController {
 
         return shuffled.toString();
     }
+
+    public String handleForgotPassword(String username, String email, String securityAnswer) {
+        for (Player p : players) {
+            if (p.personalInfo.getName().equalsIgnoreCase(username) &&
+                p.personalInfo.getEmail().equalsIgnoreCase(email) &&
+                p.personalInfo.getSecurityAnswer() == Integer.parseInt(securityAnswer)) {
+                temporaryPlayer = p;
+                return "Security check passed. Please enter your new password.";
+            }
+        }
+        return "Invalid username, email, or security answer.";
+    }
+
+    public String updatePassword(String newPassword) {
+        if (temporaryPlayer == null) {
+            return "No password reset in progress.";
+        }
+        if (!Regex.password.regexMatcher(newPassword)) {
+            return "Invalid password format.";
+        }
+        temporaryPlayer.personalInfo.setPassword(hashPassword(newPassword));
+        temporaryPlayer = null;
+        return "Password updated successfully!";
+    }
 }

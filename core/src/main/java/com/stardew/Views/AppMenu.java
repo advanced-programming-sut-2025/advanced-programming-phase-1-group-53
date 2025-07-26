@@ -25,6 +25,9 @@ public abstract class AppMenu implements Screen {
         stage.addActor(table);
     }
 
+    protected AppMenu() {
+    }
+
     public abstract void check(Scanner scanner);
 
     @Override

@@ -26,6 +26,15 @@ public class SignUpMenuController {
     Player newPlayer;
     Game main;
     String message;
+    private int securityQuestionIndex = 0;
+
+    public int getSecurityQuestionIndex() {
+        return securityQuestionIndex;
+    }
+
+    public void setSecurityQuestionIndex(int securityQuestionIndex) {
+        this.securityQuestionIndex = securityQuestionIndex;
+    }
 
     public String register(String username, String password, String confirmPassword,
                            String nickname, String email, String gender, Game main) {
