@@ -1,13 +1,16 @@
 package com.stardew.Controllers;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.stardew.Enums.Regex;
+import com.stardew.Main;
 import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.Player;
 import com.stardew.Models.PersonalInfo;
+import com.stardew.Views.MainMenu;
 
 import java.lang.reflect.Type;
 import java.security.MessageDigest;
@@ -21,8 +24,11 @@ public class LoginRegisterMenuController {
     private final List<Player> players = App.getInstance().getPlayers();
     private Player temporaryPlayer = null;
     Player player = null;
+    Game main = null;
 
-    public String login(String username, String password) {
+    public String login(String username, String password, Game main) {
+        this.main = main;
+
         FileHandle userFile = Gdx.files.local("profiles/" + username + ".json");
         if (!userFile.exists()) {
             return "User not found.";
@@ -42,6 +48,7 @@ public class LoginRegisterMenuController {
             if (p.personalInfo.getPassword().equals(hashedPassword)) {
                 App.setCurrentPlayer(p);
                 saveLastLogin(username); // Save last login
+                main.setScreen(new MainMenu(main));
                 return "User logged in successfully!";
             } else {
                 player = p;

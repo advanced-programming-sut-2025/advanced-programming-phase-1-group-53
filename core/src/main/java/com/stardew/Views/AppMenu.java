@@ -11,7 +11,7 @@ import com.stardew.Main;
 import java.util.Scanner;
 
 public abstract class AppMenu implements Screen {
-    protected Main main;
+    protected Game main;
     protected Stage stage;
     protected Skin skin;
     protected Table table;

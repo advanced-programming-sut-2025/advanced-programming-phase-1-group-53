@@ -82,7 +82,7 @@ public class LoginRegisterMenu extends AppMenu {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
 //                System.out.println("Login clicked");
-                messageLabel.setText(controller.login(username.getText(), password.getText()));
+                messageLabel.setText(controller.login(username.getText(), password.getText(), main));
                 System.out.println(messageLabel.getText());
             }
         });
@@ -108,8 +108,7 @@ public class LoginRegisterMenu extends AppMenu {
                 String result = controller.loginWithLastUser();
                 messageLabel.setText(result);
                 System.out.println(result);
-                // Optionally, you can redirect to the main menu if login is successful
-                // if (result.startsWith("Continued as ")) main.setScreen(new MainMenu(main));
+                main.setScreen(new MainMenu(main));
             }
         });
 

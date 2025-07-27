@@ -1,12 +1,10 @@
 package com.stardew.Views;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.stardew.Controllers.MainMenuController;
 import com.stardew.Controllers.ShareController;
-import com.stardew.Enums.MainMenuCommand;
-
-import java.util.Scanner;
-import java.util.regex.Matcher;
 
 public class MainMenu extends AppMenu {
     private final MainMenuController controller = new MainMenuController();
@@ -16,26 +14,41 @@ public class MainMenu extends AppMenu {
     }
 
     @Override
-    public void check(Scanner scanner) {
-        String input = scanner.nextLine().trim();
-        Matcher matcher;
-
-        if ((matcher = MainMenuCommand.exit.getMatcher(input)) != null) {
-            ShareController.exit(scanner);
-        } else if ((matcher = MainMenuCommand.logout.getMatcher(input)) != null) {
-            controller.logout();
-        } else if ((matcher = MainMenuCommand.enterMenu.getMatcher(input)) != null) {
-//            ShareController.enterMenu(matcher.group("menu"));
-        } else if ((matcher = MainMenuCommand.showCurrentMenu.getMatcher(input)) != null) {
-//            ShareController.showCurrentMenu();
-        } else {
-            System.out.println("invalid command");
-        }
+    public void check(java.util.Scanner scanner) {
+        // Command-based input removed for graphical UI
     }
 
     @Override
     public void show() {
         table.clear();
-        table.add("Main Menu").pad(20);
+        Label title = new Label("Main Menu", skin);
+        table.add(title).pad(20).row();
+
+        TextButton personalInfoButton = new TextButton("Personal Info", skin);
+        personalInfoButton.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
+            @Override
+            public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
+                controller.openPersonalInfoScreen(main);
+            }
+        });
+        table.add(personalInfoButton).pad(10).row();
+
+        TextButton logoutButton = new TextButton("Logout", skin);
+        logoutButton.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
+            @Override
+            public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
+                controller.logout();
+            }
+        });
+        table.add(logoutButton).pad(10).row();
+
+        TextButton exitButton = new TextButton("Exit", skin);
+        exitButton.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
+            @Override
+            public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
+                ShareController.exit(null); // No Scanner needed for graphical exit
+            }
+        });
+        table.add(exitButton).pad(10).row();
     }
 }

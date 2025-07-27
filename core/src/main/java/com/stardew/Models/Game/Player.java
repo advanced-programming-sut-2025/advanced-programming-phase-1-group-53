@@ -83,6 +83,10 @@ public class Player {
         return Math.min(friendshipXP, 800) / 200;
     }
 
+    public PersonalInfo getPersonalInfo() {
+        return personalInfo;
+    }
+
     /**
      * Moves the player to the specified destination using shortest path (BFS).
      * Returns the energy cost of the move, or Double.MAX_VALUE if no path exists.
