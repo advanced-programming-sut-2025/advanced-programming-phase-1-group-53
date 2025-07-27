@@ -20,9 +20,10 @@ public class ForgottenPasswordController {
         Gson gson = new Gson();
         Type playerType = new TypeToken<PersonalInfo>() {}.getType();
         PersonalInfo pI = gson.fromJson(json, playerType);
-        if (!Regex.password.regexMatcher(newPassword) || !Regex.MINIMUM_LENGTH.regexMatcher(newPassword)) {
+        if (!isValidPassword(newPassword)) {
             return false;
         }
+        System.out.println("hello there");
         String hashedPassword = hashPassword(newPassword);
         pI.setPassword(hashedPassword);
         // Update current player if needed
@@ -49,5 +50,11 @@ public class ForgottenPasswordController {
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
+    }
+    private boolean isValidPassword(String password) {
+        return password.length() >= 8 &&
+            password.matches(".*[A-Z].*") &&
+            password.matches(".*[0-9].*") &&
+            password.matches(".*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?].*");
     }
 }
