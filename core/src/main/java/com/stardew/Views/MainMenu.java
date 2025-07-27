@@ -37,7 +37,7 @@ public class MainMenu extends AppMenu {
         logoutButton.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
             @Override
             public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
-                controller.logout();
+                main.setScreen(new LoginRegisterMenu(main));
             }
         });
         table.add(logoutButton).pad(10).row();
