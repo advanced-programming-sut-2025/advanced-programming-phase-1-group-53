@@ -5,10 +5,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.stardew.Enums.Regex;
 import com.stardew.Models.PersonalInfo;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import java.io.*;
-import com.badlogic.gdx.Gdx;
+
+import com.stardew.Controllers.PersonalInfoController;
 
 public class PersonalInfoScreen extends AppMenu {
     private String usernameStr;
@@ -16,10 +18,15 @@ public class PersonalInfoScreen extends AppMenu {
     private TextField username;
     private TextField nickname;
     private TextField email;
-    private TextField coupleEmail;
-    private TextField gender;
-    private TextField gold;
+    private TextButton coupleEmail;
+    private TextButton gender;
+    private TextButton gold;
     private Label errorLabel;
+    private PersonalInfoController controller = new PersonalInfoController();
+    private TextButton changePasswordButton;
+    private TextField newPasswordField;
+    private TextField confirmPasswordField;
+    private Label passwordMessageLabel;
 
     public PersonalInfoScreen(Game main, String usernameStr) {
         super(main);
@@ -37,39 +44,97 @@ public class PersonalInfoScreen extends AppMenu {
         Label title = new Label("Personal Info", skin);
         table.add(title).pad(20).row();
         if (info != null) {
-            username = new TextField("Name: " + info.getName(), skin);
-            table.add(username).pad(10).row();
-            nickname = new TextField("Nickname: " + info.getNickname(), skin);
-            table.add(nickname).pad(10).row();
-            email = new TextField("Email: " + info.getEmail(), skin);
-            table.add(email).pad(10).row();
-            coupleEmail = new TextField("Couple Email: " + (info.getCoupleEmail() != null ? info.getCoupleEmail() : "-"), skin);
-            table.add(coupleEmail).pad(10).row();
-            gender = new TextField("Gender: " + (info.getGender() != null ? info.getGender().toString() : "-"), skin);
-            table.add(gender).pad(10).row();
-            gold = new TextField("Gold: " + info.getGold(), skin);
-            table.add(gold).pad(10).row();
+            username = new TextField(info.getName(), skin);
+            username.setSize(400, 60);
+            nickname = new TextField(info.getNickname(), skin);
+            nickname.setSize(400, 60);
+            table.add(username).pad(20).width(400).height(60);
+            table.add(nickname).pad(20).width(400).height(60).row();
+
+            email = new TextField(info.getEmail(), skin);
+            email.setSize(400, 60);
+            coupleEmail = new TextButton("Couple Email: " + (info.getCoupleEmail() != null ? info.getCoupleEmail() : "-"), skin);
+            coupleEmail.setSize(400, 60);
+            table.add(email).pad(20).width(400).height(60);
+            table.add(coupleEmail).pad(20).width(400).height(60).row();
+
+            gender = new TextButton("Gender: " + (info.getGender() != null ? info.getGender().toString() : "-"), skin);
+            gender.setSize(400, 60);
+            gold = new TextButton("Gold: " + info.getGold(), skin);
+            gold.setSize(400, 60);
+            table.add(gender).pad(20).width(400).height(60);
+            table.add(gold).pad(20).width(400).height(60).row();
+
             TextButton saveButton = new TextButton("Save info", skin);
+            saveButton.setSize(400, 60);
             saveButton.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
+                    if (username.getText().isEmpty() || nickname.getText().isEmpty() || email.getText().isEmpty()) {
+                        errorLabel.setText("Please fill in all fields.");
+                        return;
+                    }
+                    if (!Regex.email.regexMatcher(email.getText())) {
+                        errorLabel.setText("Invalid email address.");
+                        return;
+                    }
                     savePersonalInfo();
                 }
             });
-            table.add(saveButton).pad(20).row();
+            changePasswordButton = new TextButton("Change Password", skin);
+            changePasswordButton.setSize(400, 60);
+            table.add(saveButton).pad(20).width(400).height(60);
+            table.add(changePasswordButton).pad(20).width(400).height(60).row();
+
+            newPasswordField = new TextField("", skin);
+            newPasswordField.setMessageText("New Password");
+            newPasswordField.setPasswordMode(true);
+            newPasswordField.setPasswordCharacter('*');
+            newPasswordField.setSize(400, 60);
+            confirmPasswordField = new TextField("", skin);
+            confirmPasswordField.setMessageText("Confirm New Password");
+            confirmPasswordField.setPasswordMode(true);
+            confirmPasswordField.setPasswordCharacter('*');
+            confirmPasswordField.setSize(400, 60);
+            table.add(newPasswordField).pad(20).width(400).height(60);
+            table.add(confirmPasswordField).pad(20).width(400).height(60).row();
+
             errorLabel = new Label("", skin);
-            table.add(errorLabel).pad(10).row();
+            passwordMessageLabel = new Label("", skin);
+            table.add(errorLabel).pad(20).width(400).height(60).row();
+            table.add(passwordMessageLabel).pad(20).width(400).height(60).row();
+
+            changePasswordButton.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    if (newPasswordField.getText().isEmpty() || confirmPasswordField.getText().isEmpty()) {
+                        passwordMessageLabel.setText("Please fill in both password fields.");
+                        return;
+                    }
+                    else if (!newPasswordField.getText().equals(confirmPasswordField.getText())) {
+                        passwordMessageLabel.setText("Passwords do not match");
+                        return;
+                    }
+                    boolean success = controller.changePassword(usernameStr, newPasswordField.getText());
+                    if (success) {
+                        passwordMessageLabel.setText("Password updated successfully!");
+                    } else {
+                        passwordMessageLabel.setText("Password update failed. Check requirements or username.");
+                    }
+                }
+            });
         } else {
-            table.add(new Label("No personal info available.", skin)).pad(10).row();
+            table.add(new Label("No personal info available.", skin)).pad(20).width(400).height(60).row();
         }
         TextButton backButton = new TextButton("Back", skin);
+        backButton.setSize(400, 60);
         backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 main.setScreen(new MainMenu(main));
             }
         });
-        table.add(backButton).pad(20).row();
+        table.add(backButton).pad(20).width(400).height(60).row();
     }
 
     private PersonalInfo loadPersonalInfo() {
@@ -112,8 +177,6 @@ public class PersonalInfoScreen extends AppMenu {
         info.setName(username.getText());
         info.setNickname(nickname.getText());
         info.setEmail(email.getText());
-        info.setCoupleEmail(coupleEmail.getText().isEmpty() ? null : coupleEmail.getText());
-        info.setGold(Integer.parseInt(gold.getText().replaceAll("\\D", "")));
     }
 
     private void writeJsonToFile(File file, String json) throws IOException {

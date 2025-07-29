@@ -115,3 +115,4 @@ public class PersonalInfo {
         return gson.fromJson(json, PersonalInfo.class);
     }
 }
+
