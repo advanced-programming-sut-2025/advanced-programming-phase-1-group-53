@@ -33,6 +33,15 @@ public class MainMenu extends AppMenu {
         });
         table.add(personalInfoButton).pad(10).row();
 
+        TextButton gameMenuButton = new TextButton("Game Menu", skin);
+        gameMenuButton.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
+            @Override
+            public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
+                main.setScreen(new GameMenu(main));
+            }
+        });
+        table.add(gameMenuButton).pad(10).row();
+
         TextButton logoutButton = new TextButton("Logout", skin);
         logoutButton.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
             @Override

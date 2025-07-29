@@ -16,7 +16,7 @@ public abstract class AppMenu implements Screen {
     protected Skin skin;
     protected Table table;
     public AppMenu(Game main) {
-        this.main = (Main) main;
+        this.main = main;
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
         skin = new Skin(Gdx.files.internal("skin/LibGdx-Skin-main/NzSkin.json"));

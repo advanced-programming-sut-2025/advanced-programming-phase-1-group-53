@@ -1,5 +1,7 @@
 package com.stardew.Models;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.stardew.Enums.Gender;
 
 public class PersonalInfo {
@@ -101,5 +103,15 @@ public class PersonalInfo {
         if( gold >= a)
             return true;
         return false;
+    }
+
+    public String toJson() {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        return gson.toJson(this);
+    }
+
+    public static PersonalInfo fromJson(String json) {
+        Gson gson = new GsonBuilder().create();
+        return gson.fromJson(json, PersonalInfo.class);
     }
 }
