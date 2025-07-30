@@ -1,6 +1,7 @@
 package com.stardew.Views;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -15,6 +16,7 @@ import com.stardew.Controllers.PersonalInfoController;
 public class PersonalInfoScreen extends AppMenu {
     private String usernameStr;
     private PersonalInfo info;
+    private String oldUsername;
     private TextField username;
     private TextField nickname;
     private TextField email;
@@ -144,7 +146,9 @@ public class PersonalInfoScreen extends AppMenu {
             StringBuilder sb = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null) sb.append(line);
-            file.delete();
+            if (!file.delete()) {
+                System.out.println("couldn't delete file " + file);
+            }
             return PersonalInfo.fromJson(sb.toString());
         } catch (Exception e) {
             return null;
@@ -159,7 +163,7 @@ public class PersonalInfoScreen extends AppMenu {
 
     private boolean writePersonalInfoToFile() {
         File file = new File("profiles/" + usernameStr + ".json");
-        if (file.exists()) {
+        if (file.exists() && !username.getText().equals(usernameStr)) {
             errorLabel.setText("Error: File already exists!");
             return false;
         }
