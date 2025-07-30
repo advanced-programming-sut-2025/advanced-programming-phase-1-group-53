@@ -1,5 +1,6 @@
 package com.stardew.Network.Common.Packet;
 
-public class Packet {
-    public PacketType type;
+public abstract class Packet {
+    public abstract PacketType getType();
 }
+
