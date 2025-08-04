@@ -1,9 +1,10 @@
 package com.stardew.Server;
 
+import com.stardew.Network.Server.ServerApp;
+
 public class ServerLauncher {
     public static void main(String[] args) {
-        System.out.println("Starting Game Server");
-        // GameServer launch logic...
-        System.out.println("Game");
+        ServerApp app = ServerApp.getInstance();
+        app.initializeServer();
     }
 }
