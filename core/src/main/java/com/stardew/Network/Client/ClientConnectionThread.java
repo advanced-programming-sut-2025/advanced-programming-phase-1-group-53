@@ -14,12 +14,9 @@ import java.net.Socket;
  * initialHandshake() اینجا پکت لاگین را می‌فرستد و منتظر WelcomePacket می‌ماند.
  */
 public class ClientConnectionThread extends ConnectionThread {
-    private final String clientId;
 
     public ClientConnectionThread(Socket socket, String clientId) throws IOException {
-        super(socket);
-        this.clientId = clientId;
-        setClientId(clientId);
+        super(socket, clientId);
     }
 
     @Override
@@ -27,7 +24,7 @@ public class ClientConnectionThread extends ConnectionThread {
         try {
             // ۱) ارسال LoginPacket
             sendPacket(new LoginPacket(clientId));
-
+            System.out.println("Client sent login packet");
             // ۲) منتظر WelcomePacket بمان
             Packet pkt;
             while ((pkt = PacketParser.readPacket(inputStream)) != null) {

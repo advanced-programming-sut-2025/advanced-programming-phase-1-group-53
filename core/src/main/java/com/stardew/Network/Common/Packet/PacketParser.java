@@ -18,7 +18,8 @@ public class PacketParser {
     static {
         packetClassMap.put(PacketType.MOVE, MovePacket.class);
         packetClassMap.put(PacketType.CHAT, ChatPacket.class);
-        // Add more mappings here as needed
+        packetClassMap.put(PacketType.LOGIN, LoginPacket.class);
+        packetClassMap.put(PacketType.WELCOME, WelcomePacket.class);
     }
 
     private static Packet parse(String json) {
@@ -58,14 +59,19 @@ public class PacketParser {
             if (ch == '\n') break; // پایان پکت
             sb.append((char) ch);
         }
+        System.out.println("Read packet: " + sb.toString());
         if (sb.length() == 0) return null; // اتصال بسته یا داده‌ای نیست
+        System.out.println("packet after parsing: " + PacketParser.parse(sb.toString()));
         return PacketParser.parse(sb.toString());
     }
 
     public static void writePacket(BufferedOutputStream outputStream, Packet packet) throws IOException {
+        System.out.println("packet before json: " + packet.toString());
         String json = PacketParser.toJson(packet) + "\n";
+        System.out.println("packet after json: " + json);
         outputStream.write(json.getBytes());
         outputStream.flush(); // حتما flush بشه تا داده ارسال بشه
+        System.out.println("packet after flush: " + json);
     }
 
 }

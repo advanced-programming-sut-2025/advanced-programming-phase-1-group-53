@@ -6,68 +6,52 @@ import com.stardew.Network.Common.Packet.*;
 import java.io.IOException;
 import java.net.Socket;
 
-/**
- * نخ دائمی برای مدیریت ارتباط با یک کلاینت.
- * تمام پکت‌های دریافتی را می‌خواند، هندل می‌کند و در صورت نیاز پاسخ می‌دهد.
- */
 public class ServerConnectionThread extends ConnectionThread {
     private final ServerApp serverApp = ServerApp.getInstance();
 
+    // حذف clientId از کانستراکتور، چون بعد از لاگین تنظیم می‌شود
     public ServerConnectionThread(Socket socket) throws IOException {
-        super(socket);
+        super(socket, "");
     }
 
-    /**
-     * در اینجا می‌توانیم یک handshake ساده انجام دهیم.
-     * مثلاً ارسال یک Packet خاص برای تأیید اتصال.
-     */
     @Override
     public boolean initialHandshake() {
         try {
-            // مثال: ارسال یک LoginAckPacket یا پیام خوش‌آمدگویی
-            Packet welcome = new WelcomePacket("SERVER", "Welcome, your ID is ", getClientId());
+            Packet pkt = PacketParser.readPacket(inputStream);
+            if (!(pkt instanceof LoginPacket login)) {
+                System.err.println("Expected LoginPacket but received " + (pkt == null ? "null" : pkt.getClass().getSimpleName()));
+                return false;
+            }
+            this.clientId = login.getSenderId();
+            System.out.println("Login packet received for clientId: " + clientId);
+
+            ServerApp.getInstance().registerConnection(clientId, this);
+
+            Packet welcome = new WelcomePacket("SERVER", "Welcome, your ID is ", clientId);
             sendPacket(welcome);
+            System.out.println("Welcome packet sent for clientId: " + clientId);
             return true;
-        } catch (Exception e) {
-            System.err.println("Handshake failed for client " + getClientId() + ": " + e.getMessage());
+        } catch (IOException e) {
+            System.err.println("Handshake failed: " + e.getMessage());
             return false;
         }
     }
 
-    /**
-     * هر پکت دریافتی از هم‌صف (یا مستقیم از سوکت) به اینجا می‌آید.
-     * بسته به نوع، عملیات مختلف انجام می‌دهیم.
-     */
     @Override
     protected boolean handlePacket(Packet packet) {
-        // لاگ کردن
         System.out.println("Received packet from " + getClientId() + ": " + packet.getClass().getSimpleName());
 
-        // مثال هندل چند نوع پکت:
-        if (packet instanceof LoginPacket login) {
-            // نباید اینجا باشه چون login قبلاً در handleInitialPacket هندل شد
+        if (packet instanceof LoginPacket) {
+            // نباید دوباره لاگین دریافت کنیم
             return true;
-        }
-        else if (packet instanceof MovePacket move) {
-            // پخش حرکت بازیکن به همه‌ی کلاینت‌ها
+        } else if (packet instanceof MovePacket move) {
             serverApp.broadcastExcept(this, move);
             return true;
-        }
-        else if (packet instanceof ChatPacket chat) {
-            // ارسال پیام چت به همه
+        } else if (packet instanceof ChatPacket chat) {
             serverApp.broadcast(chat);
             return true;
-        }
-        else {
-            // اگر هیچ‌کدام، تحویل به سرور مرکزی
+        } else {
             return false;
         }
-    }
-
-    /**
-     * در صورتی که بخواهیم در میانه‌ی اجرا پکتی از خودمان ارسال کنیم:
-     */
-    public void sendGameUpdate(Packet update) {
-        sendPacket(update);
     }
 }

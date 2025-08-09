@@ -21,25 +21,16 @@ public abstract class ConnectionThread implements Runnable {
     protected final AtomicBoolean endFlag;
     protected Socket socket;
     protected boolean initialized = false;
+    protected String clientId;
 
-    private String clientId;
-
-    public ConnectionThread(Socket socket) throws IOException {
+    public ConnectionThread(Socket socket, String clientId) throws IOException {
         this.socket = socket;
         this.outputStream = new BufferedOutputStream(socket.getOutputStream());
         this.inputStream = new BufferedInputStream(socket.getInputStream());
         this.receivedMessagesQueue = new LinkedBlockingQueue<>();
         this.endFlag = new AtomicBoolean(false);
-    }
-
-    public void setClientId(String clientId) {
         this.clientId = clientId;
     }
-
-    public String getClientId() {
-        return clientId;
-    }
-
     /**
      * Enqueue an external packet for processing in this thread.
      */
@@ -70,6 +61,7 @@ public abstract class ConnectionThread implements Runnable {
             return;
         }
         initialized = true;
+        System.out.println("initial handshake for " + clientId);
 
         // main loop: process incoming packets
         while (!endFlag.get()) {
@@ -97,5 +89,13 @@ public abstract class ConnectionThread implements Runnable {
         try { inputStream.close(); } catch (IOException ignored) {}
         try { outputStream.close(); } catch (IOException ignored) {}
         try { socket.close(); } catch (IOException ignored) {}
+    }
+
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
+    }
+
+    public String getClientId() {
+        return clientId;
     }
 }

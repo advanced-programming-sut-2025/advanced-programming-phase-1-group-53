@@ -20,7 +20,7 @@ public class ClientApp {
     /**
      * serverIP و serverPort و id را از آرگومان main یا config گرفته‌اید.
      */
-    public void initializeClient(String serverIP, int serverPort, String id) {
+    public synchronized void initializeClient(String serverIP, int serverPort, String id) {
         try {
             // ۱) اتصال به سرور
             Socket socket = new Socket(serverIP, serverPort);
@@ -42,5 +42,9 @@ public class ClientApp {
         if (connectionThread != null) {
             connectionThread.sendPacket(packet);
         }
+    }
+
+    public ClientConnectionThread getConnectionThread() {
+        return connectionThread;
     }
 }

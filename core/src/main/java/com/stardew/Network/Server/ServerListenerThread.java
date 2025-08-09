@@ -1,22 +1,34 @@
 package com.stardew.Network.Server;
 
-import com.stardew.Network.Common.ListenerThread;
-
 import java.io.IOException;
+import java.net.ServerSocket;
 import java.net.Socket;
 
-/**
- * Server-side listener: reads first packet then delegates to ServerApp.
- */
-public class ServerListenerThread extends ListenerThread {
+public class ServerListenerThread extends Thread {
+    private final ServerSocket serverSocket;
+
     public ServerListenerThread(int port) throws IOException {
-        super(port);
+        serverSocket = new ServerSocket(port);
     }
 
     @Override
-    protected void handleConnection(Socket socket) {
-        // Delegate logic (login vs packet delegation) to ServerApp
-        ServerApp.getInstance().handleInitialPacket(socket);
+    public void run() {
+        while (!ServerApp.getInstance().isEnded()) {
+            try {
+                Socket socket = serverSocket.accept();
+                System.out.println("Server received connection from " + socket.getRemoteSocketAddress());
+                ServerConnectionThread conn = new ServerConnectionThread(socket);
+                // submit the connection runnable directly
+                ServerApp.getInstance().getConnectionThreadPool().submit(conn);
+                System.out.println("submitted connection runnable for " + socket.getRemoteSocketAddress());
+            } catch (IOException e) {
+                System.err.println("Listener error: " + e.getMessage());
+                break;
+            }
+        }
+    }
+
+    public ServerSocket getServerSocket() {
+        return serverSocket;
     }
 }
-
