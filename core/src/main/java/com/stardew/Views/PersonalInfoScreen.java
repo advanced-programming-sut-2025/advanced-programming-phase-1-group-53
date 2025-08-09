@@ -46,10 +46,13 @@ public class PersonalInfoScreen extends AppMenu {
         Label title = new Label("Personal Info", skin);
         table.add(title).pad(20).row();
         if (info != null) {
+            // Avatar
             username = new TextField(info.getName(), skin);
             username.setSize(400, 60);
             nickname = new TextField(info.getNickname(), skin);
             nickname.setSize(400, 60);
+            // Play count
+            // Gold collection record
             table.add(username).pad(20).width(400).height(60);
             table.add(nickname).pad(20).width(400).height(60).row();
 
