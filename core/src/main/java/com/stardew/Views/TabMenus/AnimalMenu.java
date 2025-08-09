@@ -9,7 +9,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.stardew.Enums.ItemType;
-import com.stardew.Main;
 import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.GameAssetManager;
 import com.stardew.Models.Items.*;
