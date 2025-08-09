@@ -9,6 +9,7 @@ import java.util.ArrayList;
 public abstract class Plant extends Item {
     protected boolean hasDeluxe = false;
     protected boolean hasSpeed = false;
+    protected int hitsRemainedToDestroy = 1;
 
     Plant(ItemType itemType){
         super(itemType);
@@ -46,6 +47,17 @@ public abstract class Plant extends Item {
 
     public void setHasSpeed(boolean hasSpeed) {
         this.hasSpeed = hasSpeed;
+    }
+
+    public void decreaseRemainedToDestroyByOne() {
+        System.out.println("jkdcjs");
+        hitsRemainedToDestroy -- ;
+    }
+
+    public boolean isDestroyed() {
+        if(hitsRemainedToDestroy <= 0)
+            return true;
+        return false;
     }
 
     static final ArrayList<Season> specialSeasons = new ArrayList<>() {{

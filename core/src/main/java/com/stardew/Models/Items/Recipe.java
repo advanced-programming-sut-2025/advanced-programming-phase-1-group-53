@@ -37,7 +37,9 @@ public class Recipe extends Item{
     }
 
     public boolean isAvailable(){
-        if(App.getGame().getCurrentPlayer().abilities.getAbilities()[requiredAbility] >= requiredLevel)
+        if(App.getGame().getCurrentPlayer().abilities.getAbilities()[requiredAbility] >= requiredLevel && requiredLevel!=0)
+            return true;
+        if(App.getCurrentPlayer().backpack.getCookingRecipes().containsKey(this))
             return true;
         return false;
     }
@@ -116,7 +118,7 @@ public class Recipe extends Item{
             , 2, 3);
     public static final Recipe FarmerLunchRecipe = new Recipe(ItemType.FarmersLunchRecipe, Map.of(PlantAbleCrop.Parsnip, 1,
             Food.Omelet, 1)
-            , 1, 2);
+            , 0, 0);
     public static final Recipe SurvivalBurgerRecipe = new Recipe(ItemType.SurvivalBurgerRecipe, Map.of(PlantAbleCrop.Eggplant, 1,
             PlantAbleCrop.Carrot, 1,Food.Bread, 1)
             , 3, 3);

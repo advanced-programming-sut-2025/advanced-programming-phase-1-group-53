@@ -6,7 +6,7 @@ import java.util.Scanner;
 
 public enum Menu {
     loginRegisterMenu(new LoginRegisterMenu()),
-    gameMenu(new GameMenu()),
+    gameMenu(GameMenu.getInstance()),
     profileMenu(new ProfileMenu()),
     mainMenu(new MainMenu()),
     exitMenu(new ExitMenu()),
@@ -17,8 +17,8 @@ public enum Menu {
         this.menu = menu;
     }
 
-    public void checkCommand(Scanner scanner) {
-        this.menu.check(scanner);
+    public void checkCommand(String s) {
+        this.menu.check(s);
     }
 
     public static Menu findMenu(String input) {

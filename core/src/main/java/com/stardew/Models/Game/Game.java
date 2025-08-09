@@ -1,5 +1,7 @@
 package com.stardew.Models.Game;
 
+import com.stardew.Controllers.GameMenuController;
+import com.stardew.Controllers.MovementController;
 import com.stardew.Enums.ItemType;
 import com.stardew.Models.*;
 import com.stardew.Models.Items.*;
@@ -27,10 +29,7 @@ public class Game {
         numOfPlayers = players.size();
         allItemsInTheGame.addAll(Artisan.allArtisan);
         allItemsInTheGame.addAll(ArtisanGood.allArtisanGoods);
-        allItemsInTheGame.addAll(Bomb.allBombs);
         allItemsInTheGame.addAll(CraftAble.allCraftables);
-        allItemsInTheGame.addAll(ScareCrow.allScareCrows);
-        allItemsInTheGame.addAll(Sprinkler.allSprinklers);
         allItemsInTheGame.addAll(ForagingCrop.foragingCrops);
         allItemsInTheGame.addAll(ForagingMineral.minerals);
         allItemsInTheGame.addAll(ForagingSeed.foragingSeeds);
@@ -109,7 +108,7 @@ public class Game {
     }
 
     public Tile findTile(int x, int y) {
-        Tile[][] map = App.getGame().getCurrentMap();
+        Tile[][] map = App.getGame().getGameMap().getTiles();
         if (x >= map.length || x < 0) {
             System.out.println("qiwyd");
             return map[0][0];
@@ -118,7 +117,7 @@ public class Game {
             System.out.println("yugcyaedt");
             return map[0][0];
         }
-        return map[x][y];
+        return map[y][x];
     }
 
     public static Player whichPlayersFarm(int x, int y){

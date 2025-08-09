@@ -10,8 +10,9 @@ import java.util.regex.Matcher;
 public class MainMenu implements AppMenu {
     private final MainMenuController controller = new MainMenuController();
     @Override
-    public void check(Scanner scanner) {
-        String input = scanner.nextLine().trim();
+    public void check(String s) {
+        Scanner scanner = new Scanner(System.in);
+        String input = s.trim();
         Matcher matcher;
 
         if ((matcher = MainMenuCommand.exit.getMatcher(input)) != null) {
@@ -25,6 +26,41 @@ public class MainMenu implements AppMenu {
         } else {
             System.out.println("invalid command");
         }
+    }
+
+    @Override
+    public void show() {
+
+    }
+
+    @Override
+    public void render(float delta) {
+
+    }
+
+    @Override
+    public void resize(int width, int height) {
+
+    }
+
+    @Override
+    public void pause() {
+
+    }
+
+    @Override
+    public void resume() {
+
+    }
+
+    @Override
+    public void hide() {
+
+    }
+
+    @Override
+    public void dispose() {
+
     }
 }
 

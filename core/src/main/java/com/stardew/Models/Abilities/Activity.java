@@ -1,9 +1,8 @@
 package com.stardew.Models.Abilities;
 
-import com.stardew.Enums.ItemType;
-import com.stardew.Enums.ShopNames;
-import com.stardew.Enums.TileKind;
-import com.stardew.Enums.ToolLevel;
+import com.badlogic.gdx.math.Vector2;
+import com.stardew.Enums.*;
+import com.stardew.Models.Energy;
 import com.stardew.Models.Game.App;
 import com.stardew.Models.Items.Animal;
 import com.stardew.Models.Items.Buildings.Shop;
@@ -19,6 +18,8 @@ public class Activity {
         for(Item item : App.getGame().getCurrentPlayer().backpack.getItems().keySet()){
             if(item.getItemType().equals(itemType)) {
                 App.getGame().getCurrentPlayer().backpack.setItemInHand(item);
+                item.getPosition().setX(App.getCurrentPlayer().position.getX());
+                item.getPosition().setY(App.getCurrentPlayer().position.getY());
                 return;
             }
         }
@@ -68,7 +69,7 @@ public class Activity {
             MessageManager.getMessage(Result.failure("Insufficient material."));
         }
 
-        int price ;
+        int price = 0;
         if(itemType.equals(ItemType.Trashcan)){
             price = switch (tool.getLevel()) {
                 case normal -> 1000;
@@ -138,43 +139,43 @@ public class Activity {
                 useMilkPail(x, y);
                 break;
             default:
-
         }
     }
 
     private void useWateringCan(int x, int y){
-        int energy = ((Tool) App.getGame().getCurrentPlayer().backpack.getItemInHand()).getEnergyConsumed();
+        int energy = (Energy.getMaxEnergy()/200)*((Tool) App.getGame().getCurrentPlayer().backpack.getItemInHand()).getEnergyConsumed();
         if(!(App.getGame().getCurrentPlayer().energy.getEnergy() > energy)){
             MessageManager.getMessage(Result.failure("Not enough energy to continue."));
             return;
         }
         App.getGame().getCurrentPlayer().energy.updateEnergy(-energy);
 
-        Item item = App.getGame().findTile(x, y).getItem();
+        Item item = App.getGame().getGameMap().getTiles()[y][x].getItem();
 
         if(item instanceof Tree tree){
             tree.setNotWateredDays(0);
-            if(App.getGame().getCurrentPlayer().backpack.getItemInHand() instanceof WateringCan wateringCan){
-                wateringCan.setCurrentWaterLevel(wateringCan.getCurrentWaterLevel()-1);
-            }
         }
 
         if(item instanceof PlantAbleCrop plantAbleCrop){
             plantAbleCrop.setNotWateredDays(0);
+        }
+
+        if(App.getGame().getGameMap().getTiles()[y][x].getTileKind().equals(TileKind.plowed)){
             if(App.getGame().getCurrentPlayer().backpack.getItemInHand() instanceof WateringCan wateringCan){
                 wateringCan.setCurrentWaterLevel(wateringCan.getCurrentWaterLevel()-1);
             }
+            App.getGame().getGameMap().getTiles()[y][x].setTileKind(TileKind.wateredPlowed);
         }
     }
 
     private void useScythe(int x, int y){
-        int energy = ((Tool) App.getGame().getCurrentPlayer().backpack.getItemInHand()).getEnergyConsumed();
+        int energy = (Energy.getMaxEnergy()/200)*((Tool) App.getGame().getCurrentPlayer().backpack.getItemInHand()).getEnergyConsumed();
         if(!(App.getGame().getCurrentPlayer().energy.getEnergy() > energy)){
             MessageManager.getMessage(Result.failure("Not enough energy to continue."));
             return;
         }
         App.getGame().getCurrentPlayer().energy.updateEnergy(-energy);
-        if(App.getGame().findTile(x, y).getItem() != null){
+        if(App.getGame().getGameMap().getTiles()[y][x].getItem() != null){
             MessageManager.getMessage(Result.failure("The tile already has some item."));
             return;
         }
@@ -188,7 +189,7 @@ public class Activity {
     }
 
     private void useMilkPail(int x, int y){
-        int energy = ((Tool) App.getGame().getCurrentPlayer().backpack.getItemInHand()).getEnergyConsumed();
+        int energy = (Energy.getMaxEnergy()/200)*((Tool) App.getGame().getCurrentPlayer().backpack.getItemInHand()).getEnergyConsumed();
         if(!(App.getGame().getCurrentPlayer().energy.getEnergy() > energy)){
             MessageManager.getMessage(Result.failure("Not enough energy to continue."));
             return;
@@ -210,7 +211,7 @@ public class Activity {
     }
 
     private void useShear(int x, int y){
-        int energy = ((Tool) App.getGame().getCurrentPlayer().backpack.getItemInHand()).getEnergyConsumed();
+        int energy = (Energy.getMaxEnergy()/200)*((Tool) App.getGame().getCurrentPlayer().backpack.getItemInHand()).getEnergyConsumed();
         if(!(App.getGame().getCurrentPlayer().energy.getEnergy() > energy)){
             MessageManager.getMessage(Result.failure("Not enough energy to continue."));
             return;
@@ -233,71 +234,101 @@ public class Activity {
     }
 
     private void useAxe(int x, int y){
-        int energy = ((Tool) App.getGame().getCurrentPlayer().backpack.getItemInHand()).getEnergyConsumed();
+        int energy = (Energy.getMaxEnergy()/200)*((Tool) App.getGame().getCurrentPlayer().backpack.getItemInHand()).getEnergyConsumed();
         if(!(App.getGame().getCurrentPlayer().energy.getEnergy() > energy)){
             MessageManager.getMessage(Result.failure("Not enough energy to continue."));
             return;
         }
         App.getGame().getCurrentPlayer().energy.updateEnergy(-energy);
 
-        Item item = App.getGame().findTile(x, y).getItem();
-        if(item instanceof Tree || item instanceof ForagingTree){
-            App.getGame().findTile(x, y).setItem(null);
-            App.getGame().getCurrentPlayer().backpack.addItem(ForagingMineral.Wood, 5);
-            if(item instanceof Tree tree){
-                if(tree.getItemType().equals(ItemType.MapleTree)){
-                    App.getGame().getCurrentPlayer().backpack.addItem(Fruit.MapleSyrup, 1);
+        Item item = App.getGame().getGameMap().getTiles()[y][x].getItem();
+
+        if(item == null){
+            MessageManager.getMessage(new Result(false, "the tile has no item"));
+            return;
+        }
+
+        if(item instanceof Tree || item instanceof ForagingTree || item.getItemType().equals(ItemType.Wood)){
+            ((Plant) App.getGame().getGameMap().getTiles()[y][x].getItem()).decreaseRemainedToDestroyByOne();
+            if(((Plant) App.getGame().getGameMap().getTiles()[y][x].getItem()).isDestroyed()){
+                App.getGame().getGameMap().getReGenerateQue().put(new Vector2(
+                        App.getGame().getGameMap().getTiles()[y][x].getPosition().getX(),
+                        App.getGame().getGameMap().getTiles()[y][x].getPosition().getY()),
+                    App.getGame().getGameMap().getTiles()[y][x].getItem().getItemType());
+                if(item instanceof Tree || item instanceof ForagingTree){
+                    App.getGame().getCurrentPlayer().backpack.addItem(ForagingMineral.Wood, 5);
+                    MessageManager.getMessage(MessageTypes.ItemAddition, "Wood");
+                    if(item instanceof Tree tree){
+                        if(tree.getItemType().equals(ItemType.MapleTree)){
+                            App.getGame().getCurrentPlayer().backpack.addItem(Fruit.MapleSyrup, 1);
+                            MessageManager.getMessage(MessageTypes.ItemAddition, "MapleSyrup");
+                        }
+                        if(tree.getItemType().equals(ItemType.MysticTree)){
+                            App.getGame().getCurrentPlayer().backpack.addItem(Fruit.MysticSyrup, 1);
+                            MessageManager.getMessage(MessageTypes.ItemAddition, "MysticSyrup");
+                        }
+                    }
                 }
-                if(tree.getItemType().equals(ItemType.MysticTree)){
-                    App.getGame().getCurrentPlayer().backpack.addItem(Fruit.MysticSyrup, 1);
+
+                else if(item.getItemType().equals(ItemType.Wood)){
+                    App.getGame().getCurrentPlayer().backpack.addItem(ForagingMineral.Wood, 1);
                 }
+                App.getGame().getGameMap().getTiles()[y][x].setItem(null);
+                App.getGame().getGameMap().getTiles()[y][x].setTileKind(TileKind.grass);
             }
         }
 
-        if(item.getItemType().equals(ItemType.Wood)){
-            App.getGame().findTile(x, y).setItem(null);
-            App.getGame().getCurrentPlayer().backpack.addItem(ForagingMineral.Wood, 1);
-        }
+
     }
 
     private void usePickAxe(int x, int y){
-        int energy = ((Tool) App.getGame().getCurrentPlayer().backpack.getItemInHand()).getEnergyConsumed();
+        int energy = (Energy.getMaxEnergy()/200)*((Tool) App.getGame().getCurrentPlayer().backpack.getItemInHand()).getEnergyConsumed();
         if(!(App.getGame().getCurrentPlayer().energy.getEnergy() > energy)){
             MessageManager.getMessage(Result.failure("Not enough energy to continue."));
             return;
         }
+        System.out.println(App.getGame().getGameMap().getTiles()[y][x].getPosition().getX() +"ooo"+App.getGame().getGameMap().getTiles()[y][x].getPosition().getY());
+
+        if(App.getGame().getGameMap().getTiles()[y][x].getTileKind().equals(TileKind.plowed)){
+            App.getGame().getGameMap().getTiles()[y][x].setTileKind(TileKind.grass);
+        }
         App.getGame().getCurrentPlayer().energy.updateEnergy(-energy);
-        if(App.getGame().findTile(x, y).getItem() != null){
-            MessageManager.getMessage(Result.failure("The tile already has some item."));
+        if(App.getGame().getGameMap().getTiles()[y][x].getItem() == null){
+            MessageManager.getMessage(Result.failure("The tile has no item."));
             return;
         }
 
-
-        if(App.getGame().findTile(x, y).getTileKind().equals(TileKind.plowed)){
-            App.getGame().findTile(x, y).setTileKind(TileKind.empty);
-        }
-        if(App.getGame().findTile(x, y).getItem() != null &&
-                App.getGame().findTile(x, y).getItem() instanceof ForagingMineral foragingMineral) {
-            if(foragingMineral.getItemType().name().contains("Ore")){
-                if(foragingMineral.getItemType().ordinal() - ItemType.CopperOre.ordinal() >
-                        (((Tool) App.getGame().getCurrentPlayer().backpack.getItemInHand()).getLevel().getLevel()-1)){
-                    MessageManager.getMessage(Result.failure("Not enough level to mine the mineral."));
-                    return;
-                }
-
+        if(App.getGame().getGameMap().getTiles()[y][x].getItem() instanceof ForagingMineral &&
+            !App.getGame().getGameMap().getTiles()[y][x].getItem().getItemType().equals(ItemType.Stone) &&
+            !App.getGame().getGameMap().getTiles()[y][x].getItem().getItemType().equals(ItemType.Wood) &&
+            !App.getGame().getGameMap().getTiles()[y][x].getItem().getItemType().equals(ItemType.Fiber)) {
+//            if(foragingMineral.getItemType().name().contains("Ore")){
+//                if(foragingMineral.getItemType().ordinal() - ItemType.CopperOre.ordinal() >
+//                        (((Tool) App.getGame().getCurrentPlayer().backpack.getItemInHand()).getLevel().getLevel()-1)){
+//                    MessageManager.getMessage(Result.failure("Not enough level to mine the mineral."));
+//                    return;
+//                }
+//            }
+//            if(((Tool) App.getGame().getCurrentPlayer().backpack.getItemInHand()).getLevel().getLevel() < 3){
+//                MessageManager.getMessage(Result.failure("Not enough level to mine the mineral."));
+//                return;
+//            }
+            ((Plant) App.getGame().getGameMap().getTiles()[y][x].getItem()).decreaseRemainedToDestroyByOne();
+            if( ((Plant) App.getGame().getGameMap().getTiles()[y][x].getItem()).isDestroyed()){
+                App.getGame().getGameMap().getReGenerateQue().put(new Vector2(
+                        App.getGame().getGameMap().getTiles()[y][x].getPosition().getX(),
+                        App.getGame().getGameMap().getTiles()[y][x].getPosition().getY()),
+                    App.getGame().getGameMap().getTiles()[y][x].getItem().getItemType());
+                App.getGame().getCurrentPlayer().backpack.addItem(App.getGame().
+                    getItemByItemType(App.getGame().getGameMap().getTiles()[y][x].getItem().getItemType()));
+                App.getGame().getGameMap().getTiles()[y][x].setItem(null);
+                App.getGame().getGameMap().getTiles()[y][x].setTileKind(TileKind.mine);
             }
-            else if(((Tool) App.getGame().getCurrentPlayer().backpack.getItemInHand()).getLevel().getLevel() < 3){
-                MessageManager.getMessage(Result.failure("Not enough level to mine the mineral."));
-                return;
-            }
-            App.getGame().getCurrentPlayer().backpack.addItem(App.getGame().
-                    getItemByItemType(foragingMineral.getItemType()));
         }
-        App.getGame().findTile(x, y).setItem(null);
     }
 
     private void useHoe(int x, int y){
-        int energy = ((Tool) App.getGame().getCurrentPlayer().backpack.getItemInHand()).getEnergyConsumed();
+        int energy = (Energy.getMaxEnergy()/200)*((Tool) App.getGame().getCurrentPlayer().backpack.getItemInHand()).getEnergyConsumed();
         if(!(App.getGame().getCurrentPlayer().energy.getEnergy() > energy)){
             MessageManager.getMessage(Result.failure("Not enough energy to continue."));
             return;
@@ -308,8 +339,8 @@ public class Activity {
             return;
         }
 
-        if(!App.getGame().findTile(x, y).getTileKind().equals(TileKind.grass) &&
-                !App.getGame().findTile(x, y).getTileKind().equals(TileKind.empty)){
+        if(!App.getGame().getGameMap().getTiles()[y][x].getTileKind().equals(TileKind.grass) &&
+                !App.getGame().getGameMap().getTiles()[y][x].getTileKind().equals(TileKind.empty)){
             MessageManager.getMessage(Result.failure("The tile must be empty or grass."));
             return;
         }

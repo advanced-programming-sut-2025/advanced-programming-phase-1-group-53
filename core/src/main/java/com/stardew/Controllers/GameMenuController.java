@@ -1,40 +1,242 @@
 package com.stardew.Controllers;
 
-import com.stardew.Enums.ItemType;
-import com.stardew.Enums.MapsNames;
-import com.stardew.Enums.Menu;
-import com.stardew.Enums.WeatherType;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.stardew.Enums.*;
 import com.stardew.Models.*;
+import com.stardew.Models.Abilities.Abilities;
+import com.stardew.Models.Abilities.Activity;
 import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.Game;
 import com.stardew.Models.Game.Player;
+import com.stardew.Models.Items.Animal;
+import com.stardew.Models.Items.Buildings.Building;
+import com.stardew.Models.Items.Buildings.Shop;
+import com.stardew.Models.Items.CoopAndBarn;
+import com.stardew.Models.Items.CraftAbleAndArtisan.Artisan;
+import com.stardew.Models.Items.Foragings.ForagingMineral;
 import com.stardew.Models.Items.Foragings.ForagingSeed;
+import com.stardew.Models.Items.Foragings.ForagingTree;
+import com.stardew.Models.Items.Foragings.Tree;
 import com.stardew.Models.Items.Item;
+import com.stardew.Models.Items.ShippingBin;
+import com.stardew.Views.GameMenu;
+import com.stardew.Views.TabMenus.TimeCheatMenu;
 
-import java.util.AbstractList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class GameMenuController {
+    private static Game game ;
+    public static MovementController mvc = new MovementController();
+    private static int printStartX = 0;
+    private static int printStartY = 0;
+    private boolean hideEnergyBar = false;
+    public Activity activity = new Activity();
+    public Abilities abilities = new Abilities();
+
+    public static int getPrintStartX() {
+        return printStartX;
+    }
+
+    public static int getPrintStartY() {
+        return printStartY;
+    }
+
+    public GameMenuController(){
+        game = App.getGame();
+        mvc = new MovementController();
+        mvc.setGame(App.getGame());
+        System.out.println(App.getInstance());
+    }
+
+    public static Game getGame() {
+        return game;
+    }
+
+    public static void setGame(Game gamee) {
+        game = gamee;
+    }
+
     int[] dx = {0, 1, 0, -1, 1, 1, -1, -1};
     int[] dy = {1, 0, -1, 0, -1, 1, 1, -1};
     public void gameLoop() {
-        App.getGame().getGameMap().generateRandomThings();
-        updateGame();
+        App.getGame().getGameMap().generateRandomThings(0);
     }
 
-    public void updateGame(){
-        App.getGame().dateAndTime.timeCheat(1);
-        for(Player player : App.getGame().getPlayers()){
-            App.getGame().setNumOfTurn(App.getGame().getPlayers().indexOf(player));
-            player.backpack.update();
-        }
-
-        while (App.getGame().dateAndTime.getDiff()!=0){
+    public void updateGame(float delta, boolean isCheat){
+        App.getGame().dateAndTime.timeCheat(DateAndTime.convertRealSecondToGameMinute(delta));
+        while (App.getGame().dateAndTime.getDiff()>0){
             App.getGame().dateAndTime.updateTime();
         }
+        GameMenu.getInstance().updateScreen(delta);
+        App.getCurrentPlayer().update(delta);
+        abilities.normalFarming.update(delta);
+        ShippingBin.ShippingBin.update(delta);
 
-        App.getGame().weather.update();
+        if(game.dateAndTime.isADayPassed()){
+            //System.out.println("gold :"+App.getCurrentPlayer().personalInfo.getGold());
+            //regenerate
+            for(Vector2 v2 : game.getGameMap().getReGenerateQue().keySet()){
+                ItemType itemType = game.getGameMap().getReGenerateQue().get(v2);
+                Item item = App.getGame().getItemByItemType(itemType).clone();
+                App.getGame().getGameMap().getTiles()[(int) v2.y][(int) v2.x].setItem(item);
+                item.getPosition().setY((int) v2.y);
+                item.getPosition().setX((int) v2.x);
+                if(item instanceof ForagingMineral && !itemType.equals(ItemType.Wood) && !itemType.equals(ItemType.Stone)){
+                    App.getGame().getGameMap().getTiles()[(int) v2.y][(int) v2.x].setTileKind(TileKind.foragingMineral);
+                }
+                else{
+                    App.getGame().getGameMap().getTiles()[(int) v2.y][(int) v2.x].setTileKind(TileKind.foraging);
+                }
+            }
+            game.getGameMap().getReGenerateQue().clear();
+
+            //choose weather
+        }
+
+        App.getCurrentPlayer().foodBuff.update(delta);
+
+        game.weather.update(delta);
+
+        Animal.updateSprites(delta);
+
+        for(Tile[] tt : game.getGameMap().getTiles()){
+            for(Tile t : tt){
+                t.update(delta);
+            }
+        }
+
+        if(game.dateAndTime.isADayPassed()){
+            game.dateAndTime.setADayPassed(false);
+        }
+    }
+
+    public ArrayList<Sprite> getSprites(){
+        ArrayList<Tile> tilesInRegion = new ArrayList<>(); //for printing items on tiles
+        isInPrintRegion(null);
+        ArrayList<Sprite> sprites = new ArrayList<>();
+        //print tiles
+        for(Tile[] tt : game.getGameMap().getTiles()){
+            for(Tile t : tt){
+                Sprite s = t.getSprite();
+                s.setX(GameMap.getTilePrintSize() *t.getPosition().getX());
+                s.setY(GameMap.getTilePrintSize() *t.getPosition().getY());
+                if(isInPrintRegion(s)){
+                    if(GameMenu.getInstance().isShowFullTiles() && t.getItem() != null){
+                        s.setColor(0, 0, 0, 1);
+                    }
+                    s.setX(GameMap.getTilePrintSize() *t.getPosition().getX() - printStartX);
+                    s.setY(GameMap.getTilePrintSize()*t.getPosition().getY() - printStartY);
+                    sprites.add(s);
+                    tilesInRegion.add(t);
+                }
+            }
+        }
+
+        //print structures
+        for(Player p : App.getGame().players){
+            for(Building b : p.getFarm().getBuildings()){
+                if (isInPrintRegion(b.fixSpriteCoordinatesForPrint())) {
+                    sprites.add(b.getSprite());
+                }
+            }
+        }
+
+        //print items on tiles
+        for(Tile t : tilesInRegion){
+            if(t.getItem() == null)
+                continue;
+            if(t.getItem() instanceof CoopAndBarn || t.getItem() instanceof Artisan){
+                Sprite s = t.getItem().getSprite();
+                sprites.add(s);
+                continue;
+            }
+            if(t.getItem().getClass() != ForagingTree.class && t.getItem().getClass() != ForagingMineral.class&&
+            t.getItem().getClass() != Tree.class && !(t.getItem() instanceof ShippingBin) &&
+                !(t.getItem() instanceof Artisan))
+                continue;
+            if(isInPrintRegion(t.getItem().getSprite())){
+                Sprite s = t.getItem().getSprite();
+                s.setPosition(s.getX() - printStartX, s.getY() - printStartY);
+                sprites.add(s);
+            }
+        }
+
+
+        //print shops
+        for (Shop shop : Shop.shops) {
+            if (isInPrintRegion(shop.fixSpriteCoordinatesForPrint())) {
+                sprites.add(shop.getSprite());
+            }
+        }
+        if(!hideEnergyBar){
+            for(int i = 0; i< App.getCurrentPlayer().energy.getSprite().length; i++){
+                Sprite s = App.getCurrentPlayer().energy.getSprite()[i];
+                if(i==0){
+                    Sprite ss = App.getCurrentPlayer().foodBuff.getSprite();
+                    ss.setPosition(s.getX(), s.getY() + s.getHeight() + 30);
+                    if(ss.getTexture() != null){
+                        sprites.add(ss);
+                    }
+                }
+                sprites.add(s);
+            }
+        }
+
+        for(CoopAndBarn coop : App.getCurrentPlayer().backpack.getCoopsAndBarns()){
+            for(Animal animal : coop.getOutAnimals()){
+                Sprite s = animal.getSprite();
+                if(isInPrintRegion(s)){
+                    sprites.add(s);
+                }
+            }
+        }
+
+
+        for(Sprite s : Animal.getAnimalSprites().keySet()){
+            sprites.add(s);
+        }
+
+
+        sprites.add(App.getCurrentPlayer().getSprite());
+        if(App.getCurrentPlayer().backpack.getItemInHand()!= null){
+            Sprite s = App.getCurrentPlayer().backpack.getItemInHand().getSprite();
+            if(GameMenu.getInstance().isSetToolToMouse()) {
+                s.setPosition(GameMenu.getInstance().getMouseX(), GameMenu.getInstance().getMouseY());
+                s.setColor(0.3f, 0.3f, 0.3f, 1);
+            }
+            else
+                s.setPosition((float) (App.getCurrentPlayer().getSprite().getX()+App.getCurrentPlayer().getSprite().getWidth()*0.7),
+                (float) (App.getCurrentPlayer().getSprite().getY()+ App.getCurrentPlayer().getSprite().getHeight()*0.37));
+            sprites.add(s);
+        }
+        //System.out.println(App.getCurrentPlayer().position.getX()+" "+App.getCurrentPlayer().position.getY());
+        return sprites;
+    }
+
+
+    public static boolean isInPrintRegion(Sprite sprite){
+        int x = App.getCurrentPlayer().position.getX();
+        int y = App.getCurrentPlayer().position.getY();
+        int margin = 20;
+        int startPrintX = (x/GameMenu.getScreenWidth())*GameMenu.getScreenWidth() -margin;
+        int startPrintY = (y/GameMenu.getScreenHeight())*GameMenu.getScreenHeight() -margin;
+        printStartX = startPrintX + margin;
+        printStartY = startPrintY + margin;
+        if(sprite == null)
+            return false;
+        if(coordinateCollision(startPrintX, GameMenu.getScreenWidth() +margin, sprite.getX(), sprite.getWidth()) &&
+            coordinateCollision(startPrintY, GameMenu.getScreenHeight()+margin, sprite.getY(), sprite.getHeight())){
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean coordinateCollision(float x1, float h1, float x2, float h2){
+        if((x1 + h1 < x2) || (x2 + h2 < x1))
+            return false;
+        return true;
     }
 
     public void exitGame() {
@@ -51,7 +253,10 @@ public class GameMenuController {
             System.out.println("One or more players not found.");
             return;
         }
-        App.getInstance().setGame(new Game(List.of(me,player1, player2, player3)));
+        App.getInstance().setGame(new Game(List.of(App.getCurrentPlayer(),App.getInstance().findPlayerByUsername(username1)
+            , App.getInstance().findPlayerByUsername(username2), App.getInstance().findPlayerByUsername(username3))));
+        System.out.println("ll");
+        App.getGame().getGameMap().generateRandomThings(App.getGame().getPlayers(), 4);
         Player.initializePlayerRelations(App.getGame().players);
         System.out.println("khosh oomadid");
     }
@@ -108,11 +313,14 @@ public class GameMenuController {
     }
 
     public void advanceTime(int hour){
-        App.getGame().dateAndTime.timeCheat(hour);
+        TimeCheatMenu.setCheatHours(hour);
+        TimeCheatMenu.setIsCheatActivate(true);
+        System.out.println("jsdkj");
     }
 
     public void advanceDate(int day){
-        App.getGame().dateAndTime.timeCheat(day*24);
+        TimeCheatMenu.setCheatHours(24*day);
+        TimeCheatMenu.setIsCheatActivate(true);
     }
 
     public void season(){
@@ -210,6 +418,14 @@ public class GameMenuController {
             App.getGame().getCurrentPlayer().activity.upgradeTool(getItemByName(name));
     }
 
+    public boolean isHideEnergyBar() {
+        return hideEnergyBar;
+    }
+
+    public void setHideEnergyBar(boolean hideEnergyBar) {
+        this.hideEnergyBar = hideEnergyBar;
+    }
+
     public void useTool(String direction){
         int dir = switch (direction){
             case "W" -> 0;
@@ -226,8 +442,8 @@ public class GameMenuController {
             return;
 
         App.getGame().getCurrentPlayer().activity.useTool(App.getGame().getCurrentPlayer().position
-                .getX()+dx[dir], App.getGame().getCurrentPlayer().position
-                .getY()+dy[dir]);
+            .getX()+dx[dir], App.getGame().getCurrentPlayer().position
+            .getY()+dy[dir]);
     }
 
     public void craftInfo(String name){
@@ -256,15 +472,15 @@ public class GameMenuController {
                 ForagingSeed foragingSeed = (ForagingSeed) App.getGame().getItemByItemType(getItemByName(seed));
                 foragingSeed = foragingSeed.randomiseMixedSeed();
                 App.getGame().getCurrentPlayer().abilities.normalFarming.plant(foragingSeed.getItemType(),
-                        App.getGame().getCurrentPlayer().position
-                                .getX() + dx[dir], App.getGame().getCurrentPlayer().position
-                                .getY() + dy[dir]);
+                    App.getGame().getCurrentPlayer().position
+                        .getX() + dx[dir], App.getGame().getCurrentPlayer().position
+                        .getY() + dy[dir]);
             }
             else {
                 App.getGame().getCurrentPlayer().abilities.normalFarming.plant(getItemByName(seed),
-                        App.getGame().getCurrentPlayer().position
-                                .getX() + dx[dir], App.getGame().getCurrentPlayer().position
-                                .getY() + dy[dir]);
+                    App.getGame().getCurrentPlayer().position
+                        .getX() + dx[dir], App.getGame().getCurrentPlayer().position
+                        .getY() + dy[dir]);
             }
         }
     }
@@ -273,25 +489,8 @@ public class GameMenuController {
         App.getGame().getCurrentPlayer().abilities.normalFarming.showPlants(x, y);
     }
 
-    public void fertilize(String name, String direction){
-        int dir = switch (direction){
-            case "W" -> 0;
-            case "D" -> 1;
-            case "S" -> 2;
-            case "A" ->3;
-            case "Q" ->4;
-            case "E" ->5;
-            case "Z" -> 6;
-            case "X" ->7;
-            default -> -1;
-        };
-        if(dir == -1)
-            return;
-
-        App.getGame().getCurrentPlayer().abilities.normalFarming.fertilize(getItemByName(name),
-                App.getGame().getCurrentPlayer().position
-                        .getX()+dx[dir], App.getGame().getCurrentPlayer().position
-                        .getY()+dy[dir]);
+    public void fertilize(int x, int y, Item item){
+        App.getGame().getCurrentPlayer().abilities.normalFarming.fertilize(item.getItemType(), x, y);
     }
 
     public void howMuchWater(){
@@ -324,14 +523,14 @@ public class GameMenuController {
         if(dir == -1)
             return;
         App.getGame().getCurrentPlayer().activity.placeItem(getItemByName(name), App.getGame().getCurrentPlayer().position
-                .getX()+dx[dir], App.getGame().getCurrentPlayer().position
-                .getY()+dy[dir]);
+            .getX()+dx[dir], App.getGame().getCurrentPlayer().position
+            .getY()+dy[dir]);
     }
 
     public void addItem(String name, int count){
         if(getItemByName(name) != null && (App.getGame().getItemByItemType(getItemByName(name))!= null))
             App.getGame().getCurrentPlayer().backpack.addItem(App.getGame().getItemByItemType(getItemByName(name))
-                    , count);
+                , count);
     }
 
     public void refrigerator(boolean pick, String item){
@@ -627,4 +826,5 @@ public class GameMenuController {
         MessageManager.getMessage(Result.failure("No item with such name."));
         return null;
     }
+
 }

@@ -44,23 +44,19 @@ public class CraftingAndArtisan {
 
     public void craft(ItemType itemType){
         if(!(App.getGame().getItemByItemType(itemType) instanceof CraftAble craftAble)) {
-            System.out.println("The item is not craft able.");////
             MessageManager.getMessage(Result.failure("The item is not craft able."));
             return;
         }
         if(App.getGame().getCurrentPlayer().backpack.isInventoryFull()){
-            System.out.println("Inventory is full.");///
             MessageManager.getMessage(Result.failure("Inventory is full."));
             return;
         }
         if(!App.getGame().getCurrentPlayer().backpack.areItemsAvailable(craftAble.getCraftingRecipe().getIngredients())){
             MessageManager.getMessage(Result.failure("Insufficient material."));
-            System.out.println("Insufficient material.");///
             return;
         }
-        if(!craftAble.getCraftingRecipe().isAvailable() || !App.getGame().getCurrentPlayer().backpack.
+        if(!craftAble.getCraftingRecipe().isAvailable() && !App.getGame().getCurrentPlayer().backpack.
                 areItemsAvailable(craftAble.getCraftingRecipe(), 1)){
-            System.out.println("You haven't accessed the recipe yet.");///
             MessageManager.getMessage(Result.failure("You haven't accessed the recipe yet."));
             return;
         }

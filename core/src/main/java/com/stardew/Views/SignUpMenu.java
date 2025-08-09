@@ -11,8 +11,9 @@ public class SignUpMenu implements AppMenu {
     private final SignUpMenuController controller = new SignUpMenuController();
 
     @Override
-    public void check(Scanner scanner) {
-        String input = scanner.nextLine().trim();
+    public void check(String s) {
+        Scanner scanner = new Scanner(System.in);
+        String input = s.trim();
         Matcher matcher;
 
         if ((matcher = SignUpMenuCommand.register.getMatcher(input)) != null) {
@@ -32,9 +33,44 @@ public class SignUpMenu implements AppMenu {
             ShareController.showCurrentMenu();
         } else if ((matcher = SignUpMenuCommand.pickQuestion.getMatcher(input)) != null) {
             controller.handleQuestions(matcher.group("questionNumber"),
-                    matcher.group("answer"), matcher.group("answerConfirm"));
+                matcher.group("answer"), matcher.group("answerConfirm"));
         } else {
             System.out.println("invalid command");
         }
+    }
+
+    @Override
+    public void show() {
+
+    }
+
+    @Override
+    public void render(float delta) {
+
+    }
+
+    @Override
+    public void resize(int width, int height) {
+
+    }
+
+    @Override
+    public void pause() {
+
+    }
+
+    @Override
+    public void resume() {
+
+    }
+
+    @Override
+    public void hide() {
+
+    }
+
+    @Override
+    public void dispose() {
+
     }
 }

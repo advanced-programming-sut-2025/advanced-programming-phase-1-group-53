@@ -9,6 +9,7 @@ import com.stardew.Models.MessageManager;
 import com.stardew.Models.Result;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 public class NormalFarming{
@@ -19,24 +20,27 @@ public class NormalFarming{
         return plantedPlants;
     }
 
-    public void update(){
+    public void update(float delta){
         ArrayList<Plant> removedProducts = new ArrayList<>();
         for(int i =0 ; i< plantedPlants.size(); i++){
             if(plantedPlants.get(i) instanceof PlantAbleCrop plantAbleCrop){
-                plantAbleCrop.update();
+                plantAbleCrop.update(delta);
                 if(plantAbleCrop.getNotWateredDays() >= 2){
                     MessageManager.getMessage(Result.failure(plantAbleCrop.getItemType().name() + " at " +plantAbleCrop.getPosition().getX()+", "
                             + plantAbleCrop.getPosition().getY()+ " dried out because of lack of water"));
                     removedProducts.add(plantAbleCrop);
-                    App.getGame().findTile(plantAbleCrop.getPosition().getX(), plantAbleCrop.getPosition().getY()).setItem(null);
+                    App.getGame().getGameMap().getTiles()[ plantAbleCrop.getPosition().getY()][plantAbleCrop.getPosition().getX()]
+                        .setItem(null);
                 }
                 plantedPlants.set(i, plantAbleCrop);
             }
             if(plantedPlants.get(i) instanceof Tree tree){
-                tree.update();
-                if(tree.getNotWateredDays() == 2){
+                tree.update(delta);
+                if(tree.getNotWateredDays() >= 2){
                     MessageManager.getMessage(Result.failure(tree.getItemType().name() + " at" +tree.getPosition().getX()+", "
                             + tree.getPosition().getY()+ " dried out because of lack of water"));
+                    App.getGame().getGameMap().getTiles()[ tree.getPosition().getY()][tree.getPosition().getX()]
+                        .setItem(null);
                     removedProducts.add(tree);
                 }
                 plantedPlants.set(i, tree);
@@ -51,6 +55,7 @@ public class NormalFarming{
     public void plant(ItemType itemType, int x, int y){
         if(!App.getGame().findTile(x, y).getTileKind().equals(TileKind.plowed)){
             MessageManager.getMessage(Result.failure("The chosen tile must be plowed."));
+            return;
         }
         Item item = App.getGame().getItemByItemType(itemType);
         if(item instanceof ForagingSeed){
@@ -61,19 +66,16 @@ public class NormalFarming{
                         Plant plant1 = crop.clone();
                         plant1.getPosition().setX(x);
                         plant1.getPosition().setY(y);
-                        if(App.getGame().findTile(x, y).getItem()!= null) {
-                            if (App.getGame().findTile(x, y).getItem().getItemType().equals(ItemType.DeluxeSoil)) {
+                        if(App.getGame().getGameMap().getTiles()[y][x].getItem()!= null) {
+                            if (App.getGame().getGameMap().getTiles()[y][x].getItem().getItemType().equals(ItemType.DeluxeSoil)) {
                                 plant1.setHasDeluxe(true);
                             }
-                        }
-                        if(App.getGame().findTile(x, y).getItem()!= null) {
-                            if (App.getGame().findTile(x, y) != null &&
-                                    App.getGame().findTile(x, y).getItem().getItemType().equals(ItemType.SpeedGro)) {
+                            else if (App.getGame().getGameMap().getTiles()[y][x].getItem().getItemType().equals(ItemType.SpeedGro)) {
                                 plant1.setHasSpeed(true);
                             }
                         }
                         plantedPlants.add(plant1);
-                        App.getGame().findTile(x, y).setItem(plant1);
+                        App.getGame().getGameMap().getTiles()[y][x].setItem(plant1);
                     }
                 }
 
@@ -82,14 +84,16 @@ public class NormalFarming{
                         Plant plant1 = crop.clone();
                         plant1.getPosition().setX(x);
                         plant1.getPosition().setY(y);
-                        if(App.getGame().findTile(x, y).getItem().getItemType().equals(ItemType.DeluxeSoil)){
-                            plant1.setHasDeluxe(true);
-                        }
-                        if(App.getGame().findTile(x, y).getItem().getItemType().equals(ItemType.SpeedGro)){
-                            plant1.setHasSpeed(true);
+                        if(App.getGame().getGameMap().getTiles()[y][x].getItem() != null) {
+                            if (App.getGame().getGameMap().getTiles()[y][x].getItem().getItemType().equals(ItemType.DeluxeSoil)) {
+                                plant1.setHasDeluxe(true);
+                            }
+                            if (App.getGame().getGameMap().getTiles()[y][x].getItem().getItemType().equals(ItemType.SpeedGro)) {
+                                plant1.setHasSpeed(true);
+                            }
                         }
                         plantedPlants.add(plant1);
-                        App.getGame().findTile(x, y).setItem(plant1);
+                        App.getGame().getGameMap().getTiles()[y][x].setItem(plant1);
                     }
                 }
 
@@ -98,21 +102,19 @@ public class NormalFarming{
             }
             else{
                 MessageManager.getMessage(Result.failure("Not enough of this seed in backpack."));
-                return;
             }
         }
         else{
             MessageManager.getMessage(Result.failure("No such plant exists."));
-            return;
         }
     }
     public void water(int x, int y){
-        if(App.getGame().findTile(x, y) == null){
+        if(App.getGame().getGameMap().getTiles()[y][x] == null){
             MessageManager.getMessage(Result.failure("sjaciuas"));
             return;
         }
-        if(App.getGame().findTile(x, y).getItem() instanceof Plant) {
-            Plant plant =(Plant) App.getGame().findTile(x, y).getItem();
+        if(App.getGame().getGameMap().getTiles()[y][x].getItem() instanceof Plant) {
+            Plant plant =(Plant) App.getGame().getGameMap().getTiles()[y][x].getItem();
             if (plant instanceof PlantAbleCrop plantAbleCrop) {
                 plantAbleCrop.setNotWateredDays(0);
                 plantedPlants.set(plantedPlants.indexOf(plant), plantAbleCrop);
@@ -131,15 +133,17 @@ public class NormalFarming{
             MessageManager.getMessage(Result.failure("shqu"));
             return;
         }
-        if(App.getGame().findTile(x, y).getItem() == null){
-            App.getGame().findTile(x, y).setItem(App.getGame().getItemByItemType(itemType));
+        if(App.getGame().getGameMap().getTiles()[y][x].getTileKind().equals(TileKind.plowed)){
+            App.getGame().getGameMap().getTiles()[y][x].setTileKind(TileKind.soiledPlowed);
             return;
         }
-        if(!(App.getGame().findTile(x, y).getItem() instanceof Tree || App.getGame().findTile(x, y).getItem() instanceof PlantAbleCrop)){
-            MessageManager.getMessage(Result.failure(App.getGame().findTile(x, y).getItem().getItemType().name()));
+
+        if(!(App.getGame().getGameMap().getTiles()[y][x].getItem() instanceof Tree ||
+            App.getGame().getGameMap().getTiles()[y][x].getItem() instanceof PlantAbleCrop)){
+            MessageManager.getMessage(new Result(false, "the tile must contain some plant"));
             return;
         }
-        Plant plant =(Plant) App.getGame().findTile(x, y).getItem();
+        Plant plant =(Plant) App.getGame().getGameMap().getTiles()[y][x].getItem();
         Item fertilizer = App.getGame().getItemByItemType(itemType);
         if(! App.getGame().getCurrentPlayer().backpack.areItemsAvailable(fertilizer, 1)){
             MessageManager.getMessage(Result.failure("No fertilizer in inventory."));

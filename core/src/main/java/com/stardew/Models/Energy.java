@@ -1,18 +1,39 @@
 package com.stardew.Models;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.stardew.Models.Game.App;
+import com.stardew.Models.Game.GameAssetManager;
+import com.stardew.Views.GameMenu;
 
 public class Energy {
+    private Sprite fullEnergySprite = new Sprite(GameAssetManager.getFullEnergySprite());
+    private float fullEnergySpriteWidth =  fullEnergySprite.getWidth();
+    private float fullEnergySpriteHeight =  fullEnergySprite.getHeight();
+
     private int lastUpdateTime = 0;
     private boolean isLimited = true;
-    private int maxEnergy = 200;
-    private int energy = maxEnergy;
+    private static int maxEnergy = 2000000;
+    private int energy =maxEnergy;
     private int energyConsumedThisTurn = 0;
 
 
     public void setUnlimitedEnergy(){
         energy = maxEnergy;
         isLimited = false;
+    }
+
+    public Sprite[] getSprite() {
+        float v = 1- ((float)energy / maxEnergy);
+        Sprite sprite = new Sprite(GameAssetManager.getEmptyEnergyBarSprite(), GameAssetManager.getEmptyEnergyBarSprite().getWidth(),
+            (int)(GameAssetManager.getEmptyEnergyBarSprite().getHeight()*v));
+        fullEnergySprite.setPosition((float) (GameMenu.getScreenWidth()*15/16), (float) (GameMenu.getScreenHeight()/16));
+        sprite.setPosition((float) (GameMenu.getScreenWidth()*15/16)+10, (float) (GameMenu.getScreenHeight()/16)+
+            ((1-v)*(fullEnergySprite.getHeight()-5))+6.5f);
+        fullEnergySprite.setSize((float) (((double) GameMap.getTilePrintSize() /40)*fullEnergySpriteWidth*0.5),
+            (float) (((double) GameMap.getTilePrintSize() /40)*fullEnergySpriteHeight*0.5));
+        sprite.setSize((float) (((double) GameMap.getTilePrintSize() /40)*sprite.getWidth()*0.5),
+            (float) (((double) GameMap.getTilePrintSize() /40)*sprite.getHeight()*0.5));
+        return new Sprite[]{fullEnergySprite, sprite};
     }
 
     public int getLastUpdateTime() {
@@ -39,12 +60,12 @@ public class Energy {
         isLimited = limited;
     }
 
-    public int getMaxEnergy() {
+    public static int getMaxEnergy() {
         return maxEnergy;
     }
 
-    public void setMaxEnergy(int maxEnergy) {
-        this.maxEnergy = maxEnergy;
+    public static void setMaxEnergy(int maxEnergyy) {
+        maxEnergy = maxEnergyy;
     }
 
     public void updateMaxEnergy(int a){

@@ -1,7 +1,9 @@
 package com.stardew.Views;
 
+import com.badlogic.gdx.Screen;
+
 import java.util.Scanner;
 
-public interface AppMenu {
-    public void check(Scanner scanner);
+public interface AppMenu extends Screen {
+    public void check(String s);
 }

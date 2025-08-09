@@ -1,14 +1,20 @@
 package com.stardew.Models.Items;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.stardew.Enums.ItemType;
+import com.stardew.Main;
+import com.stardew.Models.Game.GameAssetManager;
 import com.stardew.Models.MessageManager;
 import com.stardew.Models.Result;
+import com.stardew.Views.TabMenus.CoopMenu;
 
 import java.util.ArrayList;
 
 public class CoopAndBarn extends Item{
     private int capacity;
     private final ArrayList<Animal> animals = new ArrayList<>();
+    private ArrayList<Animal> outAnimals = new ArrayList<>();
+    private CoopMenu coopMenu = new CoopMenu();
 
     private CoopAndBarn(ItemType itemType){
         super(itemType);
@@ -20,12 +26,50 @@ public class CoopAndBarn extends Item{
         };
     }
 
+    @Override
+    public void update(float delta){
+        for(Animal animal : animals){
+            animal.update(delta);
+        }
+    }
+
+    public ArrayList<Animal> getOutAnimals() {
+        return outAnimals;
+    }
+
+    public boolean hasCapacity(){
+        if(animals.size()>= capacity)
+            return false;
+        return true;
+    }
+
+    public void setUpCoopMenu(){
+        coopMenu.setChanged(true);
+        coopMenu.setAnimals(animals);
+        Main.main.setScreen(coopMenu);
+    }
+
     public int getCapacity() {
         return capacity;
     }
 
     public ArrayList<Animal> getAnimals() {
         return animals;
+    }
+
+    @Override
+    public Sprite getSprite(){
+        float x = -1;
+        float y = -1;
+        if(sprite != null){
+            x = sprite.getX();
+            y = sprite.getY();
+        }
+        sprite = new Sprite(GameAssetManager.getCoopsSprites().get(itemType));
+        if( x!= -1){
+            sprite.setPosition(x, y);
+        }
+        return sprite;
     }
 
     @Override
@@ -83,9 +127,18 @@ public class CoopAndBarn extends Item{
 
     public static final CoopAndBarn Barn= new CoopAndBarn(ItemType.NormalBarn);
     public static final CoopAndBarn Coop = new CoopAndBarn(ItemType.NormalCoop);
+    public static final CoopAndBarn DeluxeBarn= new CoopAndBarn(ItemType.DeluxeBarn);
+    public static final CoopAndBarn DeluxeCoop = new CoopAndBarn(ItemType.DeluxeCoop);
+    public static final CoopAndBarn BigBarn= new CoopAndBarn(ItemType.BigBarn);
+    public static final CoopAndBarn BigCoop = new CoopAndBarn(ItemType.BigCoop);
+
 
     public static final ArrayList<CoopAndBarn> COOP_AND_BARN = new ArrayList<>(){{
         add(Coop);
         add(Barn);
+        add(DeluxeBarn);
+        add(DeluxeCoop);
+        add(BigBarn);
+        add(BigCoop);
     }};
 }

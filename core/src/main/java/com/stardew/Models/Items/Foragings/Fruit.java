@@ -1,6 +1,8 @@
 package com.stardew.Models.Items.Foragings;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.stardew.Enums.ItemType;
+import com.stardew.Models.Game.GameAssetManager;
 
 import java.util.ArrayList;
 
@@ -23,6 +25,12 @@ public class Fruit extends Plant{
         if(isEdible())
             fruit.makeEdible(energy);
         return fruit;
+    }
+
+    @Override
+    public Sprite getSprite(){
+        sprite = new Sprite(GameAssetManager.getFruitSprites().get(itemType));
+        return fixSpriteCoordinatesForPrint();
     }
 
     @Override
@@ -78,7 +86,7 @@ public class Fruit extends Plant{
         add(Peach);
         add(MysticSyrup);
         add(MapleSyrup);
-        add(PlantAbleCrop.Grape);
+        //add(PlantAbleCrop.Grape);
         add(PlantAbleCrop.Strawberry);
         add(PlantAbleCrop.AncientFruit);
         add(PlantAbleCrop.Cranberry);

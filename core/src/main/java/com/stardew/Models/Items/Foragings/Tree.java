@@ -1,8 +1,11 @@
 package com.stardew.Models.Items.Foragings;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.stardew.Enums.ItemType;
 import com.stardew.Enums.Season;
 import com.stardew.Models.Game.App;
+import com.stardew.Models.Game.GameAssetManager;
+import com.stardew.Models.GameMap;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,14 +20,24 @@ public class Tree  extends Plant{
     private long startTimeOfGrowth;
     private boolean isReadyForHarvest = false;
     private int notWateredDays =0;
+    private boolean isThundered = false;
 
     private Tree(ItemType itemType, Fruit fruit, ForagingSeed source, int[] growthStages, int remainingHarvestCycle, ArrayList<Season> seasons) {
         super(itemType);
+        hitsRemainedToDestroy = 6;
         this.fruit = fruit;
         this.source = source;
         this.growthStages = growthStages;
         this.remainingHarvestCycle = remainingHarvestCycle;
         this.seasons = seasons;
+    }
+
+    public boolean isThundered() {
+        return isThundered;
+    }
+
+    public void setThundered(boolean thundered) {
+        isThundered = thundered;
     }
 
     public void setNotWateredDays(int notWateredDays) {
@@ -70,8 +83,24 @@ public class Tree  extends Plant{
     @Override
     public Tree clone(){
         Tree tree = new Tree(getItemType(), this.fruit, this.source, this.growthStages, this.remainingHarvestCycle, this.seasons);
-        tree.startTimeOfGrowth = App.getGame().dateAndTime.getTime();
+        tree.startTimeOfGrowth = App.getGame().dateAndTime.getAllDaysPassed();
         return tree;
+    }
+
+    @Override
+    public Sprite getSprite(){
+        int season = App.getGame().dateAndTime.getSeason().ordinal();
+        if(isThundered)
+            sprite = new Sprite(GameAssetManager.getTreeTextures().get(itemType)[0]);
+        else if(currentGrowthStage != 3)
+            sprite = new Sprite(GameAssetManager.getTreeTextures().get(itemType)[currentGrowthStage+1]);
+        else
+            sprite = new Sprite(GameAssetManager.getTreeTextures().get(itemType)[currentGrowthStage+1],  96*season, 0,
+                96, 160);
+        sprite.setPosition(position.getX()* GameMap.getTilePrintSize(), position.getY()* GameMap.getTilePrintSize());
+        sprite.setSize((float) (((double) GameMap.getTilePrintSize() /40)*0.6*sprite.getWidth()),
+            (float) (((double) GameMap.getTilePrintSize() /40)*0.75*sprite.getHeight()));
+        return sprite;
     }
 
     @Override
@@ -99,20 +128,23 @@ public class Tree  extends Plant{
             return;
         remainingHarvestCycle --;
         currentGrowthStage = 0;
-        startTimeOfGrowth = App.getGame().dateAndTime.getTime();
+        startTimeOfGrowth = App.getGame().dateAndTime.getAllDaysPassed();
         isReadyForHarvest = false;
         notWateredDays = 0;
     }
 
-    public void update(){
+    @Override
+    public void update(float delta){
         if(!App.getGame().dateAndTime.isADayPassed())
             return;
         if(currentGrowthStage >= growthStages.length) {
             isReadyForHarvest = true;
             return;
         }
-        if(App.getGame().dateAndTime.getTime() - startTimeOfGrowth >=(growthStages[currentGrowthStage] * 24)){
-            startTimeOfGrowth = App.getGame().dateAndTime.getTime();
+        notWateredDays++;
+        System.out.println(startTimeOfGrowth + " " + App.getGame().dateAndTime.getAllDaysPassed());
+        if(App.getGame().dateAndTime.getAllDaysPassed() - startTimeOfGrowth >=(growthStages[currentGrowthStage])){
+            startTimeOfGrowth = App.getGame().dateAndTime.getAllDaysPassed();
             currentGrowthStage ++;
         }
     }
@@ -136,14 +168,6 @@ public class Tree  extends Plant{
             ForagingSeed.PomegranateSapling, new int[]{7,7,7,7}, 1, Plant.fall);
     public static final Tree OakTree = new Tree(ItemType.OakTree,  Fruit.OakResin,
             ForagingSeed.Acorns, new int[]{7,7,7,7}, 1, Plant.specialSeasons);
-    public static final Tree MapleTree = new Tree(ItemType.MapleTree,  Fruit.MapleSyrup,
-            ForagingSeed.MapleSeed, new int[]{7,7,7,7}, 1, Plant.specialSeasons);
-    public static final Tree PineTree = new Tree(ItemType.PineTree,  Fruit.PineTar,
-            ForagingSeed.PineCone, new int[]{7,7,7,7}, 1, Plant.specialSeasons);
-    public static final Tree MahoganyTree = new Tree(ItemType.MahoganyTree,  Fruit.Sap,
-            ForagingSeed.MahoganySeed, new int[]{7,7,7,7}, 1, Plant.specialSeasons);
-    public static final Tree MushroomTree = new Tree(ItemType.MushroomTree,  Fruit.CommonMushroom,
-            ForagingSeed.MushroomTreeSeed, new int[]{7,7,7,7}, 1, Plant.specialSeasons);
     public static final Tree MysticTree = new Tree(ItemType.MysticTree,  Fruit.MysticSyrup,
             ForagingSeed.MysticTreeSeed, new int[]{7,7,7,7}, 1, Plant.specialSeasons);
 
@@ -158,9 +182,7 @@ public class Tree  extends Plant{
         add(AppleTree);
         add(PomegranateTree);
         add(OakTree);
-        add(MapleTree);
-        add(MahoganyTree);
-        add(MushroomTree);
-        add(PineTree);
     }};
+
+
 }
