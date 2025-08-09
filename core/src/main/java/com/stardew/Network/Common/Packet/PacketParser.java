@@ -16,8 +16,6 @@ public class PacketParser {
     private static final Map<PacketType, Class<? extends Packet>> packetClassMap = new HashMap<>();
 
     static {
-        packetClassMap.put(PacketType.MOVE, MovePacket.class);
-        packetClassMap.put(PacketType.CHAT, ChatPacket.class);
         packetClassMap.put(PacketType.LOGIN, LoginPacket.class);
         packetClassMap.put(PacketType.WELCOME, WelcomePacket.class);
     }

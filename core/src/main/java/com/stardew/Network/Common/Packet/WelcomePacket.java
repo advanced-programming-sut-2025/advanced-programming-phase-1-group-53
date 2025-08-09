@@ -4,8 +4,8 @@ public class WelcomePacket extends Packet {
     private final String message;
     private final String clientId;
 
-    public WelcomePacket(String senderId, String message, String clientId) {
-        super(senderId);
+    public WelcomePacket(String message, String clientId) {
+        super("SERVER", "SERVER");
         this.message = message;
         this.clientId = clientId;
     }
@@ -13,6 +13,9 @@ public class WelcomePacket extends Packet {
     public PacketType getType() {
         return PacketType.WELCOME;
     }
+
+    @Override
+    public PacketSender getSender() { return PacketSender.SERVER; }
 
     public String getClientId() {
         return clientId;

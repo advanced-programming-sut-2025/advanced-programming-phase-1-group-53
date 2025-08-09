@@ -5,4 +5,7 @@ public enum PacketType {
     CHAT,
     LOGIN,
     WELCOME,
+    PRESSKEYPACKET,
+    ServerGeneralRespondPacket,
+    createLobby,
 }

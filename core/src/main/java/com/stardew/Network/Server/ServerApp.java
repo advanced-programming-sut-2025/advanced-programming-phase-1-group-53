@@ -68,7 +68,7 @@ public class ServerApp {
 
     public synchronized void initializeServer() {
         try {
-            listenerThread = new ServerListenerThread(0);
+            listenerThread = new ServerListenerThread(12345);
             this.serverIP = InetAddress.getLocalHost().getHostAddress();
             this.serverPort = listenerThread.getServerSocket().getLocalPort();
             System.out.println("Listening on " + this.serverIP + ":" + this.serverPort);

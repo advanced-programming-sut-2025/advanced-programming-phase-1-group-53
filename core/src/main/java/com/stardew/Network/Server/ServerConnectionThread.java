@@ -27,7 +27,7 @@ public class ServerConnectionThread extends ConnectionThread {
 
             ServerApp.getInstance().registerConnection(clientId, this);
 
-            Packet welcome = new WelcomePacket("SERVER", "Welcome, your ID is ", clientId);
+            Packet welcome = new WelcomePacket("Welcome, your ID is ", clientId);
             sendPacket(welcome);
             System.out.println("Welcome packet sent for clientId: " + clientId);
             return true;
@@ -44,14 +44,10 @@ public class ServerConnectionThread extends ConnectionThread {
         if (packet instanceof LoginPacket) {
             // نباید دوباره لاگین دریافت کنیم
             return true;
-        } else if (packet instanceof MovePacket move) {
-            serverApp.broadcastExcept(this, move);
-            return true;
-        } else if (packet instanceof ChatPacket chat) {
-            serverApp.broadcast(chat);
-            return true;
-        } else {
-            return false;
         }
+//        } else {
+//            return false;
+//        }
+        return true;
     }
 }
