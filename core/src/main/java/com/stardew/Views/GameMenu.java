@@ -32,7 +32,7 @@ import com.stardew.Enums.TileKind;
 import com.stardew.Main;
 import com.stardew.Models.*;
 import com.stardew.Models.Game.App;
-import com.stardew.Models.Game.Game;
+import com.stardew.Models.Game.*;
 import com.stardew.Models.Game.GameAssetManager;
 import com.stardew.Models.Game.Player;
 import com.stardew.Models.Items.*;
@@ -45,10 +45,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class GameMenu extends AppMenu {
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.addListener;
 
-public class GameMenu implements AppMenu, InputProcessor {
+public class GameMenu extends AppMenu implements InputProcessor {
     private static float TOTAL_TIME_SPENT = 0;
     private static int SCREEN_WIDTH;
     private static int SCREEN_HEIGHT;
@@ -131,6 +130,7 @@ public class GameMenu implements AppMenu, InputProcessor {
             com.badlogic.gdx.files.FileHandle profilesDir = Gdx.files.absolute(projectRoot + "/profiles");
             if (profilesDir.exists()) {
                 for (com.badlogic.gdx.files.FileHandle file : profilesDir.list()) {
+                    String currentPlayerName = App.getCurrentPlayer().getPersonalInfo().getName();
                     if (file.extension().equals("json")
                         && !file.nameWithoutExtension().equalsIgnoreCase("lastlog")
                         && !file.nameWithoutExtension().equalsIgnoreCase(currentPlayerName)
@@ -181,5 +181,50 @@ public class GameMenu implements AppMenu, InputProcessor {
         playersWindow.add(closeButton).pad(10).colspan(2);
 
         stage.addActor(playersWindow);
+    }
+
+    @Override
+    public boolean keyDown(int keycode) {
+        return false;
+    }
+
+    @Override
+    public boolean keyUp(int keycode) {
+        return false;
+    }
+
+    @Override
+    public boolean keyTyped(char character) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean touchCancelled(int screenX, int screenY, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+        return false;
+    }
+
+    @Override
+    public boolean mouseMoved(int screenX, int screenY) {
+        return false;
+    }
+
+    @Override
+    public boolean scrolled(float amountX, float amountY) {
+        return false;
     }
 }

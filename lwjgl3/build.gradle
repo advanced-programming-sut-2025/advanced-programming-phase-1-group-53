@@ -1,3 +1,15 @@
+
+buildscript {
+  repositories {
+    gradlePluginPortal()
+  }
+  dependencies {
+    classpath "io.github.fourlastor:construo:1.7.1"
+    if(enableGraalNative == 'true') {
+      classpath "org.graalvm.buildtools.native:org.graalvm.buildtools.native.gradle.plugin:0.9.28"
+    }
+  }
+}
 plugins {
   id "application"
 }
@@ -13,7 +25,7 @@ eclipse.project.name = appName + '-lwjgl3'
 java.sourceCompatibility = 17
 java.targetCompatibility = 17
 if (JavaVersion.current().isJava9Compatible()) {
-  compileJava.options.release.set(17)
+        compileJava.options.release.set(17)
 }
 
 dependencies {
@@ -24,11 +36,9 @@ dependencies {
 
   if(enableGraalNative == 'true') {
     implementation "io.github.berstanio:gdx-svmhelper-backend-lwjgl3:$graalHelperVersion"
-    implementation "io.github.berstanio:gdx-svmhelper-extension-box2d:$graalHelperVersion"
+      implementation "io.github.berstanio:gdx-svmhelper-extension-box2d:$graalHelperVersion"
 
     }
-
-  implementation 'com.google.code.gson:gson:2.10.1'
 }
 
 def os = System.properties['os.name'].toLowerCase()
