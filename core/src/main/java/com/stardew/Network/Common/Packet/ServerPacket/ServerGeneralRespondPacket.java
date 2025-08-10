@@ -1,6 +1,9 @@
-package com.stardew.Network.Common.Packet;
+package com.stardew.Network.Common.Packet.ServerPacket;
 
 import com.google.gson.annotations.SerializedName;
+import com.stardew.Network.Common.Packet.Packet;
+import com.stardew.Network.Common.Packet.PacketSender;
+import com.stardew.Network.Common.Packet.PacketType;
 
 public class ServerGeneralRespondPacket extends Packet {
     public final boolean success;
@@ -19,7 +22,7 @@ public class ServerGeneralRespondPacket extends Packet {
     }
 
     @Override
-    public PacketType getTypeEnum() { return PacketType.ServerGeneralRespondPacket; }
+    public PacketType getTypeEnum() { return PacketType.SERVER_GENERAL_RESPOND_PACKET; }
 
     @Override
     public PacketSender getSender() { return PacketSender.SERVER; }

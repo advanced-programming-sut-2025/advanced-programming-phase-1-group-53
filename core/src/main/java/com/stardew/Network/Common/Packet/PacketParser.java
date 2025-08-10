@@ -2,6 +2,10 @@ package com.stardew.Network.Common.Packet;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.stardew.Network.Common.Packet.ClientPacket.LoginPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.PressKeyPacket;
+import com.stardew.Network.Common.Packet.ServerPacket.ServerGeneralRespondPacket;
+import com.stardew.Network.Common.Packet.ServerPacket.WelcomePacket;
 import com.stardew.Network.Common.RuntimeTypeAdapterFactory;
 
 import java.io.BufferedInputStream;
@@ -19,7 +23,7 @@ public class PacketParser {
                 .registerSubtype(LoginPacket.class, PacketType.LOGIN.name())
                 .registerSubtype(WelcomePacket.class, PacketType.WELCOME.name())
                 .registerSubtype(PressKeyPacket.class, PacketType.PRESSKEYPACKET.name())
-                .registerSubtype(ServerGeneralRespondPacket.class, PacketType.ServerGeneralRespondPacket.name());
+                .registerSubtype(ServerGeneralRespondPacket.class, PacketType.SERVER_GENERAL_RESPOND_PACKET.name());
 
         gson = new GsonBuilder()
             .registerTypeAdapterFactory(packetAdapter)

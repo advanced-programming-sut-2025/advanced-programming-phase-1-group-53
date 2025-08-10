@@ -1,4 +1,8 @@
-package com.stardew.Network.Common.Packet;
+package com.stardew.Network.Common.Packet.ClientPacket;
+
+import com.stardew.Network.Common.Packet.Packet;
+import com.stardew.Network.Common.Packet.PacketSender;
+import com.stardew.Network.Common.Packet.PacketType;
 
 public class CreatLobby extends Packet {
     public final String name;
@@ -17,7 +21,7 @@ public class CreatLobby extends Packet {
     }
 
     @Override
-    public PacketType getTypeEnum() { return PacketType.createLobby; }
+    public PacketType getTypeEnum() { return PacketType.CREATE_LOBBY; }
 
     @Override
     public PacketSender getSender() { return PacketSender.CLIENT; }

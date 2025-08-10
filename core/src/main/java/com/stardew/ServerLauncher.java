@@ -1,6 +1,5 @@
 package com.stardew;
 
-import com.stardew.Network.Common.Packet.ServerGeneralRespondPacket;
 import com.stardew.Network.Server.ServerApp;
 import com.stardew.Network.Server.ServerConnectionThread;
 

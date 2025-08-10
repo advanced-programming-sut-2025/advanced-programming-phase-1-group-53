@@ -1,32 +1,14 @@
 package com.stardew;
 
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.utils.ScreenUtils;
-import com.stardew.Enums.ItemType;
-import com.stardew.Models.Game.GameAssetManager;
-import com.stardew.Models.GameMap;
 import com.stardew.Network.Client.ClientApp;
 import com.stardew.Network.Client.ClientConnectionThread;
-import com.stardew.Network.Common.Packet.PressKeyPacket;
-import com.stardew.Views.AppView;
-import com.stardew.Views.GameMenu;
-import com.stardew.Views.Tab;
-import com.stardew.Views.TabMenus.AbilityMenu;
-import com.stardew.Views.TabMenus.InventoryMenu;
-import com.stardew.Views.TabMenus.MapMenu;
+import com.stardew.Network.Common.Packet.ClientPacket.PressKeyPacket;
 
-import javax.xml.crypto.dsig.keyinfo.KeyValue;
 import java.util.Scanner;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */

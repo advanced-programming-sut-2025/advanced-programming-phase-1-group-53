@@ -1,4 +1,8 @@
-package com.stardew.Network.Common.Packet;
+package com.stardew.Network.Common.Packet.ServerPacket;
+
+import com.stardew.Network.Common.Packet.Packet;
+import com.stardew.Network.Common.Packet.PacketSender;
+import com.stardew.Network.Common.Packet.PacketType;
 
 public class WelcomePacket extends Packet {
     private final String message;

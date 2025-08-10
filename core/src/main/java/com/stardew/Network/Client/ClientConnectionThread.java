@@ -2,6 +2,9 @@ package com.stardew.Network.Client;
 
 import com.stardew.Network.Common.ConnectionThread;
 import com.stardew.Network.Common.Packet.*;
+import com.stardew.Network.Common.Packet.ClientPacket.LoginPacket;
+import com.stardew.Network.Common.Packet.ServerPacket.ServerGeneralRespondPacket;
+import com.stardew.Network.Common.Packet.ServerPacket.WelcomePacket;
 
 import java.io.IOException;
 import java.net.Socket;
