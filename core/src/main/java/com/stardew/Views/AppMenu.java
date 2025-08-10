@@ -58,4 +58,8 @@ public abstract class AppMenu implements Screen {
     public Table getTable() {
         return table;
     }
+
+    public Skin getSkin() {
+        return skin;
+    }
 }

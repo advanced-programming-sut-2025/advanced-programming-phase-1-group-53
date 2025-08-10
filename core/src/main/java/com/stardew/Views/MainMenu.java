@@ -5,6 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.stardew.Controllers.MainMenuController;
 import com.stardew.Controllers.ShareController;
+import com.stardew.Models.Game.App;
 
 public class MainMenu extends AppMenu {
     private final MainMenuController controller = new MainMenuController();
@@ -41,6 +42,15 @@ public class MainMenu extends AppMenu {
             }
         });
         table.add(gameMenuButton).pad(10).row();
+
+        TextButton newLobbyButton = new TextButton("New Lobby", skin);
+        newLobbyButton.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
+            @Override
+            public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
+                main.setScreen(new LobbyMenu(App.getCurrentPlayer(), "", true));
+            }
+        });
+        table.add(newLobbyButton).pad(10).row();
 
         TextButton logoutButton = new TextButton("Logout", skin);
         logoutButton.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {

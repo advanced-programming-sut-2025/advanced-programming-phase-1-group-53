@@ -300,5 +300,9 @@ public class Player {
     public void setInBuilding(boolean inBuilding) {
         isInBuilding = inBuilding;
     }
+
+    public Object getUsername() {
+        return personalInfo.getName();
+    }
 }
 
