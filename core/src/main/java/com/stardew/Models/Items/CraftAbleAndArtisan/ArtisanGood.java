@@ -50,7 +50,7 @@ public class ArtisanGood extends Item {
     }
 
     @Override
-    public void update(){
+    public void update(float delta){
         processingTimeLeft =Math.max(0, processingTimeLeft - 1);
     }
 
@@ -210,8 +210,8 @@ public class ArtisanGood extends Item {
     public static final ArtisanGood Vinegar = new ArtisanGood(ItemType.Vinegar, 10, Map.of(PlantAbleCrop.Rice, 1)).makeEdible(13).makeSellPrice(100);
     public static final ArtisanGood Coffee = new ArtisanGood(ItemType.Coffee, 2, Map.of(PlantAbleCrop.CoffeeBean, 5)).makeEdible(75).makeSellPrice(150);
     public static final ArtisanGood Mead = new ArtisanGood(ItemType.Mead, 10, Map.of(ArtisanGood.Honey, 1)).makeEdible(100).makeSellPrice(300);
-    public static final ArtisanGood PaleAle = new ArtisanGood(ItemType.PaleAle, 24*3, Map.of(PlantAbleCrop.Hops, 1)).makeEdible(50).makeSellPrice(300);
-    public static final ArtisanGood Raisins = new ArtisanGood(ItemType.Raisins, 24, Map.of(PlantAbleCrop.Grape, 5)).makeEdible(125).makeSellPrice(600);
+//    public static final ArtisanGood PaleAle = new ArtisanGood(ItemType.PaleAle, 24*3, Map.of(PlantAbleCrop.Hops, 1)).makeEdible(50).makeSellPrice(300);
+//    public static final ArtisanGood Raisins = new ArtisanGood(ItemType.Raisins, 24, Map.of(PlantAbleCrop.Grape, 5)).makeEdible(125).makeSellPrice(600);
     public static final ArtisanGood Coal = new ArtisanGood(ItemType.Coal, 1, Map.of(ForagingMineral.Wood, 10)).makeSellPrice(50);
     public static final ArtisanGood SheepCloth = new ArtisanGood(ItemType.Cloth, 4, Map.of(AnimalProduct.SheepWool, 1)).makeSellPrice(470);
     public static final ArtisanGood RabbitCloth = new ArtisanGood(ItemType.Cloth, 4, Map.of(AnimalProduct.RabbitWool, 1)).makeSellPrice(470);
@@ -239,7 +239,7 @@ public class ArtisanGood extends Item {
         add(Vinegar);
         add(Coffee);
         add(Mead);
-        add(PaleAle);
+        //add(PaleAle);
     }};
     public static final ArrayList<ArtisanGood>  CheesePressGoods= new ArrayList<>(){{
         add(BigGoatCheese);
@@ -251,7 +251,7 @@ public class ArtisanGood extends Item {
         add(Honey);
     }};
     public static final ArrayList<ArtisanGood> DehydratorGoods = new ArrayList<>(){{
-        add(Raisins);
+        //add(Raisins);
     }};
     public static final ArrayList<ArtisanGood> CharCoalKlinGoods = new ArrayList<>(){{
         add(Coal);

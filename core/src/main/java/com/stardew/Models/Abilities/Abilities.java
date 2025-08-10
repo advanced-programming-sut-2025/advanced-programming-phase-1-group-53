@@ -12,6 +12,11 @@ public class Abilities {
 
     private final int[] abilities = new int[4];// 0 for mining 1 for fishing 2 for farming 3 for foraging
 
+    public Abilities(){
+        for(int i = 0; i<4; i++){
+            abilities[i] = 0;
+        }
+    }
     public int getMiningLevel() {
         return Math.min((abilities[0]-50)/100, 0);
     }
@@ -59,4 +64,6 @@ public class Abilities {
         else
             abilities[3] += foragingLevel;
     }
+
+
 }

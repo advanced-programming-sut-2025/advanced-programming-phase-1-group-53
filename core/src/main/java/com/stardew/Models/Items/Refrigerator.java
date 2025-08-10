@@ -5,15 +5,17 @@ import com.stardew.Models.Game.App;
 import com.stardew.Models.MessageManager;
 import com.stardew.Models.Result;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Refrigerator extends Item{
-    private final Map<Item, Integer> foods = new HashMap<>();
+    private static final Map<Item, Integer> foods = new HashMap<>();
 
     public Refrigerator(){
         super(ItemType.Refrigerator);
     }
+
 
     public boolean areItemsAvailable(Map<Item, Integer> needs){
         for(Item item : needs.keySet()){
@@ -53,9 +55,10 @@ public class Refrigerator extends Item{
             MessageManager.getMessage(Result.failure("Not enough quantity of the food."));
             return;
         }
+       // System.out.println(quantity+" "+foods.get(item));
         foods.compute(item, (k, v) -> (v-quantity));
         App.getGame().getCurrentPlayer().backpack.addItem(item, quantity);
+        if(foods.get(item) == 0)
+            foods.remove(item);
     }
-
-
 }

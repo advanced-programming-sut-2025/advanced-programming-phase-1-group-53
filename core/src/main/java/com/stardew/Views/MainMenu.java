@@ -25,9 +25,9 @@ public class MainMenu extends AppMenu {
         } else if ((matcher = MainMenuCommand.logout.getMatcher(input)) != null) {
             controller.logout();
         } else if ((matcher = MainMenuCommand.enterMenu.getMatcher(input)) != null) {
-//            ShareController.enterMenu(matcher.group("menu"));
+            ShareController.enterMenu(matcher.group("menu"));
         } else if ((matcher = MainMenuCommand.showCurrentMenu.getMatcher(input)) != null) {
-//            ShareController.showCurrentMenu();
+            ShareController.showCurrentMenu();
         } else {
             System.out.println("invalid command");
         }
@@ -39,3 +39,4 @@ public class MainMenu extends AppMenu {
         table.add("Main Menu").pad(20);
     }
 }
+

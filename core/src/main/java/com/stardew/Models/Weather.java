@@ -1,15 +1,20 @@
 package com.stardew.Models;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.stardew.Enums.ItemType;
 import com.stardew.Enums.WeatherType;
 import com.stardew.Models.Game.App;
+import com.stardew.Models.Items.Foragings.ForagingMineral;
+import com.stardew.Models.Items.Foragings.ForagingTree;
 import com.stardew.Models.Items.Foragings.PlantAbleCrop;
 import com.stardew.Models.Items.Foragings.Tree;
 import com.stardew.Models.Items.Item;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 public class Weather {
+    private ArrayList<Sprite> weatherSprites = new ArrayList<>();
     private WeatherType weather = WeatherType.SUNNY;
     private WeatherType tomorrowsWeather = WeatherType.SUNNY;
 
@@ -38,7 +43,14 @@ public class Weather {
         }
     }
 
-    public void update(){
+    private void reCreateWeatherSprites(){
+
+    }
+
+    public void update(float delta){
+        for(Sprite sprite : weatherSprites){
+
+        }
         if(App.getGame().dateAndTime.isADayPassed()){
             int dx =App.getGame().getCurrentPlayer().getFarm().getPosition().getWidth();
             int dy =App.getGame().getCurrentPlayer().getFarm().getPosition().getHeight();
@@ -46,18 +58,35 @@ public class Weather {
             int y =App.getGame().getCurrentPlayer().getFarm().getPosition().getY();
 
             for(int i = 0; i< 3; i++){
+                System.out.println("ajdey");
                 int u = new Random().nextInt(dx) + x;
                 int v= new Random().nextInt(dy) + y;
                 thundering(u, v);
             }
-            weather = tomorrowsWeather;
+            reCreateWeatherSprites();
             setWeatherAccordingToSeason();
+            weather = tomorrowsWeather;
         }
     }
+
+    public ArrayList<Sprite> getWeatherSprites() {
+        return weatherSprites;
+    }
+
+    public WeatherType getTomorrowsWeather() {
+        return tomorrowsWeather;
+    }
+
     public void thundering(int x, int y){
-        Item item = App.getGame().findTile(x, y).getItem();
-        if(item instanceof Tree || item instanceof PlantAbleCrop){
-            App.getGame().findTile(x, y).setItem(App.getGame().getItemByItemType(ItemType.Coal));
+        Item item = App.getGame().getGameMap().getTiles()[y][x].getItem();
+        if(item instanceof Tree){
+            ((Tree)App.getGame().getGameMap().getTiles()[y][x].getItem()).setThundered(true);
+        }
+        if(item instanceof PlantAbleCrop){
+
+        }
+        if(item instanceof ForagingTree){
+            ((ForagingTree)App.getGame().getGameMap().getTiles()[y][x].getItem()).setThundered(true);
         }
     }
 }
