@@ -1,5 +1,7 @@
 package com.stardew.Models.Abilities;
 
+import com.badlogic.gdx.math.Vector2;
+import com.stardew.Controllers.GameMenuController;
 import com.stardew.Enums.ItemType;
 import com.stardew.Models.Game.App;
 import com.stardew.Models.Items.Animal;
@@ -10,6 +12,7 @@ import com.stardew.Models.Items.ShippingBin;
 import com.stardew.Models.MessageManager;
 import com.stardew.Models.Product;
 import com.stardew.Models.Result;
+import com.stardew.Views.GameMenu;
 
 public class Shopping {
 
@@ -53,12 +56,8 @@ public class Shopping {
     }
 
     public void purchase(ItemType itemType, int count){
-        if(! (App.getGame().getGameMap().findBuilding(App.getGame().getCurrentPlayer().position.getX(),
-                App.getGame().getCurrentPlayer().position.getY()) instanceof Shop shop)){
-            MessageManager.getMessage(Result.failure("You must be inside a shop."));
-            return;
-        }
-
+        Vector2 v2 = GameMenuController.mvc.getV2();
+        Shop shop = Shop.getShopByPosition((int)v2.x, (int)v2.y);
         for(Product product : shop.getProducts()){
             if(product.getItemType().equals(itemType)){
                 if(product.getAvailableToday() < count){
@@ -66,8 +65,10 @@ public class Shopping {
                     return;
                 }
                 if(App.getGame().getCurrentPlayer().personalInfo.hasEnoughGold(count * product.getPrice())){
-                    App.getGame().getCurrentPlayer().personalInfo.updateGold(count * product.getPrice());
+                    product.purchased(count);
+                    App.getGame().getCurrentPlayer().personalInfo.updateGold(-count * product.getPrice());
                     App.getGame().getCurrentPlayer().backpack.addItem(App.getGame().getItemByItemType(itemType), count);
+                    MessageManager.getMessage(Result.success("purchased successfully"));
                     return;
                 }
                 MessageManager.getMessage(Result.failure("Insufficient balance."));
@@ -78,38 +79,51 @@ public class Shopping {
     }
 
     public void purchase(ItemType itemType, String name){
-        if(! (App.getGame().getGameMap().findBuilding(App.getGame().getCurrentPlayer().position.getX(),
-                App.getGame().getCurrentPlayer().position.getY()) instanceof Shop shop)){
-            MessageManager.getMessage(Result.failure("You must be inside a shop."));
-            return;
-        }
-
-        for(Product product : shop.getProducts()){
-            if(product.getItemType().equals(itemType)){
-                if(product.getAvailableToday() < 1){
+        Vector2 v2 = GameMenuController.mvc.getV2();
+        Shop shop = Shop.getShopByPosition((int)v2.x, (int)v2.y);
+        for(Product product : shop.getProducts()) {
+            if (product.getItemType().equals(itemType)) {
+                if (product.getAvailableToday() < 1) {
                     MessageManager.getMessage(Result.success("The product is not available today, maybe tomorrow."));
                     return;
                 }
-                if(!(App.getGame().getItemByItemType(itemType) instanceof Animal animal)){
+                if (!(App.getGame().getItemByItemType(itemType) instanceof Animal animal)) {
                     MessageManager.getMessage(Result.failure("hsjab"));
                     return;
                 }
-                if(App.getGame().getCurrentPlayer().personalInfo.hasEnoughGold( product.getPrice())){
-                    for(CoopAndBarn coopAndBarn : App.getGame().getCurrentPlayer().backpack.getCoopsAndBarns()){
-                        if(coopAndBarn.getItemType().name().contains("Coop")){
-                            if(animal.getItemType().equals(ItemType.Hen) || animal.getItemType().equals(ItemType.Duck)
-                                    || animal.getItemType().equals(ItemType.Dino) || animal.getItemType().equals(ItemType.Rabbit)){
-                                Animal animal1 = animal.clone(name);
-                                animal1.getPosition().setX(coopAndBarn.getPosition().getX());
-                                animal1.getPosition().setY(coopAndBarn.getPosition().getY());
-                                coopAndBarn.getAnimals().add(animal1);
-                                App.getGame().getCurrentPlayer().personalInfo.updateGold((int) animal1.getBaseSellPrice());
-                                App.getGame().getCurrentPlayer().backpack.addItem(animal.clone(name), 1);
-                                return;
+                if (App.getGame().getCurrentPlayer().personalInfo.hasEnoughGold(product.getPrice())) {
+                    for (CoopAndBarn coopAndBarn : App.getGame().getCurrentPlayer().backpack.getCoopsAndBarns()) {
+                        if (coopAndBarn.getItemType().name().contains("Coop")) {
+                            if (animal.getItemType().equals(ItemType.Hen) || animal.getItemType().equals(ItemType.Duck)
+                                || animal.getItemType().equals(ItemType.Dino) || animal.getItemType().equals(ItemType.Rabbit)) {
+                                if (coopAndBarn.hasCapacity()) {
+                                    Animal animal1 = animal.clone(name);
+                                    animal1.getPosition().setX(coopAndBarn.getPosition().getX());
+                                    animal1.getPosition().setY(coopAndBarn.getPosition().getY());
+                                    coopAndBarn.getAnimals().add(animal1);
+                                    App.getGame().getCurrentPlayer().personalInfo.updateGold(-(int) animal1.getBaseSellPrice());
+                                    App.getGame().getCurrentPlayer().backpack.addItem(animal.clone(name), 1);
+                                    MessageManager.getMessage(Result.success("animal was purchased successfully"));
+                                    return;
+                                }
+                            }
+                        } else {
+                            if (animal.getItemType().equals(ItemType.Goat) || animal.getItemType().equals(ItemType.Cow)
+                                || animal.getItemType().equals(ItemType.Pig) || animal.getItemType().equals(ItemType.Sheep)) {
+                                if (coopAndBarn.hasCapacity()) {
+                                    Animal animal1 = animal.clone(name);
+                                    animal1.getPosition().setX(coopAndBarn.getPosition().getX());
+                                    animal1.getPosition().setY(coopAndBarn.getPosition().getY());
+                                    coopAndBarn.getAnimals().add(animal1);
+                                    App.getGame().getCurrentPlayer().personalInfo.updateGold(-(int) animal1.getBaseSellPrice());
+                                    App.getGame().getCurrentPlayer().backpack.addItem(animal.clone(name), 1);
+                                    MessageManager.getMessage(Result.success("animal was purchased successfully"));
+                                    return;
+                                }
                             }
                         }
                     }
-                    App.getGame().getCurrentPlayer().backpack.addItem(animal.clone(name), 1);
+                    MessageManager.getMessage(Result.failure("no coop or barn with enough capacity."));
                     return;
                 }
                 MessageManager.getMessage(Result.failure("Insufficient balance."));
@@ -138,9 +152,10 @@ public class Shopping {
 
         Item item = App.getGame().getItemByItemType(itemType);
 
-        App.getGame().getCurrentPlayer().backpack.getItems().compute(item, (k, v) -> (v - count));((ShippingBin) nextToShippingBin(App.getGame().getCurrentPlayer().position.getX(),
-                App.getGame().getCurrentPlayer().position.getY())).getItems().compute(App.getGame().getItemByItemType(itemType),
-                (k, v) -> ( (v==null)? count : (v + count)));
+        App.getGame().getCurrentPlayer().backpack.getItems().compute(item, (k, v) -> (v - count));
+//        ((ShippingBin) nextToShippingBin(App.getGame().getCurrentPlayer().position.getX(),
+//                App.getGame().getCurrentPlayer().position.getY())).getItems().compute(App.getGame().getItemByItemType(itemType),
+//                (k, v) -> ( (v==null)? count : (v+count)));
     }
 
     public ShippingBin nextToShippingBin(int x, int y){

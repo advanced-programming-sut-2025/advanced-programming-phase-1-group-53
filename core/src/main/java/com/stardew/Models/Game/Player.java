@@ -29,6 +29,7 @@ public class Player {
     public final FoodBuff foodBuff = new FoodBuff();
     public final HashMap<NPC, Integer> NPCsFriendship = new HashMap<>();
     public final ArrayList<Item> gifts = new ArrayList<>();
+    public int level = 2;
 
     public Player(String name, String nickName, String password, String email, Gender gender) {
         this.personalInfo = new PersonalInfo(email, name, nickName, password, gender);
@@ -36,6 +37,69 @@ public class Player {
 
     public Player(PersonalInfo personalInfo) {
         this.personalInfo = personalInfo;
+    }
+
+    public Player setSprite(Texture texture){
+        this.sprite.setTexture(texture);
+        return this;
+    }
+
+    public void update(float delta){
+        backpack.update(delta);
+        if(!isIdle){
+            if(indexOfSprite == 0) {
+                indexOfSprite = 1;
+                lastTimeUpdatedSprite = 0;
+            }
+            else if((GameMenu.getTotalTimeSpent()-lastTimeUpdatedSprite) >= App.TAKING_STEP_TIME_GAP){
+                indexOfSprite = (indexOfSprite % 2) + 1;
+                lastTimeUpdatedSprite = GameMenu.getTotalTimeSpent();
+            }
+            if(!GameMenuController.mvc.canPlayerMove(direction)){
+                isIdle = true;
+                return;
+            }
+            if(direction == 0)
+                position.changeY(-App.ADVANCE_OF_EACH_STEP);
+            if(direction == 1)
+                position.changeX(App.ADVANCE_OF_EACH_STEP);
+            if(direction == 2)
+                position.changeY(App.ADVANCE_OF_EACH_STEP);
+            if(direction == 3)
+                position.changeX(-App.ADVANCE_OF_EACH_STEP);
+            energy.updateEnergy(-(int) (energy.getMaxEnergy()*0.00005));
+        }
+        if(isIdle){
+            indexOfSprite = 0;
+        }
+    }
+
+    public Sprite getSprite(){
+        sprite = new Sprite(GameAssetManager.getAlexTextures()[direction][indexOfSprite]);
+        sprite.setX(position.getX() - GameMenuController.getPrintStartX());
+        sprite.setY(position.getY() - GameMenuController.getPrintStartY());
+        sprite.setSize((float) (32 * 1.5), (float) (64*1.5));
+        return sprite;
+    }
+
+    public boolean isIdle() {
+        return isIdle;
+    }
+
+    public void setIdle(boolean idle) {
+        isIdle = idle;
+    }
+
+    public int getDirection() {
+        return direction;
+    }
+
+    public void setIndexOfSprite(int indexOfSprite) {
+        this.indexOfSprite = indexOfSprite;
+    }
+
+    public void setDirection(int direction) {
+        this.direction = direction;
     }
 
     public Farm getFarm() {
@@ -68,6 +132,18 @@ public class Player {
 
     public HashMap<Player, Friendship> getFriendship() {
         return friendship;
+    }
+
+    public Vector2 getDirectionVector(){
+        if(direction == 0)
+            return new Vector2(0, -1);
+        if(direction == 1)
+            return new Vector2(1, 0);
+        if(direction == 2)
+            return new Vector2(0, 1);
+        if(direction == 3)
+            return new Vector2(-1, 0);
+        return new Vector2(0, 0);
     }
 
     public HashMap<Player, StringBuilder> getGiftHistory() {
@@ -127,8 +203,8 @@ public class Player {
             return -1;
         }
         else if (map[destY][destX].getTileKind() != TileKind.empty && map[destY][destX].getTileKind() != TileKind.asphalt &&
-                map[destY][destX].getTileKind() != TileKind.door && map[destY][destX].getTileKind() != TileKind.grass &&
-                map[destY][destX].getTileKind() != TileKind.plowed) {
+            map[destY][destX].getTileKind() != TileKind.door && map[destY][destX].getTileKind() != TileKind.grass &&
+            map[destY][destX].getTileKind() != TileKind.plowed) {
             return Integer.MAX_VALUE;
         }
         int rows = map.length;
@@ -249,13 +325,15 @@ public class Player {
                 System.out.println("GreenHouse is not build yet");
                 return;
             }
-        } else if (GameMap.isInside(x, y, farm.getMine().getPosition())) {
-            App.getGame().setCurrentMap(farm.getMine().getBuildingMap());
-            player.setCurrentMap(MapsNames.Mine);
-            player.energy.updateEnergy(-5);
-            player.position.setX(3);
-            player.position.setY(3);
-        } else if (GameMap.isInside(x, y, farm.getLake().getPosition())) {
+        }
+//        else if (GameMap.isInside(x, y, farm.getMine().getPosition())) {
+//            App.getGame().setCurrentMap(farm.getMine().getBuildingMap());
+//            player.setCurrentMap(MapsNames.Mine);
+//            player.energy.updateEnergy(-5);
+//            player.position.setX(3);
+//            player.position.setY(3);
+//        }
+        else if (GameMap.isInside(x, y, farm.getLake().getPosition())) {
             System.out.println("you cant go to the lake");
             return;
         }

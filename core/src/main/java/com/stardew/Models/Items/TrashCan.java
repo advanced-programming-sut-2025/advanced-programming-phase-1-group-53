@@ -20,7 +20,7 @@ public class TrashCan extends Tool{
     }
 
     @Override
-    public void update(){
+    public void update(float delta){
         if(itemsToEliminate.isEmpty())
             return;
         if(App.getGame().dateAndTime.isADayPassed()){

@@ -1,75 +1,70 @@
 package com.stardew.Models;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.stardew.Enums.ItemType;
 import com.stardew.Models.Game.App;
+import com.stardew.Models.Game.GameAssetManager;
+
+import java.util.ArrayList;
 
 public class FoodBuff {
-    private int hoursLeft = 0;
+    private float finishingTime = 0;
     private ItemType food;
     public final int[] energyReductions = new int[4];
+    private Sprite sprite = null;
 
     public void espressoBuff(){
-        if(food.equals(ItemType.TripleShotEspresso) && hoursLeft > 0)
+        if(food.equals(ItemType.TripleShotEspresso))
             App.getGame().getCurrentPlayer().energy.updateEnergy(100);
-        if(hoursLeft == 0){
-            App.getGame().getCurrentPlayer().energy.setMaxEnergy(200);
-        }
+        sprite = new Sprite(GameAssetManager.getBuffSprites().get(3));
     }
 
     public void redPlateBuff(){
-        if(food.equals(ItemType.RedPlate) && hoursLeft > 0)
+        if(food.equals(ItemType.RedPlate))
             App.getGame().getCurrentPlayer().energy.updateEnergy(50);
-        if(hoursLeft == 0){
-            App.getGame().getCurrentPlayer().energy.setMaxEnergy(200);
-        }
+        sprite = new Sprite(GameAssetManager.getBuffSprites().get(3));
     }
 
     public void hashBrownBuff(){
-        if(food.equals(ItemType.HashBrowns) && hoursLeft > 0)
+        if(food.equals(ItemType.HashBrowns))
             energyReductions[2] = 1;
-        if(hoursLeft == 0)
-            energyReductions[2] = 0;
+        sprite = new Sprite(GameAssetManager.getBuffSprites().get(0));
     }
     public void pancakeBuff(){
-        if(food.equals(ItemType.HashBrowns) && hoursLeft > 0)
+        if(food.equals(ItemType.HashBrowns) )
             energyReductions[3] = 1;
-        if(hoursLeft == 0)
-            energyReductions[3] = 0;
+        sprite = new Sprite(GameAssetManager.getBuffSprites().get(2));
     }
     public void farmersLunchBuff(){
-        if(food.equals(ItemType.HashBrowns) && hoursLeft > 0)
+        if(food.equals(ItemType.HashBrowns))
             energyReductions[2] = 1;
-        if(hoursLeft == 0)
-            energyReductions[2] = 0;
+        sprite = new Sprite(GameAssetManager.getBuffSprites().get(0));
     }
     public void survivalBurgerBuff(){
-        if(food.equals(ItemType.HashBrowns) && hoursLeft > 0)
+        if(food.equals(ItemType.HashBrowns) )
             energyReductions[3] = 1;
-        if(hoursLeft == 0)
-            energyReductions[3] = 0;
+        sprite = new Sprite(GameAssetManager.getBuffSprites().get(2));
     }
     public void dishOTheSeaBuff(){
-        if(food.equals(ItemType.HashBrowns) && hoursLeft > 0)
+        if(food.equals(ItemType.HashBrowns) )
             energyReductions[1] = 1;
-        if(hoursLeft == 0)
-            energyReductions[1] = 0;
+        sprite = new Sprite(GameAssetManager.getBuffSprites().get(1));
     }
     public void seaFormPuddingBuff(){
-        if(food.equals(ItemType.HashBrowns) && hoursLeft > 0)
+        if(food.equals(ItemType.HashBrowns))
             energyReductions[1] = 1;
-        if(hoursLeft == 0)
-            energyReductions[1] = 0;
+        sprite = new Sprite(GameAssetManager.getBuffSprites().get(1));
     }
     public void minersTreatBuff(){
-        if(food.equals(ItemType.HashBrowns) && hoursLeft > 0)
+        if(food.equals(ItemType.HashBrowns) )
             energyReductions[0] = 1;
-        if(hoursLeft == 0)
-            energyReductions[0] = 0;
+        sprite = new Sprite(GameAssetManager.getBuffSprites().get(4));
     }
 
     public void activateBuff(ItemType itemType){
         food = itemType;
-        hoursLeft = switch (itemType){
+        float current = App.getGame().dateAndTime.getHour();
+        finishingTime = switch (itemType){
             case HashBrowns -> 5;
             case Pancakes -> 11;
             case RedPlate -> 3;
@@ -81,10 +76,7 @@ public class FoodBuff {
             case MinersTreat -> 5;
             default -> 0;
         };
-    }
-
-    public void update(){
-        hoursLeft = Math.max(0, hoursLeft - 1);
+        finishingTime += current;
         switch (food){
             case HashBrowns -> hashBrownBuff();
             case Pancakes -> pancakeBuff();
@@ -96,5 +88,29 @@ public class FoodBuff {
             case SeaFormPudding -> seaFormPuddingBuff();
             case MinersTreat -> minersTreatBuff();
         }
+    }
+
+    public void update(float delta){
+        if(food == null)
+            return;
+        float current = App.getGame().dateAndTime.getHour();
+        if(current >= finishingTime){
+            finishingTime = 0;
+            sprite = new Sprite();
+            for(int i= 0; i<4; i++){
+                energyReductions[i] = 0;
+                if(food.equals(ItemType.TripleShotEspresso) || food.equals(ItemType.RedPlate)){
+                    Energy.setMaxEnergy(Energy.getMaxEnergy()/2);
+                    App.getCurrentPlayer().energy.setEnergy(Math.min(App.getCurrentPlayer().energy.getEnergy(),
+                        Energy.getMaxEnergy()));
+                }
+            }
+        }
+    }
+
+    public Sprite getSprite(){
+        if(sprite != null)
+            return sprite;
+        return new Sprite();
     }
 }

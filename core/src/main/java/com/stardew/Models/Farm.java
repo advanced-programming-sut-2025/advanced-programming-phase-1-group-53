@@ -1,20 +1,17 @@
 package com.stardew.Models;
 
-import com.stardew.Models.Items.Buildings.GreenHouse;
-import com.stardew.Models.Items.Buildings.House;
-import com.stardew.Models.Items.Buildings.Mine;
-import com.stardew.Models.Items.Buildings.Lake;
+import com.stardew.Models.Game.App;
+import com.stardew.Models.Items.Buildings.*;
 import com.stardew.Models.Game.Player;
 
 import java.util.ArrayList;
 
 public class Farm {
-    private final int FARM_SIZE = 20;
-    private final int STRUCTURE_SIZE = 5;
+    private final int FARM_SIZE =GameMap.getFarmSize();
+    private final int STRUCTURE_SIZE = GameMap.getFarmSize()/4;
     private final Player owner;
     private final Position position;
     private final House house;
-    private final Mine mine;
     private final GreenHouse greenHouse;
     private final Lake lake;
     private final ArrayList<Position> doorPositions;
@@ -24,7 +21,6 @@ public class Farm {
         this.owner = owner;
         this.doorPositions = new ArrayList<>();
         this.house = createHouse();
-        this.mine = createMine();
         this.greenHouse = createGreenHouse();
         this.lake = createLake();
     }
@@ -34,19 +30,18 @@ public class Farm {
         return new House(new Position(position.getX(), position.getY(), STRUCTURE_SIZE, STRUCTURE_SIZE));
     }
 
-    private Mine createMine() {
-        // Initialize the mine with its position
-        return new Mine(new Position(position.getX() + 15, position.getY(), STRUCTURE_SIZE, STRUCTURE_SIZE));
-    }
-
     private GreenHouse createGreenHouse() {
         // Initialize the greenhouse with its position
-        return new GreenHouse(new Position(position.getX(), position.getY() + 15, STRUCTURE_SIZE, STRUCTURE_SIZE));
+        return new GreenHouse(new Position(position.getX(), position.getY() + 3*STRUCTURE_SIZE, STRUCTURE_SIZE, STRUCTURE_SIZE));
     }
 
     private Lake createLake() {
         // Initialize the lake with its position
-        return new Lake(new Position(position.getX() + 15, position.getY() + 15, STRUCTURE_SIZE, STRUCTURE_SIZE));
+        return new Lake(new Position(position.getX() + 3*STRUCTURE_SIZE, position.getY() + 3*STRUCTURE_SIZE, STRUCTURE_SIZE, STRUCTURE_SIZE));
+    }
+
+    public Building[] getBuildings(){
+        return new Building[]{house, greenHouse, lake};
     }
 
     public Player getOwner() {
@@ -61,8 +56,14 @@ public class Farm {
         return house;
     }
 
-    public Mine getMine() {
-        return mine;
+    public Tile[][] getMine() {
+        Tile[][] tiles = new Tile[STRUCTURE_SIZE][STRUCTURE_SIZE];
+        for(int i =0 ; i< STRUCTURE_SIZE; i++){
+            for(int j = 0; j< STRUCTURE_SIZE; j++){
+                tiles[j][i] = App.getGame().getGameMap().getTiles()[position.getY()+j][position.getX() + 3*STRUCTURE_SIZE+i];
+            }
+        }
+        return tiles;
     }
 
     public GreenHouse getGreenHouse() {

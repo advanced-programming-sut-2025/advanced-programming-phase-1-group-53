@@ -1,6 +1,8 @@
 package com.stardew.Models.Items;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.stardew.Enums.ItemType;
+import com.stardew.Models.Game.GameAssetManager;
 
 import java.util.ArrayList;
 
@@ -15,6 +17,12 @@ public class AnimalProduct extends Item {
     public AnimalProduct makeSellPrice(double price){
         this.baseSellPrice = price;
         return this;
+    }
+
+    @Override
+    public Sprite getSprite(){
+        sprite = new Sprite(GameAssetManager.getAnimalProductsTexture().get(itemType));
+        return sprite;
     }
 
     @Override

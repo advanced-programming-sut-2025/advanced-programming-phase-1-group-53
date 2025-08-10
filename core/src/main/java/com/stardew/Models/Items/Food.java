@@ -1,6 +1,8 @@
 package com.stardew.Models.Items;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.stardew.Enums.ItemType;
+import com.stardew.Models.Game.GameAssetManager;
 
 import java.util.ArrayList;
 
@@ -15,13 +17,19 @@ public class Food extends Item{
     }
 
 
+    @Override
+    public Sprite getSprite(){
+        sprite = new Sprite(GameAssetManager.getFoodSprites().get(itemType));
+        return fixSpriteCoordinatesForPrint();
+    }
+
     public Recipe getRecipe() {
         return recipe;
     }
 
     @Override
     public Food clone(){
-        return new Food(getItemType(), energy, recipe);
+        return new Food(getItemType(), energy, recipe).makeSellPrice(baseSellPrice);
     }
 
     @Override
@@ -50,10 +58,10 @@ public class Food extends Item{
     public static final Food SalmonDinner = new Food(ItemType.SalmonDinner, 125, Recipe.SalmonDinnerRecipe).makeSellPrice(300);
     public static final Food VegetableMedley = new Food(ItemType.VegetableMedley, 165, Recipe.VegetableMedelyRecipe).makeSellPrice(120);
     public static final Food FarmersLunch = new Food(ItemType.FarmersLunch, 200, Recipe.FarmerLunchRecipe).makeSellPrice(150);
-    public static final Food SurvivalBurger = new Food(ItemType.SurvivalBurger, 125, Recipe.SurvivalBurgerRecipe).makeSellPrice(180);
+    public static final Food SurvivalBurger = new Food(ItemType.SurvivalBurger, 125, Recipe.SaladRecipe).makeSellPrice(180);
     public static final Food DishOTheSea = new Food(ItemType.DishOTheSea, 150, Recipe.DishOtheSeaRecipe).makeSellPrice(220);
-    public static final Food SeaFormPudding = new Food(ItemType.SeaFormPudding, 175, Recipe.SeaFormPuddingRecipe).makeSellPrice(300);
-    public static final Food MinersTreat = new Food(ItemType.MinersTreat, 125, Recipe.MinersTreatRecipe).makeSellPrice(200);
+    public static final Food SeaFormPudding = new Food(ItemType.SeaFormPudding, 175, Recipe.VegetableMedelyRecipe).makeSellPrice(300);
+    public static final Food MinersTreat = new Food(ItemType.MinersTreat, 125, Recipe.VegetableMedelyRecipe).makeSellPrice(200);
 
     public static final ArrayList<Food> allFoods= new ArrayList<>(){{
         add(FriedEgg);
@@ -74,10 +82,10 @@ public class Food extends Item{
         add(Bread);
         add(SalmonDinner);
         add(VegetableMedley);
-        add(FarmersLunch);
-        add(SurvivalBurger);
-        add(DishOTheSea);
-        add(SeaFormPudding);
-        add(MinersTreat);
+//        add(FarmersLunch);
+//        add(SurvivalBurger);
+//        add(DishOTheSea);
+//        add(SeaFormPudding);
+//        add(MinersTreat);
     }};
 }

@@ -69,9 +69,7 @@ public class CraftingRecipe extends Item{
     }
 
     public boolean isAvailable(){
-        if(App.getGame().getCurrentPlayer().abilities.getAbilities()[requiredAbility] >= requiredLevel)
-            return true;
-        return false;
+        return App.getGame().getCurrentPlayer().abilities.getAbilities()[requiredAbility] >= requiredLevel;
     }
 
     public CraftingRecipe getRecipeByProdName(String prodName){

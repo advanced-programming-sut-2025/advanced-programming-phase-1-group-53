@@ -1,5 +1,20 @@
 package com.stardew.Views;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -9,13 +24,71 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.Gdx;
 import com.stardew.Controllers.GameMenuController;
+import com.stardew.Controllers.ShareController;
+import com.stardew.Enums.GameMenuCommand;
+import com.stardew.Enums.ItemType;
+import com.stardew.Enums.MessageTypes;
+import com.stardew.Enums.TileKind;
+import com.stardew.Main;
+import com.stardew.Models.*;
+import com.stardew.Models.Game.App;
+import com.stardew.Models.Game.Game;
+import com.stardew.Models.Game.GameAssetManager;
+import com.stardew.Models.Game.Player;
+import com.stardew.Models.Items.*;
+import com.stardew.Models.Items.CraftAbleAndArtisan.Artisan;
+import com.stardew.Models.Items.Foragings.ForagingMineral;
+import com.stardew.Views.TabMenus.*;
 import com.stardew.Models.Game.App;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class GameMenu extends AppMenu {
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.addListener;
+
+public class GameMenu implements AppMenu, InputProcessor {
+    private static float TOTAL_TIME_SPENT = 0;
+    private static int SCREEN_WIDTH;
+    private static int SCREEN_HEIGHT;
+    private static GameMenu gameMenu = null;
+    private SpriteBatch batch;
+    private Sprite sprite;
+    private Stage stage;
+    private float thunderAlpha = 0f;
+    private boolean isThunderActive = false;
+    private ShapeRenderer shapeRenderer;
+    private boolean SHOW_TILE_DETAILS = false;
     private final GameMenuController controller = new GameMenuController();
-    private String currentPlayerName = App.getCurrentPlayer().getPersonalInfo().getName();
+    private float nightScreenAlpha = 0;
+    private boolean isGettingDark = false;
+    private boolean goingInHouse =false;
+    private boolean isGettingLight = false;
+    private boolean setToolToMouse = false;
+    private float mouseY = 0;
+    private float mouseX = 0;
+    private boolean isGoingInCoop = false;
+    private boolean showFullTiles = false;
+
+
+    public GameMenuController getController() {
+        return controller;
+    }
+
+    private GameMenu(){
+
+    }
+
+    public static GameMenu getInstance(){
+        if(gameMenu == null)
+            gameMenu = new GameMenu();
+        return gameMenu;
+    }
+
+    public static void renewInstance(){
+        gameMenu = null;
+    }
 
     public GameMenu(Game main) {
         super(main);

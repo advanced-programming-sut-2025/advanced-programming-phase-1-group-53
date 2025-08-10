@@ -1,33 +1,50 @@
 package com.stardew.Models;
 
+import com.badlogic.gdx.math.Vector2;
 import com.stardew.Enums.ItemType;
 import com.stardew.Enums.MapsNames;
 import com.stardew.Enums.TileKind;
 import com.stardew.Enums.Season;
 import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.Player;
-import com.stardew.Models.Items.Foragings.ForagingMineral;
-import com.stardew.Models.Items.Foragings.ForagingSeed;
-import com.stardew.Models.Items.Foragings.ForagingTree;
-import com.stardew.Models.Items.Foragings.ForagingCrop;
+import com.stardew.Models.Items.Foragings.*;
 import com.stardew.Models.Items.Buildings.*;
+import com.stardew.Models.Items.ShippingBin;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
 public class GameMap {
     private static final int MAP_SIZE = 60;
-    private static final int FARM_SIZE = 20;
+    private static final int FARM_SIZE = MAP_SIZE/3;
+    private static final int TILE_PRINT_SIZE = 80;
     private static final int STRUCTURE_WIDTH = 5;
     private static final int STRUCTURE_HEIGHT = 5;
     private static final int VILLAGE_SIZE = 20;
+    private HashMap<Vector2, ItemType> reGenerateQue = new HashMap<>();
     public static final Position SEBASTIAN_POSITION = new Position(31, 31, 1, 1);
     public static final Position ABIGAIL_POSITION   = new Position(35, 32, 1, 1);
     public static final Position HARVEY_POSITION    = new Position(25, 34, 1, 1);
     public static final Position LIA_POSITION       = new Position(28, 36, 1, 1);
     public static final Position ROBIN_POSITION     = new Position(30, 37, 1, 1);
 
+    public static int getMapSize(){
+        return MAP_SIZE;
+    }
+
+    public static int getFarmSize(){
+        return FARM_SIZE;
+    }
+
+    public static Vector2 getPositionByCoordinates(float x, float y){
+        return new Vector2(x/TILE_PRINT_SIZE, y/TILE_PRINT_SIZE);
+    }
+
+    public static int getTilePrintSize(){
+        return TILE_PRINT_SIZE;
+    }
     private final Tile[][] tiles;
     private final ArrayList<Position> villageDoors = new ArrayList<>();
 
@@ -36,12 +53,15 @@ public class GameMap {
         initializeMap(players);
     }
 
+    public HashMap<Vector2, ItemType> getReGenerateQue() {
+        return reGenerateQue;
+    }
+
     private void initializeMap(List<Player> players) {
         // Fill the entire map with "wall" tiles
         for (int y = 0; y < MAP_SIZE; y++) {
             for (int x = 0; x < MAP_SIZE; x++) {
-                tiles[y][x] = new Tile(new Position(x, y, 1, 1), TileKind.wall);
-                //TODO: fill the tiles in between the farms
+                tiles[y][x] = new Tile(new Position(x, y, 1, 1), TileKind.grass);
             }
         }
 
@@ -53,23 +73,24 @@ public class GameMap {
 
         // Initialize the village at the center
         initializeVillage();
+
     }
 
     private void initializeFarm(int startY, int startX, Player owner) {
         // Fill the farm area with "empty" tiles
         for (int y = startY; y < startY + FARM_SIZE; y++) {
             for (int x = startX; x < startX + FARM_SIZE; x++) {
-                tiles[y][x] = new Tile(new Position(x, y, 1, 1), TileKind.empty);
+                tiles[y][x] = new Tile(new Position(x, y, 1, 1), TileKind.grass);
             }
         }
 
         // Place structures in the four corners of the farm
-        placeStructure(startY, startX); // Top-left
-        placeStructure(startY, startX + FARM_SIZE - STRUCTURE_WIDTH); // Top-right
-        placeStructure(startY + FARM_SIZE - STRUCTURE_HEIGHT, startX); // Bottom-left
-        placeStructure(startY + FARM_SIZE - STRUCTURE_HEIGHT, startX + FARM_SIZE - STRUCTURE_WIDTH); // Bottom-right
-        owner.position.setX(startX + FARM_SIZE / 2);
-        owner.position.setY(startY + FARM_SIZE / 2);
+        placeStructure(startY, startX, 2); // Bottom-left
+        placeStructure(startY, startX + FARM_SIZE - STRUCTURE_WIDTH, 3); // Bottom-right
+        placeStructure(startY + FARM_SIZE - STRUCTURE_HEIGHT, startX, 0); // Top-left
+        placeStructure(startY + FARM_SIZE - STRUCTURE_HEIGHT, startX + FARM_SIZE - STRUCTURE_WIDTH, 1); // Top-right
+        owner.position.setX((startX + FARM_SIZE / 2)*GameMap.getTilePrintSize());
+        owner.position.setY((startY + FARM_SIZE / 2)*GameMap.getTilePrintSize());
         MapsNames location = findLocationInGameMap(owner.position.getX(), owner.position.getY());
         owner.setCurrentMap(location);
         owner.setMyFarm(location);
@@ -78,10 +99,19 @@ public class GameMap {
         addFarmDoors(startY, startX, owner);
     }
 
-    private void placeStructure(int startY, int startX) {
+    private void placeStructure(int startY, int startX, int structureNumber) {
+        TileKind tileKind = null;
+        if(structureNumber == 0)
+            tileKind = TileKind.greenhouse;
+        if(structureNumber == 1)
+            tileKind = TileKind.lake;
+        if(structureNumber == 2)
+            tileKind = TileKind.house;
+        if(structureNumber == 3)
+            tileKind = TileKind.mine;
         for (int y = startY; y < startY + STRUCTURE_HEIGHT; y++) {
             for (int x = startX; x < startX + STRUCTURE_WIDTH; x++) {
-                tiles[y][x] = new Tile(new Position(x, y, 1, 1), TileKind.structure);
+                tiles[y][x] = new Tile(new Position(x, y, 1, 1),tileKind);
             }
         }
     }
@@ -94,6 +124,17 @@ public class GameMap {
         for (int y = startY; y < startY + VILLAGE_SIZE; y++) {
             for (int x = startX; x < startX + VILLAGE_SIZE; x++) {
                 tiles[y][x] = new Tile(new Position(x, y, 1, 1), TileKind.asphalt);
+            }
+        }
+
+        tiles[startY+VILLAGE_SIZE - 4][startX+VILLAGE_SIZE - 4].setItem(ShippingBin.ShippingBin);
+        ShippingBin.ShippingBin.getPosition().setX(startX+VILLAGE_SIZE - 4);
+        ShippingBin.ShippingBin.getPosition().setY(startY+VILLAGE_SIZE - 4);
+
+
+        for(int i = 0; i< 3; i++){
+            for(int j = 0; j<3; j++){
+                tiles[startY+VILLAGE_SIZE - 4+j][startX+VILLAGE_SIZE - 4+i].setTileKind(TileKind.shippingBin);
             }
         }
 
@@ -113,7 +154,7 @@ public class GameMap {
         tiles[LIA_POSITION.getY()][LIA_POSITION.getX()] = new Tile(LIA_POSITION, TileKind.NPC);
         tiles[ROBIN_POSITION.getY()][ROBIN_POSITION.getX()] = new Tile(ROBIN_POSITION, TileKind.NPC);
 
-        addVillageDoors(startY, startX);
+        //addVillageDoors(startY, startX);
     }
 
     private void addVillageDoors(int startY, int startX) {
@@ -140,12 +181,37 @@ public class GameMap {
     private void setShopTiles(Position position) {
         for (int y = position.getY(); y < position.getY() + position.getHeight(); y++) {
             for (int x = position.getX(); x < position.getX() + position.getWidth(); x++) {
-                tiles[y][x] = new Tile(new Position(x, y, 1, 1), TileKind.structure);
+                tiles[y][x] = new Tile(new Position(x, y, 1, 1), TileKind.shop);
             }
         }
     }
 
-    public Tile getTile(int x, int y) {
+    public Shop getShopByPosition(int x, int y){
+        for(Shop shop:Shop.shops){
+            if(shop.getPosition().isHere(x, y)){
+                return shop;
+            }
+        }
+        return null;
+    }
+
+    public Tile getTileByPixelCoordinate(float x, float y) {
+        if (x < 0 || x >= GameMap.getTilePrintSize() *MAP_SIZE || y < 0 || y >= GameMap.getTilePrintSize() *MAP_SIZE) {
+            throw new IndexOutOfBoundsException("Invalid tile position");
+        }
+        int yy =(int) y/GameMap.getTilePrintSize() ;
+        int xx =(int) x/GameMap.getTilePrintSize() ;
+        return tiles[yy][xx];
+    }
+
+    public boolean areInBound(float x, float y){
+        if (x <= 0 || x >= GameMap.getTilePrintSize() *MAP_SIZE || y <= 0 || y >= GameMap.getTilePrintSize() *MAP_SIZE) {
+            return false;
+        }
+        return true;
+    }
+
+    public Tile getTileByPosition(int x, int y) {
         if (x < 0 || x >= MAP_SIZE || y < 0 || y >= MAP_SIZE) {
             throw new IndexOutOfBoundsException("Invalid tile position");
         }
@@ -177,50 +243,78 @@ public class GameMap {
         owner.getFarm().getDoorPositions().add(new Position(startX + FARM_SIZE - 1, middleY, 1, 1));
     }
 
-    public void generateRandomThings() {
-        generateWoodAndStone();
-        generateMineralsInMine(App.getGame().getCurrentPlayer().getFarm().getMine().getBuildingMap());
-        generateForagingSeeds();
-        generateForagingTrees();
-        generateForagingCrops();
+    public void generateRandomThings(int randomPercent) {
+        generateWoodAndStone(randomPercent);
+        generateMineralsInMine(App.getGame().getCurrentPlayer().getFarm().getMine(), 10*randomPercent);
+        generateForagingSeeds(randomPercent);
+        generateForagingTrees(randomPercent);
+        generateForagingCrops(randomPercent);
     }
 
-    private void generateWoodAndStone() {
+    public void generateRandomThings(List<Player> players, int randomPercent) {
+        generateWoodAndStone(10*randomPercent);
+        generateForagingSeeds(10*randomPercent);
+        generateForagingTrees(6*randomPercent);
+        generateForagingCrops(10*randomPercent);
+        for(Player p : players){
+            generateMineralsInMine(p.getFarm().getMine(), randomPercent);
+        }
+    }
+
+    private void generateWoodAndStone(int randomPercent) {
         Random random = new Random();
         for (int y = 0; y < MAP_SIZE; y++) {
             for (int x = 0; x < MAP_SIZE; x++) {
-                Tile tile = tiles[y][x];
-
                 // Check if the tile is EMPTY or GRASS and has no item
-                if ((tile.getTileKind() == TileKind.empty || tile.getTileKind() == TileKind.grass) && tile.getItem() == null) {
+                if ((tiles[y][x].getTileKind() == TileKind.empty || tiles[y][x].getTileKind() == TileKind.grass) && tiles[y][x].getItem() == null) {
                     // 1% chance to place a stone or wood
-                    if (random.nextInt(100) < 1) {
-                        if (random.nextBoolean()) {
-                            tile.setItem(ForagingMineral.Stone.clone()); // Place a stone
-                        } else {
-                            tile.setItem(ForagingMineral.Wood.clone()); // Place wood
+                    if (random.nextInt(randomPercent) < 1) {
+                        ForagingMineral randomForagingMineral;
+                        int h = random.nextInt(3);
+                        if (h == 0) {
+                            randomForagingMineral = ForagingMineral.Stone.clone();
+                            randomForagingMineral.getPosition().setX(x);
+                            randomForagingMineral.getPosition().setY(y);
+                            tiles[y][x].setItem(randomForagingMineral); // Place a stone
                         }
+                        else if (h == 1) {
+                            randomForagingMineral = ForagingMineral.Fiber.clone();
+                            randomForagingMineral.getPosition().setX(x);
+                            randomForagingMineral.getPosition().setY(y);
+                            tiles[y][x].setItem(randomForagingMineral);
+                        }
+                        else {
+                            randomForagingMineral = ForagingMineral.Wood.clone();
+                            randomForagingMineral.getPosition().setX(x);
+                            randomForagingMineral.getPosition().setY(y);
+                            tiles[y][x].setItem(randomForagingMineral); // Place wood
+                        }
+                        tiles[y][x].setTileKind(TileKind.foraging);
                     }
                 }
             }
         }
     }
 
-    public void generateMineralsInMine(Tile[][] mineTiles) {
+    public void generateMineralsInMine(Tile[][] mineTiles, int randomPercent) {
         Random random = new Random();
         for (int y = 0; y < mineTiles.length; y++) {
             for (int x = 0; x < mineTiles[y].length; x++) {
-                Tile tile = mineTiles[y][x];
 
                 // Check if the tile is EMPTY and has no item
-                if (tile.getTileKind() == TileKind.empty && tile.getItem() == null) {
+                if (mineTiles[y][x].getTileKind() == TileKind.mine && mineTiles[y][x].getItem() == null) {
                     // 0.1% chance to place a random ForagingMineral
-                    if (random.nextInt(1000) < 1) {
+                    if (random.nextInt(randomPercent) < 1) {
+                        System.out.println(mineTiles[y][x].getPosition().getX()+ "ajncabdcbw"+mineTiles[y][x].getPosition().getY());
+
                         // Select a random mineral from the list of remaining minerals
-                        ForagingMineral randomMineral = ForagingMineral.minerals.get(random.nextInt(ForagingMineral.minerals.size()));
-                        if (randomMineral != ForagingMineral.Wood && randomMineral != ForagingMineral.Stone) {
-                            // Place the random mineral in the tile
-                            tile.setItem(randomMineral.clone());
+                        ForagingMineral randomMineral = ForagingMineral.minerals.get(random.nextInt(ForagingMineral.minerals.size())).clone();
+                        if(randomMineral.getItemType() != ItemType.Wood && randomMineral.getItemType() != ItemType.Stone &&
+                            randomMineral.getItemType() != ItemType.Fiber) {
+                            tiles[mineTiles[y][x].getPosition().getY()][mineTiles[y][x].getPosition().getX()].setTileKind(TileKind.foragingMineral);
+                            randomMineral.getPosition().setX(mineTiles[y][x].getPosition().getX());
+                            randomMineral.getPosition().setY(mineTiles[y][x].getPosition().getY());
+                            mineTiles[y][x].setItem(randomMineral);
                         }
                     }
                 }
@@ -228,25 +322,25 @@ public class GameMap {
         }
     }
 
-    public void generateForagingSeeds() {
+    public void generateForagingSeeds(int randomPercent) {
         // Temporary season variable (replace with actual game season later)
         Season currentSeason = App.getGame().dateAndTime.getSeason();
 
         Random random = new Random();
         for (int y = 0; y < MAP_SIZE; y++) {
             for (int x = 0; x < MAP_SIZE; x++) {
-                Tile tile = tiles[y][x];
 
                 // Check if the tile is PLOWED and has no item
-                if (tile.getTileKind() == TileKind.plowed && tile.getItem() == null) {
+                if (tiles[y][x].getTileKind() == TileKind.plowed && tiles[y][x].getItem() == null) {
                     // 1% chance to place a ForagingSeed
-                    if (random.nextInt(100) < 1) {
+                    if (random.nextInt(randomPercent) < 1) {
                         // Select a random ForagingSeed
                         ForagingSeed randomSeed = ForagingSeed.foragingSeeds.get(random.nextInt(ForagingSeed.foragingSeeds.size()));
-
+                        PlantAbleCrop plantAbleCrop = PlantAbleCrop.getCropBySeed(randomSeed.getItemType());
+                        tiles[y][x].setItem(plantAbleCrop.clone());
                         // Check if the current season is valid for the seed
                         if (randomSeed.getSeasons().contains(currentSeason)) {
-                            tile.setItem(randomSeed.clone());
+                            tiles[y][x].setItem(randomSeed.clone());
                         }
                     }
                 }
@@ -254,25 +348,27 @@ public class GameMap {
         }
     }
 
-    public void generateForagingTrees() {
+    public void generateForagingTrees(int randomPercent) {
         // Temporary season variable (replace with actual game season later)
         Season currentSeason = App.getGame().dateAndTime.getSeason();
 
         Random random = new Random();
         for (int y = 0; y < MAP_SIZE; y++) {
             for (int x = 0; x < MAP_SIZE; x++) {
-                Tile tile = tiles[y][x];
 
                 // Check if the tile is EMPTY or GRASS and has no item
-                if ((tile.getTileKind() == TileKind.empty || tile.getTileKind() == TileKind.grass) && tile.getItem() == null) {
+                if ((tiles[y][x].getTileKind() == TileKind.empty || tiles[y][x].getTileKind() == TileKind.grass) && tiles[y][x].getItem() == null) {
                     // 1% chance to place a ForagingTree
-                    if (random.nextInt(100) < 1) {
+                    if (random.nextInt(randomPercent) < 1) {
                         // Select a random ForagingTree
-                        ForagingTree randomTree = ForagingTree.trees.get(random.nextInt(ForagingTree.trees.size()));
+                        ForagingTree randomTree = ForagingTree.trees.get(random.nextInt(ForagingTree.trees.size())).clone();
 
                         // Check if the current season is valid for the tree
                         if (randomTree.getSeasons().contains(currentSeason)) {
-                            tile.setItem(randomTree.clone());
+                            tiles[y][x].setTileKind(TileKind.foraging);
+                            randomTree.getPosition().setX(x);
+                            randomTree.getPosition().setY(y);
+                            tiles[y][x].setItem(randomTree);
                         }
                     }
                 }
@@ -280,7 +376,7 @@ public class GameMap {
         }
     }
 
-    public void generateForagingCrops() {
+    public void generateForagingCrops(int randomPercent) {
         // Temporary season variable (replace with actual game season later)
         Season currentSeason = App.getGame().dateAndTime.getSeason();
 
@@ -292,7 +388,7 @@ public class GameMap {
                 // Check if the tile is EMPTY or GRASS and has no item
                 if ((tile.getTileKind() == TileKind.empty || tile.getTileKind() == TileKind.grass) && tile.getItem() == null) {
                     // 1% chance to place a ForagingCrop
-                    if (random.nextInt(100) < 1) {
+                    if (random.nextInt(randomPercent) < 1) {
                         // Select a random ForagingCrop
                         ForagingCrop randomCrop = ForagingCrop.foragingCrops.get(random.nextInt(ForagingCrop.foragingCrops.size()));
 
@@ -366,10 +462,11 @@ public class GameMap {
                 if (isInside(x, y, farm.getHouse().getPosition())) {
                     return farm.getHouse();
                 } else if (isInside(x, y, farm.getGreenHouse().getPosition())) {
-                    return farm.getGreenHouse();
-                } else if (isInside(x, y, farm.getMine().getPosition())) {
-                    return farm.getMine();
-                } else if (isInside(x, y, farm.getLake().getPosition())) {
+                    return farm.getGreenHouse();}
+//                } else if (isInside(x, y, farm.getMine())) {
+//                    return farm.getMine();
+//                }
+                else if (isInside(x, y, farm.getLake().getPosition())) {
                     return farm.getLake();
                 }
             }

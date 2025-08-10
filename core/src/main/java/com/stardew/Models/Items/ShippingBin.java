@@ -1,19 +1,27 @@
 package com.stardew.Models.Items;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.stardew.Enums.ItemType;
+import com.stardew.Main;
 import com.stardew.Models.Game.App;
+import com.stardew.Models.Game.Game;
+import com.stardew.Models.Game.GameAssetManager;
+import com.stardew.Models.Game.Player;
+import com.stardew.Models.GameMap;
+import com.stardew.Views.TabMenus.SellingMenu;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class ShippingBin extends Item{
-    private final Map<Item, Integer> items = new HashMap<>();
+    private final Map<Item, Player> items = new HashMap<>();
+    private SellingMenu sellingMenu = new SellingMenu();
 
     private ShippingBin(ItemType itemType){
         super(itemType);
     }
 
-    public Map<Item, Integer> getItems() {
+    public Map<Item, Player> getItems() {
         return items;
     }
 
@@ -23,14 +31,31 @@ public class ShippingBin extends Item{
     }
 
     @Override
-    public void update(){
-        if(App.getGame().dateAndTime.isADayPassed()) {
-            if (App.getGame().dateAndTime.isADayPassed()) {
-                for (Item item : items.keySet()) {
-                    App.getGame().getCurrentPlayer().personalInfo.updateGold((int) (items.get(item) * item.getBaseSellPrice()));
+    public void update(float delta){
+        if (App.getGame().dateAndTime.isADayPassed()) {
+            for (Item item : items.keySet()) {
+                System.out.println((int) item.getBaseSellPrice()+" mm");
+                if(App.getGame().getItemByItemType(item.getItemType()) != null){
+                    items.get(item).personalInfo.updateGold((int) App.getGame().getItemByItemType(item.getItemType()).getBaseSellPrice());
                 }
+                else
+                    items.get(item).personalInfo.updateGold((int) item.getBaseSellPrice());
             }
+            items.clear();
         }
+    }
+
+    public void setUpSellingMenu(){
+        Main.main.setScreen(sellingMenu);
+    }
+
+
+    @Override
+    public Sprite getSprite(){
+        sprite = new Sprite(GameAssetManager.getShippingBinSprite());
+        sprite.setSize((float) (sprite.getWidth()*2.5), (float) (sprite.getHeight()*1.5));
+        sprite.setPosition(position.getX()* GameMap.getTilePrintSize(), position.getY()*GameMap.getTilePrintSize());
+        return sprite;
     }
 
     public static final ShippingBin ShippingBin = new ShippingBin(ItemType.ShippingBin);

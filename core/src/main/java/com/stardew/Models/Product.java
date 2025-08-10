@@ -56,6 +56,16 @@ public class Product{
         return secondaryPrice;
     }
 
+
+    public void purchased(int quantity){
+        availableToday = Math.max(availableToday-quantity, 0);
+    }
+
+    public boolean isAvailableToday(){
+        if(availableToday <= 0)
+            return false;
+        return true;
+    }
     public Season getSeason() {
         return season;
     }
@@ -75,7 +85,7 @@ public class Product{
         add(new Product(ItemType.Rabbit, 8000, 2));
         add(new Product(ItemType.Dino, 14000, 2));
         add(new Product(ItemType.Pig, 16000, 2));
-        add(new Product(ItemType.Hay, 50, 200000));
+//        add(new Product(ItemType.Hay, 50, 200000));
         add(new Product(ItemType.MilkPail, 1000, 1));
         add(new Product(ItemType.Shear, 1000, 1));
     }};
