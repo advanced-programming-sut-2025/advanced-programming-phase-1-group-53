@@ -8,6 +8,6 @@ public class Main extends Game {
 
     @Override
     public void create() {
-        setScreen(new LoginRegisterMenu(main));  // Or any other AppMenu subclass
+        setScreen(new LoginRegisterMenu(this));  // Or any other AppMenu subclass
     }
 }

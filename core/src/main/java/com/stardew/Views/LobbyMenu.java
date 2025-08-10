@@ -3,10 +3,7 @@ package com.stardew.Views;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.stardew.Controllers.LobbyController;
@@ -19,44 +16,38 @@ import java.util.Scanner;
 import java.util.UUID;
 
 public class LobbyMenu extends AppMenu {
-    private String name;
-    private String id;
-    private ArrayList<Player> players;
+    private final String name;
+    private final String id;
+    private final ArrayList<Player> players;
     private final Player admin;
+    private final boolean isPrivate;
+    private final boolean isVisible;
     private String password;
-    private boolean isPrivate;
-    private boolean isVisible;
-    private final LobbyController controller = new LobbyController();
-    private Game main;
-    private Table table;
-    private Window window;
     private SelectBox<String> playerSelectBox;
     private Label playersCountLabel;
+    private final LobbyController controller = new LobbyController();
 
-    public LobbyMenu(Player admin, String name, boolean isVisible) {
-        this.main = main;
-        this.skin = getSkin();
+    public LobbyMenu(Player admin, String name, boolean isVisible, Game main) {
+        super(main);
         this.name = name;
         this.admin = admin;
         this.id = UUID.randomUUID().toString().substring(0, 6);
-        players = new ArrayList<>();
-        players.add(admin);
-        isPrivate = false;
+        this.players = new ArrayList<>();
+        this.players.add(admin);
+        this.isPrivate = false;
         this.isVisible = isVisible;
-        setupUI();
     }
 
-    public LobbyMenu(Player admin, String name, boolean isVisible, String password) {
-        this.main = main;
+    public LobbyMenu(Player admin, String name, boolean isVisible, Game main, String password) {
+        super(main);
         this.name = name;
         this.admin = admin;
         this.id = UUID.randomUUID().toString().substring(0, 6);
-        players = new ArrayList<>();
-        players.add(admin);
+        this.players = new ArrayList<>();
+        this.players.add(admin);
         this.password = hashPassword(password);
-        isPrivate = true;
+        this.isPrivate = true;
         this.isVisible = isVisible;
-        setupUI();
     }
 
     private String hashPassword(String password) {
@@ -66,7 +57,7 @@ public class LobbyMenu extends AppMenu {
             StringBuilder hexString = new StringBuilder();
             for (byte b : hash) {
                 String hex = Integer.toHexString(0xff & b);
-                if(hex.length() == 1) hexString.append('0');
+                if (hex.length() == 1) hexString.append('0');
                 hexString.append(hex);
             }
             return hexString.toString();
@@ -75,22 +66,17 @@ public class LobbyMenu extends AppMenu {
         }
     }
 
-    private void setupUI() {
-        table = new Table();
-        table.setFillParent(true);
-        skin = getSkin();
-        window = new Window("Lobby: " + name, skin);
-        window.setMovable(false);
-        window.setResizable(false);
-        window.pad(20);
-        window.row();
-        window.add(new Label("Lobby ID: " + id, skin)).pad(10).row();
-        window.add(new Label("Admin: " + admin.getPersonalInfo().getName(), skin)).pad(10).row();
-        playersCountLabel = new Label("Players (" + players.size() + "/4):", skin);
-        window.add(playersCountLabel).pad(10).row();
+    @Override
+    public void show() {
+        // Remove window, add items directly to table
+        table.clear();
+        table.add(new Label("Lobby ID: " + id, skin)).pad(10).row();
+        table.add(new Label("Admin: " + admin.getPersonalInfo().getName(), skin)).pad(10).row();
+        playersCountLabel = new Label("Players (" + players.size() + ")", skin);
+        table.add(playersCountLabel).pad(10).row();
         playerSelectBox = new SelectBox<>(skin);
         refreshPlayers();
-        window.add(playerSelectBox).pad(10).row();
+        table.add(playerSelectBox).pad(10).row();
         TextButton startButton = new TextButton("Start Game", skin);
         startButton.addListener(new ClickListener() {
             @Override
@@ -98,7 +84,7 @@ public class LobbyMenu extends AppMenu {
                 controller.startGame(LobbyMenu.this);
             }
         });
-        window.add(startButton).pad(10).row();
+        table.add(startButton).pad(10).row();
         TextButton leaveButton = new TextButton("Leave Lobby", skin);
         leaveButton.addListener(new ClickListener() {
             @Override
@@ -106,7 +92,7 @@ public class LobbyMenu extends AppMenu {
                 controller.leaveLobby(LobbyMenu.this);
             }
         });
-        window.add(leaveButton).pad(10).row();
+        table.add(leaveButton).pad(10).row();
         if (isAdmin()) {
             TextButton deleteButton = new TextButton("Delete Lobby", skin);
             deleteButton.addListener(new ClickListener() {
@@ -115,11 +101,8 @@ public class LobbyMenu extends AppMenu {
                     controller.deleteLobby(LobbyMenu.this);
                 }
             });
-            window.add(deleteButton).pad(10).row();
+            table.add(deleteButton).pad(10).row();
         }
-        table.add(window).expand().center();
-        stage.clear();
-        stage.addActor(table);
     }
 
     private void refreshPlayers() {
@@ -133,13 +116,11 @@ public class LobbyMenu extends AppMenu {
     }
 
     private boolean isAdmin() {
-        return admin != null && players.size() > 0 && players.get(0).equals(admin);
+        return admin != null && !players.isEmpty() && players.get(0).equals(admin);
     }
 
     @Override
     public void check(Scanner scanner) {
-        // No command-based logic
+        // No command-based logic for graphical UI
     }
-
-
 }

@@ -47,7 +47,7 @@ public class MainMenu extends AppMenu {
         newLobbyButton.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
             @Override
             public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
-                main.setScreen(new LobbyMenu(App.getCurrentPlayer(), "", true));
+                main.setScreen(new LobbyMenu(App.getCurrentPlayer(), "", true, main));
             }
         });
         table.add(newLobbyButton).pad(10).row();
