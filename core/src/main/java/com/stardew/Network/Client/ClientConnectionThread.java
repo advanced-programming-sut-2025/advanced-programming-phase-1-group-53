@@ -2,7 +2,7 @@ package com.stardew.Network.Client;
 
 import com.stardew.Network.Common.ConnectionThread;
 import com.stardew.Network.Common.Packet.*;
-import com.stardew.Network.Common.Packet.ClientPacket.LoginPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.*;
 import com.stardew.Network.Common.Packet.ServerPacket.ServerGeneralRespondPacket;
 import com.stardew.Network.Common.Packet.ServerPacket.WelcomePacket;
 
@@ -46,9 +46,44 @@ public class ClientConnectionThread extends ConnectionThread {
 
         if (packet instanceof ServerGeneralRespondPacket) {
             Packet innerPacket = ((ServerGeneralRespondPacket) packet).getReceivedPacket();
-            System.out.println("Server responding packet");
-            System.out.println("my packet: " + innerPacket.getClass().getSimpleName());
+
+            if (innerPacket instanceof LoginPacket) {
+
+            } else if (innerPacket instanceof CreateLobbyPacket) {
+
+            } else if (innerPacket instanceof GiveFlowerPacket) {
+
+            } else if (innerPacket instanceof HuggingPacket) {
+
+            } else if (innerPacket instanceof JoinLobbyPacket) {
+
+            } else if (innerPacket instanceof LeaveLobbyPacket) {
+
+            } else if (innerPacket instanceof MarrigePacket) {
+
+            } else if (innerPacket instanceof ReactionPacket) {
+
+            } else if (innerPacket instanceof RefreshLobbyPacket) {
+
+            } else if (innerPacket instanceof RestartGamePacket) {
+
+            } else if (innerPacket instanceof SaveGamePacket) {
+
+            } else if (innerPacket instanceof SendMessagePacket) {
+
+            } else if (innerPacket instanceof SignInPacket) {
+
+            } else if (innerPacket instanceof SignUpPacket) {
+
+            } else if (innerPacket instanceof StartGamePacket) {
+
+            } else if (innerPacket instanceof StartVotingPacket) {
+
+            } else if (innerPacket instanceof VotePacket) {
+
+            }
         }
-        return true;
+
+        return false;
     }
 }

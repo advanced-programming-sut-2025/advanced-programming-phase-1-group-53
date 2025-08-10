@@ -2,8 +2,7 @@ package com.stardew.Network.Server;
 
 import com.stardew.Network.Common.ConnectionThread;
 import com.stardew.Network.Common.Packet.*;
-import com.stardew.Network.Common.Packet.ClientPacket.LoginPacket;
-import com.stardew.Network.Common.Packet.ClientPacket.PressKeyPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.*;
 import com.stardew.Network.Common.Packet.ServerPacket.ServerGeneralRespondPacket;
 import com.stardew.Network.Common.Packet.ServerPacket.WelcomePacket;
 
@@ -51,10 +50,41 @@ public class ServerConnectionThread extends ConnectionThread {
             ServerGeneralRespondPacket respondPacket = new ServerGeneralRespondPacket(true, packet);
             this.sendPacket(respondPacket);
             return true;
+
+        } else if (packet instanceof GiveFlowerPacket) {
+
+        } else if (packet instanceof HuggingPacket) {
+
+        } else if (packet instanceof JoinLobbyPacket) {
+
+        } else if (packet instanceof LeaveLobbyPacket) {
+
+        } else if (packet instanceof MarrigePacket) {
+
+        } else if (packet instanceof ReactionPacket) {
+
+        } else if (packet instanceof RefreshLobbyPacket) {
+
+        } else if (packet instanceof RestartGamePacket) {
+
+        } else if (packet instanceof SaveGamePacket) {
+
+        } else if (packet instanceof SendMessagePacket) {
+
+        } else if (packet instanceof SignInPacket) {
+
+        } else if (packet instanceof SignUpPacket) {
+
+        } else if (packet instanceof StartGamePacket) {
+
+        } else if (packet instanceof StartVotingPacket) {
+
+        } else if (packet instanceof VotePacket) {
+
+        } else if (packet instanceof CreateLobbyPacket) {
+
         }
-//        } else {
-//            return false;
-//        }
-        return true;
+        return false;
     }
+
 }

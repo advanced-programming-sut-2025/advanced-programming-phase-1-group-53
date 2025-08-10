@@ -4,14 +4,14 @@ import com.stardew.Network.Common.Packet.Packet;
 import com.stardew.Network.Common.Packet.PacketSender;
 import com.stardew.Network.Common.Packet.PacketType;
 
-public class CreatLobby extends Packet {
+public class CreateLobbyPacket extends Packet {
     public final String name;
     public final String Id;
     public final String password;
     public final boolean isPrivate;
     public final boolean isVisible;
-    public CreatLobby(String senderId, String senderUsername, String name, String Id, String password, boolean isPrivate,
-                      boolean isVisible) {
+    public CreateLobbyPacket(String senderId, String senderUsername, String name, String Id, String password, boolean isPrivate,
+                             boolean isVisible) {
         super(senderId, senderUsername);
         this.name = name;
         this.Id = Id;
