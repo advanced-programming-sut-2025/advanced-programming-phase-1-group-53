@@ -1,6 +1,7 @@
 package com.stardew.Models.Abilities;
 
 import com.stardew.Enums.ItemType;
+import com.stardew.Models.Energy;
 import com.stardew.Models.Game.App;
 import com.stardew.Models.Items.Buildings.House;
 import com.stardew.Models.Items.Food;
@@ -40,11 +41,6 @@ public class Cooking {
     }
 
     public void prepare(ItemType itemType){
-        if(!(App.getGame().getGameMap().findBuilding(App.getGame().getCurrentPlayer().position.getX(),
-                App.getGame().getCurrentPlayer().position.getY()) instanceof House house)) {
-            MessageManager.getMessage(Result.failure("You are not in your house."));
-            return;
-        }
 
         if(App.getGame().getCurrentPlayer().backpack.isInventoryFull()){
             MessageManager.getMessage(Result.failure("Not enough space in inventory."));
@@ -58,9 +54,12 @@ public class Cooking {
         }
 
         Food food = (Food) item;
-        if(!(App.getGame().getCurrentPlayer().backpack.areItemsAvailable(food.getRecipe().getIngredients()) ||
-        house.getRefrigerator().areItemsAvailable(food.getRecipe().getIngredients()))) {
-            MessageManager.getMessage(Result.failure("Not enough material inside refrigerator and inventory."));
+        if(!(App.getGame().getCurrentPlayer().backpack.areItemsAvailable(food.getRecipe().getIngredients()))) {
+            MessageManager.getMessage(Result.failure("Not enough material inside inventory."));
+            return;
+        }
+        if(!food.getRecipe().isAvailable()){
+            MessageManager.getMessage(Result.failure("You don't have the recipe."));
             return;
         }
         if(App.getGame().getCurrentPlayer().backpack.areItemsAvailable(food.getRecipe().getIngredients())){
@@ -68,13 +67,8 @@ public class Cooking {
                 App.getGame().getCurrentPlayer().backpack.getItems().compute(item1, (k, v) -> (v-food.getRecipe().getIngredients().get(item1)));
             }
         }
-        if(house.getRefrigerator().areItemsAvailable(food.getRecipe().getIngredients())){
-            for(Item item1 : food.getRecipe().getIngredients().keySet()){
-                house.getRefrigerator().getFoods().compute(item1, (k, v) -> (v-food.getRecipe().getIngredients().get(item1)));
-            }
-        }
         App.getGame().getCurrentPlayer().backpack.addItem(food, 1);
-        App.getGame().getCurrentPlayer().energy.updateEnergy(-3);
+        App.getGame().getCurrentPlayer().energy.updateEnergy(-3* Energy.getMaxEnergy()/200);
         MessageManager.getMessage(Result.success("Food was prepared successfully."));
     }
 
@@ -88,9 +82,9 @@ public class Cooking {
             MessageManager.getMessage(Result.failure("The item is not edible."));
             return;
         }
-        App.getGame().getCurrentPlayer().energy.updateEnergy((int)item.getEnergy());
+        App.getGame().getCurrentPlayer().energy.updateEnergy((int)item.getEnergy() * Energy.getMaxEnergy()/200);
         App.getGame().getCurrentPlayer().backpack.getItems().compute(item, (k, v) -> (v-1));
-        MessageManager.getMessage(Result.success("a "+item.getItemType().name() + " was ate."));
+        MessageManager.getMessage(Result.success("a "+item.getItemType().name() + " was eaten."));
         App.getGame().getCurrentPlayer().foodBuff.activateBuff(item.getItemType());
     }
 }

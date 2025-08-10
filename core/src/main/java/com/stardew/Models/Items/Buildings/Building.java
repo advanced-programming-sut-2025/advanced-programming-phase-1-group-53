@@ -1,12 +1,17 @@
 package com.stardew.Models.Items.Buildings;
 
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.stardew.Controllers.GameMenuController;
 import com.stardew.Enums.MapsNames;
+import com.stardew.Models.GameMap;
 import com.stardew.Models.Position;
 import com.stardew.Models.Tile;
 import com.stardew.Enums.TileKind;
 
 public abstract class Building {
     protected final Position position;
+    protected Sprite sprite = new Sprite();
     protected final int SIZE = 10;
     protected final Tile[][] buildingMap;
     protected MapsNames mapsName; // Changed from final to non-final for flexibility
@@ -14,6 +19,27 @@ public abstract class Building {
     public Building(Position position) {
         this.position = position;
         this.buildingMap = new Tile[SIZE][SIZE];
+    }
+
+    public Building setSprite(Texture texture){
+        this.sprite = new Sprite(texture);
+        return this;
+    }
+
+    public Sprite fixSpriteCoordinatesForPrint(){
+        sprite.setX(GameMap.getTilePrintSize()*position.getX() );
+        sprite.setY(GameMap.getTilePrintSize()*position.getY());
+        sprite.setSize(GameMap.getTilePrintSize()*position.getWidth(),
+            GameMap.getTilePrintSize()*position.getHeight());
+        return sprite;
+    }
+
+    public Sprite getSprite(){
+        sprite.setX(GameMap.getTilePrintSize()*position.getX() - GameMenuController.getPrintStartX());
+        sprite.setY(GameMap.getTilePrintSize()*position.getY() - GameMenuController.getPrintStartY());
+        sprite.setSize(GameMap.getTilePrintSize()*position.getWidth(),
+            GameMap.getTilePrintSize()*position.getHeight());
+        return sprite;
     }
 
     public Position getPosition() {

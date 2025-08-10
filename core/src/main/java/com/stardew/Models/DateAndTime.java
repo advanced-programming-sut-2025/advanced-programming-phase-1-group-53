@@ -3,14 +3,17 @@ package com.stardew.Models;
 import com.stardew.Enums.Season;
 import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.Player;
+import com.stardew.Views.GameMenu;
 
 public class DateAndTime {
-    private long passedHours;
-    private int hour;
+    private final static int REAL_SECOND_TO_GAME_SECOND_COEFFICIENT = 12;
+    private float passedHours;
+    private float hour;
     private int day;
     private Season season;
     private int year;
-    private long lastUpdateTime;// in hour
+    private long lastUpdateTime;
+    private boolean isADayPassed = false;// in hour
 
     public DateAndTime(){
         day = 1;
@@ -23,7 +26,8 @@ public class DateAndTime {
 
     public void updateTime(){
         if(hour > 24){
-            day += hour/24;
+            isADayPassed = true;
+            day += (int)hour/24;
             hour = hour % 24;
         }
         if(day > 28){
@@ -34,10 +38,20 @@ public class DateAndTime {
             }
             season = Season.values()[(seasonsPasses + season.ordinal())%4];
         }
+        if(18<hour && hour<24){
+            GameMenu.getInstance().setGettingDark(true);
+        }
+        else if(6<hour && hour<14){
+            GameMenu.getInstance().setGettingLight(true);
+        }
         lastUpdateTime++;
     }
 
-    public void timeCheat(int hour){
+    public static float convertRealSecondToGameMinute(float second){
+        return second/REAL_SECOND_TO_GAME_SECOND_COEFFICIENT;
+    }
+
+    public void timeCheat(float hour){
         if(hour <= 0){
             return;
         }
@@ -92,21 +106,32 @@ public class DateAndTime {
     }
 
     public boolean isADayPassed(){
-        if(lastUpdateTime % 24 == 0)
-            return true;
-        return false;
+        return isADayPassed;
     }
 
-    public long getDiff() {
+    public float getDiff() {
         return passedHours - lastUpdateTime;
     }
 
-    public int getHour() {
+    public float getHour() {
         return hour;
     }
 
     public int getDay() {
         return day;
+    }
+
+    public int getAllDaysPassed(){
+        int seasons = (year-1) * 4;
+        seasons += season.ordinal();
+        return day+seasons*28;
+    }
+
+    public boolean isTimeToSleep(){
+        if(hour>22 || hour < 6){
+            return true;
+        }
+        return false;
     }
 
     public Season getSeason() {
@@ -121,4 +146,7 @@ public class DateAndTime {
         return lastUpdateTime;
     }
 
+    public void setADayPassed(boolean ADayPassed) {
+        isADayPassed = ADayPassed;
+    }
 }

@@ -13,7 +13,7 @@ public class PlantAbleCrop extends Plant {
     private int remainingGrowthTimes;
     private final int[] growthStages;
     private int currentGrowthStage = 0;
-    private long startTimeOfCurrentGrowth;
+    private int startTimeOfCurrentGrowth;
     private final ArrayList<Season> seasons;
     private final boolean canBecomeGiant;
     private boolean isReadyForHarvest = false;
@@ -78,7 +78,7 @@ public class PlantAbleCrop extends Plant {
         PlantAbleCrop plantAbleCrop = new PlantAbleCrop(this.getItemType(), this.sourceSeed, this.remainingGrowthTimes, this.growthStages, this.seasons, this.canBecomeGiant);
         if(isEdible())
             plantAbleCrop.makeEdible(this.energy);
-        plantAbleCrop.startTimeOfCurrentGrowth = App.getGame().dateAndTime.getTime();
+        plantAbleCrop.startTimeOfCurrentGrowth = App.getGame().dateAndTime.getAllDaysPassed();
         return plantAbleCrop.makeSellPrice(baseSellPrice);
     }
 
@@ -119,20 +119,21 @@ public class PlantAbleCrop extends Plant {
             return;
         remainingGrowthTimes --;
         currentGrowthStage = 0;
-        startTimeOfCurrentGrowth = App.getGame().dateAndTime.getTime();
+        startTimeOfCurrentGrowth = App.getGame().dateAndTime.getAllDaysPassed();
         isReadyForHarvest = false;
         notWateredDays = 0;
     }
 
-    public void update(){
+    @Override
+    public void update(float delta){
         if(!App.getGame().dateAndTime.isADayPassed())
             return;
         if(currentGrowthStage >= growthStages.length) {
             isReadyForHarvest = true;
             return;
         }
-        if(App.getGame().dateAndTime.getTime() - startTimeOfCurrentGrowth >=( growthStages[currentGrowthStage] * 24)){
-            startTimeOfCurrentGrowth = App.getGame().dateAndTime.getTime();
+        if(App.getGame().dateAndTime.getAllDaysPassed() - startTimeOfCurrentGrowth >=(growthStages[currentGrowthStage])){
+            startTimeOfCurrentGrowth = App.getGame().dateAndTime.getAllDaysPassed();
             currentGrowthStage ++;
         }
     }
@@ -150,10 +151,13 @@ public class PlantAbleCrop extends Plant {
 
     public static final PlantAbleCrop Garlic = new PlantAbleCrop(ItemType.Garlic,
             ForagingSeed.GarlicSeeds, 1, new int[]{1,1,1,1}, Plant.spring, false).makeEdible(20).makeSellPrice(60);
-
-    public static final PlantAbleCrop GreenBean = new PlantAbleCrop(ItemType.GreenBean,
-            ForagingSeed.BeanStarter, 4, new int[]{1,1,1,3,4}, Plant.spring, false).makeEdible(25).makeSellPrice(40);
-
+//TODO : beanStarter has not been defined
+//    public static final PlantAbleCrop GreenBean = new PlantAbleCrop(ItemType.GreenBean,
+//            ForagingSeed.BeanStarter, 4, new int[]{1,1,1,3,4}, Plant.spring, false).makeEdible(25).makeSellPrice(40);
+//    public static final PlantAbleCrop Hops = new PlantAbleCrop(ItemType.Hops,
+//            ForagingSeed.HopsStarter, 2, new int[]{1,2,3,4}, Plant.summer, false).makeEdible(45).makeSellPrice(25);
+//    public static final PlantAbleCrop Grape = new PlantAbleCrop(ItemType.Grape,
+//            ForagingSeed.GrapeStarter, 4, new int[]{1,2,3,3}, Plant.fall, false).makeEdible(38).makeSellPrice(80);
     public static final PlantAbleCrop Kale = new PlantAbleCrop(ItemType.Kale,
             ForagingSeed.KaleSeeds, 1, new int[]{2,2,1}, Plant.spring, false).makeEdible(50).makeEdible(110);
 
@@ -179,9 +183,6 @@ public class PlantAbleCrop extends Plant {
 
     public static final PlantAbleCrop Corn = new PlantAbleCrop(ItemType.Corn,
             ForagingSeed.CornSeeds, 5, new int[]{3,3,3,3}, Plant.summerFall, false).makeEdible(25).makeSellPrice(50);
-
-    public static final PlantAbleCrop Hops = new PlantAbleCrop(ItemType.Hops,
-            ForagingSeed.HopsStarter, 2, new int[]{1,2,3,4}, Plant.summer, false).makeEdible(45).makeSellPrice(25);
 
     public static final PlantAbleCrop HotPepper = new PlantAbleCrop(ItemType.HotPepper,
             ForagingSeed.PepperSeeds, 4, new int[]{1,1,1,1,1}, Plant.summer, false).makeEdible(13).makeSellPrice(40);
@@ -239,8 +240,6 @@ public class PlantAbleCrop extends Plant {
     public static final PlantAbleCrop FairyRose = new PlantAbleCrop(ItemType.FairyRose,
             ForagingSeed.FairySeeds, 1, new int[]{4,4,3}, Plant.fall, false).makeEdible(45).makeSellPrice(290);
 
-    public static final PlantAbleCrop Grape = new PlantAbleCrop(ItemType.Grape,
-            ForagingSeed.GrapeStarter, 4, new int[]{1,2,3,3}, Plant.fall, false).makeEdible(38).makeSellPrice(80);
 
     public static final PlantAbleCrop Pumpkin = new PlantAbleCrop(ItemType.Pumpkin,
             ForagingSeed.PumpkinSeeds, 1, new int[]{2,3,4,3}, Plant.fall, true).makeSellPrice(320);
@@ -276,7 +275,6 @@ public class PlantAbleCrop extends Plant {
         add(Cauliflower);
         add(CoffeeBean);
         add(Garlic);
-        add(GreenBean);
         add(Kale);
         add(Parsnip);
         add(Potato);
@@ -286,7 +284,6 @@ public class PlantAbleCrop extends Plant {
         add(Rice);
         add(Blueberry);
         add(Corn);
-        add(Hops);
         add(HotPepper);
         add(Melon);
         add(Poppy);
@@ -306,11 +303,20 @@ public class PlantAbleCrop extends Plant {
         add(Cranberry);
         add(Eggplant);
         add(FairyRose);
-        add(Grape);
+        //add(Grape);
         add(Pumpkin);
         add(Yam);
         add(SweetGemBerry);
         add(PowderMelon);
         add(AncientFruit);
     }};
+
+    public static PlantAbleCrop getCropBySeed(ItemType itemType){
+        for(PlantAbleCrop plantAbleCrop : allPlantAbleCrops){
+            if(plantAbleCrop.sourceSeed.getItemType().equals(itemType))
+                return plantAbleCrop;
+        }
+        return null;
+    }
+
 }

@@ -1,8 +1,10 @@
 package com.stardew.Models.Items.Foragings;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.stardew.Enums.ItemType;
 import com.stardew.Enums.Season;
 import com.stardew.Models.Game.App;
+import com.stardew.Models.GameMap;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -35,12 +37,22 @@ public class ForagingSeed  extends Plant{
                 "Season : " + seasons.toString();
     }
 
+    @Override
+    public Sprite getSprite(){
+        sprite.setPosition(position.getX()* GameMap.getTilePrintSize(), position.getY()* GameMap.getTilePrintSize());
+        sprite.setSize((float) (GameMap.getTilePrintSize()*0.7), (float) (GameMap.getTilePrintSize()*0.4));
+        return sprite;
+    }
+
     public static final ForagingSeed JazzSeeds = new ForagingSeed(ItemType.JazzSeed,  Plant.spring);
     public static final ForagingSeed CarrotSeeds = new ForagingSeed(ItemType.CarrotSeed,  Plant.spring);
     public static final ForagingSeed CauliflowerSeeds = new ForagingSeed(ItemType.CauliFlowerSeed,  Plant.spring);
     public static final ForagingSeed CoffeeBean = new ForagingSeed(ItemType.CoffeeBean,  Plant.spring);
     public static final ForagingSeed GarlicSeeds = new ForagingSeed(ItemType.GarlicSeed,  Plant.spring);
-    public static final ForagingSeed BeanStarter = new ForagingSeed(ItemType.BeanStarter,  Plant.spring);
+    //TODO : this doesn't have sprite in foragings/seeds
+    // public static final ForagingSeed BeanStarter = new ForagingSeed(ItemType.BeanStarter,  Plant.spring);
+    // public static final ForagingSeed HopsStarter = new ForagingSeed(ItemType.HopsStarter,  Plant.summer);
+    //    public static final ForagingSeed GrapeStarter = new ForagingSeed(ItemType.GrapeStarter,  Plant.fall);
     public static final ForagingSeed KaleSeeds = new ForagingSeed(ItemType.KaleSeed,  Plant.spring);
     public static final ForagingSeed ParsnipSeeds = new ForagingSeed(ItemType.ParsnipSeed , Plant.spring);
     public static final ForagingSeed PotatoSeeds = new ForagingSeed(ItemType.PotatoSeed,  Plant.spring);
@@ -50,7 +62,6 @@ public class ForagingSeed  extends Plant{
     public static final ForagingSeed RiceShoot = new ForagingSeed(ItemType.RiceShoot,  Plant.spring);
     public static final ForagingSeed BlueberrySeeds = new ForagingSeed(ItemType.BlueberrySeed,  Plant.summer);
     public static final ForagingSeed CornSeeds = new ForagingSeed(ItemType.CornSeed, Plant.summer);
-    public static final ForagingSeed HopsStarter = new ForagingSeed(ItemType.HopsStarter,  Plant.summer);
     public static final ForagingSeed PepperSeeds = new ForagingSeed(ItemType.PepperSeed,  Plant.summer);
     public static final ForagingSeed MelonSeeds = new ForagingSeed(ItemType.MelonSeed,  Plant.summer);
     public static final ForagingSeed PoppySeeds = new ForagingSeed(ItemType.PoppySeed,  Plant.summer);
@@ -70,7 +81,6 @@ public class ForagingSeed  extends Plant{
     public static final ForagingSeed CranberrySeeds = new ForagingSeed(ItemType.CranberrySeed, Plant.fall);
     public static final ForagingSeed EggplantSeeds = new ForagingSeed(ItemType.EggplantSeed, Plant.fall);
     public static final ForagingSeed FairySeeds = new ForagingSeed(ItemType.FairySeed,  Plant.fall);
-    public static final ForagingSeed GrapeStarter = new ForagingSeed(ItemType.GrapeStarter,  Plant.fall);
     public static final ForagingSeed PumpkinSeeds = new ForagingSeed(ItemType.PumpkinSeed,  Plant.fall);
     public static final ForagingSeed YamSeeds = new ForagingSeed(ItemType.YamSeed,  Plant.fall);
     public static final ForagingSeed RareSeed = new ForagingSeed(ItemType.RareSeed,  Plant.fall);
@@ -88,9 +98,8 @@ public class ForagingSeed  extends Plant{
     public static final ForagingSeed OrangeSapling = new ForagingSeed(ItemType.OrangeSapling,  Plant.spring);
     public static final ForagingSeed Acorns = new ForagingSeed(ItemType.Acorns, Plant.specialSeasons);
     public static final ForagingSeed MapleSeed = new ForagingSeed(ItemType.MapleSeed,  Plant.specialSeasons);
-    public static final ForagingSeed PineCone = new ForagingSeed(ItemType.PineCone,  Plant.specialSeasons);
+    public static final ForagingSeed PineCone = new ForagingSeed(ItemType.PineCone, Plant.specialSeasons);
     public static final ForagingSeed MahoganySeed = new ForagingSeed(ItemType.MahoganySeed, Plant.specialSeasons);
-    public static final ForagingSeed MushroomTreeSeed = new ForagingSeed(ItemType.MushroomTreeSeed,  Plant.specialSeasons);
 
 
 
@@ -146,8 +155,24 @@ public class ForagingSeed  extends Plant{
        add(CauliflowerSeeds);
        add(CoffeeBean);
        add(GarlicSeeds);
-       add(BeanStarter);
-       add(KaleSeeds);
+       add(MapleSeed);
+       add(MahoganySeed);
+       add(MysticTreeSeed);
+       add(PineCone);
+       add(PomegranateSapling);
+       add(CherrySapling);
+       add(BananaSapling);
+       add(MangoSapling);
+       add(AppleSapling);
+       add(ApricotSapling);
+       add(OrangeSapling);
+       add(PeachSapling);
+       add(Acorns);
+       //TODO: add these if you had to
+        // add(BeanStarter);
+        //add(HopsStarter);
+        //add(GrapeStarter);
+        add(KaleSeeds);
        add(ParsnipSeeds);
        add(PotatoSeeds);
        add(RhubarbSeeds);
@@ -156,7 +181,6 @@ public class ForagingSeed  extends Plant{
        add(RiceShoot);
        add(BlueberrySeeds);
        add(CornSeeds);
-       add(HopsStarter);
        add(PepperSeeds);
        add(MelonSeeds);
        add(PoppySeeds);
@@ -176,7 +200,6 @@ public class ForagingSeed  extends Plant{
        add(CranberrySeeds);
        add(EggplantSeeds);
        add(FairySeeds);
-       add(GrapeStarter);
        add(PumpkinSeeds);
        add(YamSeeds);
        add(RareSeed);

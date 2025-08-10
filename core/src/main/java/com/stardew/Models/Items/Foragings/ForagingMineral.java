@@ -1,12 +1,25 @@
 package com.stardew.Models.Items.Foragings;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.stardew.Enums.ItemType;
+import com.stardew.Models.Game.GameAssetManager;
+import com.stardew.Models.GameMap;
 
 import java.util.ArrayList;
 
 public class ForagingMineral  extends Plant{
     private ForagingMineral(ItemType itemType){
         super(itemType);
+        hitsRemainedToDestroy = 3;
+    }
+
+    @Override
+    public Sprite getSprite(){
+        sprite = new Sprite(GameAssetManager.getMineralSprites().get(itemType));
+        sprite.setPosition(position.getX()* GameMap.getTilePrintSize(), position.getY()*GameMap.getTilePrintSize());
+        sprite.setSize((float) (((double) GameMap.getTilePrintSize() /40)*0.7*sprite.getWidth()),
+            (float) (((double) GameMap.getTilePrintSize() /40)*0.7*sprite.getHeight()));
+        return sprite;
     }
 
     @Override

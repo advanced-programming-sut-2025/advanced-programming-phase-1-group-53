@@ -1,12 +1,18 @@
 package com.stardew.Models.Items;
 
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.stardew.Controllers.GameMenuController;
 import com.stardew.Enums.ItemType;
+import com.stardew.Models.Game.GameAssetManager;
+import com.stardew.Models.GameMap;
 import com.stardew.Models.Position;
 
 import java.util.ArrayList;
 
-public class Item extends Actor {
+public class Item {
+    protected Sprite sprite;
     protected ItemType itemType;
     protected final Position position = new Position(0, 0, 0, 0);
     protected double baseSellPrice = 0;
@@ -14,10 +20,33 @@ public class Item extends Actor {
     protected double energy = 0;
 
     public Item clone(){
-        return new Item(itemType);
+        return new Item(itemType).setSprite(this.sprite.getTexture());
     }
     public Item(ItemType itemType){
         this.itemType = itemType;
+    }
+
+
+    public Sprite fixSpriteCoordinatesForPrint(){
+        sprite.setX(position.getX()* GameMap.getTilePrintSize() - GameMenuController.getPrintStartX());
+        sprite.setX(position.getY()*GameMap.getTilePrintSize() - GameMenuController.getPrintStartY());
+        return sprite;
+    }
+
+
+    public Item setSprite(Texture texture){
+        try{
+            this.sprite = new Sprite(texture);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return this;
+    }
+
+    public Sprite getSprite(){
+        sprite = new Sprite(GameAssetManager.getItemsSprites().get(itemType));
+        return fixSpriteCoordinatesForPrint();
     }
 
     public double getBaseSellPrice() {
@@ -42,7 +71,7 @@ public class Item extends Actor {
         return isEdible;
     }
 
-    public void update(){
+    public void update(float delta){
         return;
     }
 
@@ -61,6 +90,7 @@ public class Item extends Actor {
     public static final Item SpeedGro = new Item(ItemType.SpeedGro).makeSellPrice(100);
     public static final Item DeluxeSoil = new Item(ItemType.DeluxeSoil).makeSellPrice(100);
     public static final Item QualitySoil = new Item(ItemType.QualitySoil).makeSellPrice(100);
+    public static final Item Hay = new Item(ItemType.Hay);
     public static final Item BasicSoil = new Item(ItemType.BasicSoil).makeSellPrice(100);
     public static final Item TroutSoup = new Item(ItemType.TroutSoup).makeSellPrice(250).makeEdible(100);
     public static final Item WheatFlour = new Item(ItemType.WheatFlour).makeSellPrice(125);
@@ -73,6 +103,7 @@ public class Item extends Actor {
         add(SpeedGro);
         add(DeluxeSoil);
         add(QualitySoil);
+        add(Hay);
         add(BasicSoil);
         add(TroutSoup);
         add(WheatFlour);

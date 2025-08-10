@@ -1,17 +1,30 @@
 package com.stardew.Models.Items;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.stardew.Enums.FishKind;
 import com.stardew.Enums.ItemType;
 import com.stardew.Enums.Season;
+import com.stardew.Models.Game.App;
+import com.stardew.Models.Game.GameAssetManager;
+import com.stardew.Views.TabMenus.OceanMenu;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Fish extends Item {
     private final FishKind fishKind;
     private final Season season;
+    private final float ADVANCE_OF_EACH_STEP = 1;
+    private int direction = 0;
+    private float TIME_GOING_CURRENT_WAY = 0;
+    private static Random random = new Random();
 
     private Fish(ItemType itemType, FishKind fishKind, Season season){
         super(itemType);
+        sprite = new Sprite(GameAssetManager.getFishSprites().get(itemType));
+        sprite.setPosition(random.nextInt(700), random.nextInt(150));
         this.fishKind = fishKind;
         this.season = season;
     }
@@ -24,10 +37,40 @@ public class Fish extends Item {
         return season;
     }
 
+    public void moveInMiniGame(float delta){
+
+    }
+
     @Override
     public Fish makeSellPrice(double price){
         this.baseSellPrice = price;
         return this;
+    }
+
+    @Override
+    public Sprite getSprite(){
+        return sprite;
+    }
+
+    @Override
+    public void update(float delta){
+        TIME_GOING_CURRENT_WAY+=delta;
+        if(TIME_GOING_CURRENT_WAY >= 2 ){
+            direction = new Random().nextInt(4);
+            TIME_GOING_CURRENT_WAY=0;
+        }
+        float x = 0;
+        float y = 0;
+        if(direction == 0)
+            x = -ADVANCE_OF_EACH_STEP;
+        if(direction == 1)
+            x = ADVANCE_OF_EACH_STEP;
+        if(direction == 2)
+            y=ADVANCE_OF_EACH_STEP;
+        if(direction == 3)
+            y=-ADVANCE_OF_EACH_STEP;
+        if(OceanMenu.getInstance().isMoveAllowed(sprite.getX()+x, sprite.getY()+y, false))
+            sprite.setPosition(sprite.getX()+x, sprite.getY()+y);
     }
 
     @Override

@@ -1,6 +1,9 @@
 package com.stardew.Models.Items.CraftAbleAndArtisan;
 
+import com.badlogic.gdx.Game;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.stardew.Enums.ItemType;
+import com.stardew.Models.Game.GameAssetManager;
 import com.stardew.Models.Items.CraftingRecipe;
 import com.stardew.Models.Items.Item;
 
@@ -25,6 +28,21 @@ public class CraftAble extends Item {
     }
 
     @Override
+    public Sprite getSprite(){
+        float x = -1;
+        float y = -1;
+        if(sprite != null){
+            x = sprite.getX();
+            y = sprite.getY();
+        }
+        sprite = new Sprite(GameAssetManager.getCraftableSprites().get(itemType));
+        if( x!= -1){
+            sprite.setPosition(x, y);
+        }
+        return sprite;
+    }
+
+    @Override
     public CraftAble clone(){
         return new CraftAble(itemType, craftingRecipe);
     }
@@ -35,5 +53,8 @@ public class CraftAble extends Item {
     public static final ArrayList<CraftAble> allCraftables = new ArrayList<>(){{
         add(GrassStarter);
         add(MysticTreeSeed);
+        addAll(Bomb.allBombs);
+        addAll(ScareCrow.allScareCrows);
+        addAll(Sprinkler.allSprinklers);
     }};
 }
