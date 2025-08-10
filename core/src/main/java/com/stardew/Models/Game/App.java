@@ -3,6 +3,8 @@ package com.stardew.Models.Game;
 import com.stardew.Controllers.GameMenuController;
 import com.stardew.Enums.Gender;
 import com.stardew.Enums.Menu;
+import com.stardew.Main;
+import com.stardew.Views.AppMenu;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +16,7 @@ public class App {
     //TODO: fix into multiplayer
     private static Player currentPlayer = null;
     private static App app = null;
-    private static Menu currentMenu = Menu.gameMenu;
+    private static AppMenu currentMenu = (AppMenu) Main.main.getScreen();
     private static Game game;
     private final ArrayList<Player> players = new ArrayList<>();
     private final ArrayList<Game> games = new ArrayList<>();

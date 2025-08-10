@@ -1,7 +1,6 @@
 package com.stardew.Views;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
@@ -9,8 +8,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.stardew.Controllers.SignUpMenuController;
-
-import java.util.Scanner;
 
 public class SignUpMenu extends AppMenu {
 
@@ -33,7 +30,7 @@ public class SignUpMenu extends AppMenu {
     }
 
     @Override
-    public void check(Scanner scanner) {
+    public void check(String scanner) {
         // Not used for GUI
     }
 

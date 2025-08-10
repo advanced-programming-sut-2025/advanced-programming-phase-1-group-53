@@ -1,7 +1,6 @@
 package com.stardew.Views;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -37,7 +36,7 @@ public class PersonalInfoScreen extends AppMenu {
     }
 
     @Override
-    public void check(java.util.Scanner scanner) {
+    public void check(String scanner) {
     }
 
     @Override

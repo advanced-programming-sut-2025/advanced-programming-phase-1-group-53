@@ -2,8 +2,6 @@ package com.stardew.Views;
 
 import com.badlogic.gdx.Game;
 
-import java.util.Scanner;
-
 public class ExitMenu extends AppMenu {
 
     public ExitMenu(Game main) {
@@ -11,7 +9,7 @@ public class ExitMenu extends AppMenu {
     }
 
     @Override
-    public void check(Scanner scanner) {}
+    public void check(String scanner) {}
 
     @Override
     public void show() {

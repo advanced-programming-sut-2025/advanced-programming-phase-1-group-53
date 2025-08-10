@@ -6,8 +6,6 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -17,25 +15,29 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.Gdx;
 import com.stardew.Controllers.GameMenuController;
 import com.stardew.Controllers.ShareController;
 import com.stardew.Enums.GameMenuCommand;
+import com.stardew.Enums.ItemType;
+import com.stardew.Enums.TileKind;
+import com.stardew.Main;
+import com.stardew.Models.Energy;
+import com.stardew.Models.Game.App;
+import com.stardew.Models.GameMap;
+import com.stardew.Models.Items.*;
+import com.stardew.Models.Items.CraftAbleAndArtisan.Artisan;
+import com.stardew.Models.MessageManager;
+import com.stardew.Models.Tile;
+import com.stardew.Views.TabMenus.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 import java.util.regex.Matcher;
 
-public class GameMenu extends AppMenu {
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.addListener;
-
-public class GameMenu implements AppMenu, InputProcessor {
+public class GameMenu extends AppMenu implements InputProcessor {
     private static float TOTAL_TIME_SPENT = 0;
     private static int SCREEN_WIDTH;
     private static int SCREEN_HEIGHT;
@@ -83,8 +85,8 @@ public class GameMenu implements AppMenu, InputProcessor {
     }
 
     @Override
-    public void check(Scanner scanner) {
-        String input = scanner.nextLine().trim();
+    public void check(String scanner) {
+        String input = scanner;
         Matcher matcher;
 
         if ((matcher = GameMenuCommand.showCurrentMenu.getMatcher(input)) != null) {
@@ -187,7 +189,7 @@ public class GameMenu implements AppMenu, InputProcessor {
         } else if ((matcher = GameMenuCommand.showPlant.getMatcher(input)) != null) {
             controller.showPlant(Integer.parseInt(matcher.group("x")), Integer.parseInt(matcher.group("y")));
         } else if ((matcher = GameMenuCommand.fertilize.getMatcher(input)) != null) {
-            controller.fertilize(matcher.group("fertilizer"), matcher.group("direction"));
+//            controller.fertilize(matcher.group("fertilizer"), matcher.group("direction"));
         } else if ((matcher = GameMenuCommand.howMuchWater.getMatcher(input)) != null) {
             controller.howMuchWater();
         } else if ((matcher = GameMenuCommand.showCraftingRecipes.getMatcher(input)) != null) {
@@ -285,22 +287,29 @@ public class GameMenu implements AppMenu, InputProcessor {
 
     @Override
     public void show() {
+        table.clear();
         stage = new Stage();
-
-        for(Tile[] t : App.getGame().getGameMap().getTiles()){
-            for(Tile tt: t){
-                if(tt.getItem() != null){
-                    //System.out.println(tt.getPosition().getX()+" "+tt.getPosition().getY()+" "+tt.getTileKind()+" "+tt.getItem().getItemType());
-                }
-//                else{
-//                    System.out.println(tt.getPosition().getX()+" "+tt.getPosition().getY()+" "+tt.getTileKind()+" "+tt.getItem());
-//                }
-            }
-        }
         batch = new SpriteBatch();
-        Gdx.input.setInputProcessor(this);
         shapeRenderer = new ShapeRenderer();
-
+        Gdx.input.setInputProcessor(this);
+        Label title = new Label("Game Menu", skin);
+        table.add(title).pad(20).row();
+        TextButton playersButton = new TextButton("Players", skin);
+        playersButton.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
+            @Override
+            public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
+                showPlayersWindow();
+            }
+        });
+        table.add(playersButton).pad(10).row();
+        TextButton backButton = new TextButton("Back", skin);
+        backButton.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
+            @Override
+            public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
+                main.setScreen(new MainMenu(main));
+            }
+        });
+        table.add(backButton).pad(20).row();
         for(TextButton textButton : MessageManager.getTextButtons().keySet()){
             stage.addActor(textButton);
             MessageManager.setChanged(false);
@@ -728,30 +737,6 @@ public class GameMenu implements AppMenu, InputProcessor {
         this.showFullTiles = showFullTiles;
     }
 
-    @Override
-    public void show() {
-        table.clear();
-        Label title = new Label("Game Menu", skin);
-        table.add(title).pad(20).row();
-
-        TextButton playersButton = new TextButton("Players", skin);
-        playersButton.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
-            @Override
-            public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
-                showPlayersWindow();
-            }
-        });
-        table.add(playersButton).pad(10).row();
-
-        TextButton backButton = new TextButton("Back", skin);
-        backButton.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
-            @Override
-            public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
-                main.setScreen(new MainMenu(main));
-            }
-        });
-        table.add(backButton).pad(20).row();
-    }
 
     private void showPlayersWindow() {
         Array<String> usernames = new Array<String>();

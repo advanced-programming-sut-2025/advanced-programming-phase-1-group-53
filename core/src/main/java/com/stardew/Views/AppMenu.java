@@ -1,14 +1,10 @@
 package com.stardew.Views;
 
 import com.badlogic.gdx.*;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.viewport.*;
-import com.stardew.Main;
-
-import java.util.Scanner;
 
 public abstract class AppMenu implements Screen {
     protected Game main;
@@ -28,7 +24,7 @@ public abstract class AppMenu implements Screen {
     protected AppMenu() {
     }
 
-    public abstract void check(Scanner scanner);
+    public abstract void check(String scanner);
 
     @Override
     public void show() {

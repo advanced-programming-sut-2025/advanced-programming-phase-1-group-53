@@ -16,12 +16,16 @@ import com.stardew.Enums.ItemType;
 import com.stardew.Models.Game.GameAssetManager;
 import com.stardew.Models.GameMap;
 import com.stardew.Network.Client.ClientApp;
-import com.stardew.Views.AppView;
+//import com.stardew.Views.AppView;
 import com.stardew.Views.GameMenu;
+import com.stardew.Views.LoginRegisterMenu;
 import com.stardew.Views.Tab;
 import com.stardew.Views.TabMenus.AbilityMenu;
 import com.stardew.Views.TabMenus.InventoryMenu;
 import com.stardew.Views.TabMenus.MapMenu;
+
+import com.badlogic.gdx.Game;
+import com.stardew.Views.LoginRegisterMenu;
 
 import java.util.Scanner;
 
@@ -31,15 +35,11 @@ public class Main extends Game {
     private SpriteBatch batch;
     public static Sprite sprite;
     public Stage stage;
-import com.badlogic.gdx.Game;
-import com.stardew.Views.LoginRegisterMenu;
-
 
     private final String serverIp = "127.0.1.1";
     private final int port = 12345;
     private final String playerId = "Player1";
 
-public class Main extends Game {
     @Override
     public void create() {
 //        stage = new Stage();
@@ -84,6 +84,6 @@ public class Main extends Game {
     public void dispose() {
         batch.dispose();
         sprite.getTexture().dispose();
-        setScreen(new LoginRegisterMenu(this));  // Or any other AppMenu subclass
+        setScreen(new LoginRegisterMenu(main));  // Or any other AppMenu subclass
     }
 }

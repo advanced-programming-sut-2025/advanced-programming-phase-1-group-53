@@ -10,6 +10,13 @@ public class ShareController {
 //        App.setCurrentMenu(Menu.exitMenu);
     }
 
+    public static void showCurrentMenu() {
+    }
+
+    public static void enterMenu(String menu) {
+
+    }
+
 //    public static void showCurrentMenu() {
 //        System.out.println(App.getCurrentMenu().toString());
 //    }

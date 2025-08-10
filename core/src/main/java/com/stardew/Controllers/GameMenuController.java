@@ -241,7 +241,7 @@ public class GameMenuController {
 
     public void exitGame() {
         App.setCurrentPlayer(App.getGame().players.get(0));
-        App.setCurrentMenu(Menu.mainMenu);
+//        App.setCurrentMenu(Menu.mainMenu);
     }
 
     public void newGame(String username1, String username2, String username3) {

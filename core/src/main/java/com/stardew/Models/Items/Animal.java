@@ -153,7 +153,7 @@ public class Animal extends Item{
     public String details(){
         StringBuilder sb = new StringBuilder();
         sb.append("Animal : "+ itemType);
-        sb.append(", Name : "+ name);
+        sb.append(", Name : ");
         sb.append("\nfriendship level : "+friendship);
         sb.append("\n is petted today : "+ isPettedToday);
         sb.append(", is fed today : "+ isFedToday);

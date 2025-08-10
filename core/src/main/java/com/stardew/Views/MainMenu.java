@@ -14,7 +14,7 @@ public class MainMenu extends AppMenu {
     }
 
     @Override
-    public void check(java.util.Scanner scanner) {
+    public void check(String scanner) {
         // Command-based input removed for graphical UI
     }
 

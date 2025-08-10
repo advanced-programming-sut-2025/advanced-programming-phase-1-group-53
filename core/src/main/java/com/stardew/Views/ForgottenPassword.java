@@ -8,10 +8,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.stardew.Controllers.ForgottenPasswordController;
-import com.stardew.Controllers.LoginRegisterMenuController;
-import com.stardew.Main;
-
-import java.util.Scanner;
 
 public class ForgottenPassword extends AppMenu{
     private final ForgottenPasswordController controller;
@@ -97,7 +93,7 @@ public class ForgottenPassword extends AppMenu{
     }
 
     @Override
-    public void check(Scanner scanner) {
+    public void check(String scanner) {
 
     }
 }
