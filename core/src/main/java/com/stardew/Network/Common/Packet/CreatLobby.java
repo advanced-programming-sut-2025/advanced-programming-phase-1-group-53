@@ -17,7 +17,7 @@ public class CreatLobby extends Packet {
     }
 
     @Override
-    public PacketType getType() { return PacketType.createLobby; }
+    public PacketType getTypeEnum() { return PacketType.createLobby; }
 
     @Override
     public PacketSender getSender() { return PacketSender.CLIENT; }

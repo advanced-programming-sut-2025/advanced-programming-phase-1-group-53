@@ -1,10 +1,7 @@
 package com.stardew.Network.Client;
 
 import com.stardew.Network.Common.ConnectionThread;
-import com.stardew.Network.Common.Packet.LoginPacket;
-import com.stardew.Network.Common.Packet.WelcomePacket;
-import com.stardew.Network.Common.Packet.Packet;
-import com.stardew.Network.Common.Packet.PacketParser;
+import com.stardew.Network.Common.Packet.*;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -42,9 +39,13 @@ public class ClientConnectionThread extends ConnectionThread {
 
     @Override
     protected boolean handlePacket(Packet packet) {
-        // اینجا پکت‌های بعدی را هندل می‌کنیم
-        // (مثلاً نمایش چت، به‌روزرسانی موقعیت، و …)
         System.out.println("Received from server: " + packet.getClass().getSimpleName());
+
+        if (packet instanceof ServerGeneralRespondPacket) {
+            Packet innerPacket = ((ServerGeneralRespondPacket) packet).getReceivedPacket();
+            System.out.println("Server responding packet");
+            System.out.println("my packet: " + innerPacket.getClass().getSimpleName());
+        }
         return true;
     }
 }

@@ -12,5 +12,5 @@ public class PressKeyPacket extends Packet {
     public PacketSender getSender() { return PacketSender.CLIENT; }
 
     @Override
-    public PacketType getType() { return PacketType.PRESSKEYPACKET; }
+    public PacketType getTypeEnum() { return PacketType.PRESSKEYPACKET; }
 }

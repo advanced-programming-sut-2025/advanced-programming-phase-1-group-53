@@ -5,7 +5,7 @@ public class LoginPacket extends Packet {
         super(senderId, "LOGIN");
     }
     @Override
-    public PacketType getType() { return PacketType.LOGIN; }
+    public PacketType getTypeEnum() { return PacketType.LOGIN; }
 
     @Override
     public PacketSender getSender() { return PacketSender.CLIENT; }

@@ -10,7 +10,7 @@ public class WelcomePacket extends Packet {
         this.clientId = clientId;
     }
     @Override
-    public PacketType getType() {
+    public PacketType getTypeEnum() {
         return PacketType.WELCOME;
     }
 

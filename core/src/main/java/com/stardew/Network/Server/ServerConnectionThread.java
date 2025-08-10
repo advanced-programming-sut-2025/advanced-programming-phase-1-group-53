@@ -41,8 +41,11 @@ public class ServerConnectionThread extends ConnectionThread {
     protected boolean handlePacket(Packet packet) {
         System.out.println("Received packet from " + getClientId() + ": " + packet.getClass().getSimpleName());
 
-        if (packet instanceof LoginPacket) {
-            // نباید دوباره لاگین دریافت کنیم
+        if (packet instanceof PressKeyPacket) {
+            String pk = PacketParser.toJson(packet);
+            System.out.println(pk);
+            ServerGeneralRespondPacket respondPacket = new ServerGeneralRespondPacket(true, packet);
+            this.sendPacket(respondPacket);
             return true;
         }
 //        } else {
