@@ -4,6 +4,7 @@ import com.stardew.Network.Common.ConnectionThread;
 import com.stardew.Network.Common.Packet.*;
 import com.stardew.Network.Common.Packet.ClientPacket.*;
 import com.stardew.Network.Common.Packet.ServerPacket.ServerGeneralRespondPacket;
+import com.stardew.Network.Common.Packet.ServerPacket.UpdateMapPacket;
 import com.stardew.Network.Common.Packet.ServerPacket.WelcomePacket;
 
 import java.io.IOException;
@@ -82,6 +83,10 @@ public class ClientConnectionThread extends ConnectionThread {
             } else if (innerPacket instanceof VotePacket) {
 
             }
+        } else if (packet instanceof UpdateMapPacket) {
+
+        } else if (packet instanceof WelcomePacket) {
+
         }
 
         return false;
