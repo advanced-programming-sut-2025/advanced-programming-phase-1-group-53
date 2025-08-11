@@ -10,6 +10,6 @@ public class DesktopLauncher {
         config.setTitle("My Game");
         config.setWindowedMode(2048, 1152);
         config.useVsync(true);
-        new Lwjgl3Application(new Main(), config);
+        new Lwjgl3Application(Main.getInstance(), config);
     }
 }

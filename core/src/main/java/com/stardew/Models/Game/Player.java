@@ -412,5 +412,9 @@ public class Player {
         App.getInstance().getPlayers().add(player);
         return new Result(true, "Player created");
     }
+
+    public String getUsername() {
+        return personalInfo.getName();
+    }
 }
 

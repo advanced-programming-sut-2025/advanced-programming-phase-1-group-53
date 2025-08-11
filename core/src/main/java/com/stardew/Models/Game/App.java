@@ -3,6 +3,7 @@ package com.stardew.Models.Game;
 import com.stardew.Controllers.GameMenuController;
 import com.stardew.Enums.Gender;
 import com.stardew.Enums.Menu;
+import com.stardew.Main;
 import com.stardew.Models.Lobby;
 
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ public class App {
     private final ArrayList<Lobby> lobbies = new ArrayList<>();
     private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private final Map<Lobby, ScheduledFuture<?>> lobbyRemovalTasks = new ConcurrentHashMap<>();
+    public static Main main = Main.getInstance();
 
     private App(){
         currentPlayer = new Player("ilia", "ii", "ii", "oo", Gender.MALE);
