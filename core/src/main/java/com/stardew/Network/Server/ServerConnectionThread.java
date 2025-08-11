@@ -1,7 +1,13 @@
 package com.stardew.Network.Server;
 
+import com.stardew.Models.Game.Player;
+import com.stardew.Models.Lobby;
+import com.stardew.Models.Result;
 import com.stardew.Network.Common.ConnectionThread;
 import com.stardew.Network.Common.Packet.*;
+import com.stardew.Network.Common.Packet.ClientPacket.*;
+import com.stardew.Network.Common.Packet.ServerPacket.ServerGeneralRespondPacket;
+import com.stardew.Network.Common.Packet.ServerPacket.WelcomePacket;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -39,15 +45,56 @@ public class ServerConnectionThread extends ConnectionThread {
 
     @Override
     protected boolean handlePacket(Packet packet) {
+        Result result;
         System.out.println("Received packet from " + getClientId() + ": " + packet.getClass().getSimpleName());
 
-        if (packet instanceof LoginPacket) {
-            // نباید دوباره لاگین دریافت کنیم
+        if (packet instanceof PressKeyPacket) {
+            String pk = PacketParser.toJson(packet);
+            System.out.println(pk);
+            ServerGeneralRespondPacket respondPacket = new ServerGeneralRespondPacket(new Result(true, "hi"), packet);
+            this.sendPacket(respondPacket);
+            return true;
+
+        } else if (packet instanceof GiveFlowerPacket) {
+
+        } else if (packet instanceof HuggingPacket) {
+
+        } else if (packet instanceof JoinLobbyPacket joinLobbyPacket) {
+            result = Lobby.addPlayer(joinLobbyPacket.playerUsername, joinLobbyPacket.lobbyId, joinLobbyPacket.password);
+            ServerApp.getInstance().broadcast(new ServerGeneralRespondPacket(result, joinLobbyPacket));
+            return true;
+        } else if (packet instanceof LeaveLobbyPacket leaveLobbyPacket) {
+            result = Lobby.removePlayer(leaveLobbyPacket.playerUsername, leaveLobbyPacket.lobbyId);
+            ServerApp.getInstance().broadcast(new ServerGeneralRespondPacket(result, leaveLobbyPacket));
+            return true;
+        } else if (packet instanceof MarrigePacket) {
+
+        } else if (packet instanceof ReactionPacket) {
+
+        } else if (packet instanceof RestartGamePacket) {
+
+        } else if (packet instanceof SaveGamePacket) {
+
+        } else if (packet instanceof SendMessagePacket) {
+
+        }  else if (packet instanceof SignUpPacket signUpPacket) {
+            result = Player.createPlayer(signUpPacket.username, signUpPacket.nickname, signUpPacket.password,
+                signUpPacket.email, signUpPacket.gender);
+            ServerApp.getInstance().broadcast(new ServerGeneralRespondPacket(result, signUpPacket));
+            return true;
+        } else if (packet instanceof StartGamePacket) {
+
+        } else if (packet instanceof StartVotingPacket) {
+
+        } else if (packet instanceof VotePacket) {
+
+        } else if (packet instanceof CreateLobbyPacket createLobbyPacket) {
+            result = Lobby.createLobby(createLobbyPacket.name, createLobbyPacket.password,
+                createLobbyPacket.isPublic, createLobbyPacket.isVisible, createLobbyPacket.ownerName);
+            ServerApp.getInstance().broadcast(new ServerGeneralRespondPacket(result, createLobbyPacket));
             return true;
         }
-//        } else {
-//            return false;
-//        }
-        return true;
+        return false;
     }
+
 }
