@@ -18,6 +18,6 @@ public class NPCDialoguePacket extends Packet {
 
     @Override
     public PacketType getTypeEnum() {
-        return PacketType.START_VOTING_PACKET;
+        return PacketType.NPC_DIALOGUE_PACKET;
     }
 }

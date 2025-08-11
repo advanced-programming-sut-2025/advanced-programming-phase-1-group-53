@@ -22,6 +22,10 @@ import com.stardew.Models.GameMap;
 import com.stardew.Models.Items.Fish;
 import com.stardew.Models.Position;
 import com.stardew.Models.Tile;
+import com.stardew.Network.Client.ClientApp;
+import com.stardew.Network.Common.Packet.ClientPacket.ClickPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.TextButtonType;
+import com.stardew.Network.Common.Packet.ClientPacket.TouchDownPacket;
 import com.stardew.Views.GameMenu;
 import com.stardew.Views.Tab;
 
@@ -242,7 +246,6 @@ public class OceanMenu extends Tab {
 
     @Override
     public boolean keyDown(int keycode){
-        //TODO packet
 
         if(keycode == Input.Keys.ESCAPE){
             Main.main.setScreen(GameMenu.getInstance());
@@ -253,7 +256,8 @@ public class OceanMenu extends Tab {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        //TODO packet
+        ClientApp.getInstance().getConnectionThread().sendPacket(new TouchDownPacket(App.getMyPlayer(), screenX, screenY, pointer, button,
+            OceanMenu.class));
 
         if(button == Input.Buttons.LEFT){
             takeRodUp = isRodOpen;

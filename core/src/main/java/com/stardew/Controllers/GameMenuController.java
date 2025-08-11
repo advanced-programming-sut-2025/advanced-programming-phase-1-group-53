@@ -799,9 +799,10 @@ public class GameMenuController {
         if (keycode == Input.Keys.Z) {
             abilities.cooking.showCookingRecipes();
         }
-        if(keycode == Input.Keys.K){
-            Main.main.setScreen(CheatMenuController.getInstance());
-        }
+        // TODO fix this if
+//        if(keycode == Input.Keys.K){
+//            Main.main.setScreen(CheatMenuController.getInstance());
+//        }
         if(keycode == Input.Keys.C){
             Main.main.setScreen(CookingMenu.getInstance());
         }

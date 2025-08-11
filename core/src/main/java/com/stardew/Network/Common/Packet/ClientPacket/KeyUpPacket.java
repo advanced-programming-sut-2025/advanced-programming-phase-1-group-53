@@ -1,5 +1,6 @@
 package com.stardew.Network.Common.Packet.ClientPacket;
 
+import com.badlogic.gdx.Screen;
 import com.stardew.Models.Game.Player;
 import com.stardew.Network.Common.Packet.Packet;
 import com.stardew.Network.Common.Packet.PacketSender;
@@ -7,9 +8,11 @@ import com.stardew.Network.Common.Packet.PacketType;
 
 public class KeyUpPacket extends Packet {
     public int keycode;
-    public KeyUpPacket(Player sender, int keycode) {
+    public String className;
+    public KeyUpPacket(Player sender, int keycode, Class<? extends Screen> clazz) {
         super(sender.personalInfo.getConnectionId(), sender.personalInfo.getName());
         this.keycode = keycode;
+        this.className = clazz.getName();
     }
 
     @Override
@@ -19,6 +22,6 @@ public class KeyUpPacket extends Packet {
 
     @Override
     public PacketType getTypeEnum() {
-        return PacketType.GIVE_FLOWER_PACKET;
+        return PacketType.KEY_UP_PACKET;
     }
 }

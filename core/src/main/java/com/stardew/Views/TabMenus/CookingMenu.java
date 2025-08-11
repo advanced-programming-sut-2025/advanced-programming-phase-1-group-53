@@ -8,11 +8,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.stardew.Controllers.GameMenuController;
 import com.stardew.Main;
+import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.GameAssetManager;
 import com.stardew.Models.Items.CraftAbleAndArtisan.Artisan;
 import com.stardew.Models.Items.CraftAbleAndArtisan.CraftAble;
 import com.stardew.Models.Items.Food;
 import com.stardew.Models.Items.Item;
+import com.stardew.Network.Client.ClientApp;
+import com.stardew.Network.Common.Packet.ClientPacket.KeyDownPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.TouchDownPacket;
 import com.stardew.Views.GameMenu;
 import com.stardew.Views.Tab;
 
@@ -105,7 +109,6 @@ public class CookingMenu extends Tab {
 
     @Override
     public boolean keyDown(int keycode) {
-        //TODO packet
 
         System.out.println(keycode);
         if(keycode == Input.Keys.ESCAPE){
@@ -117,7 +120,7 @@ public class CookingMenu extends Tab {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        //TODO packet
+        ClientApp.getInstance().getConnectionThread().sendPacket(new TouchDownPacket(App.getMyPlayer(), screenX, screenY, pointer, button, CookingMenu.class));
 
         if(button == Input.Buttons.LEFT) {
             for(int i = 0;i<allFoods.size(); i++){

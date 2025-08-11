@@ -72,7 +72,7 @@ public class NetSignupController {
     }
 
     private String finalizeRegistration(String username, String nickname, String hashedPassword, String email, Gender gender) {
-
+        return "";
     }
 
 
