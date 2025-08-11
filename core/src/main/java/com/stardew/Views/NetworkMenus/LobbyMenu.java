@@ -14,6 +14,8 @@ import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.Player;
 import com.stardew.Models.Lobby;
 import com.stardew.Models.Result;
+import com.stardew.Network.Client.ClientApp;
+import com.stardew.Network.Common.Packet.ClientPacket.CreateLobbyPacket;
 import com.stardew.Views.AppMenu;
 import com.stardew.Views.ExitMenu;
 import com.stardew.Views.MainMenu;
@@ -144,6 +146,7 @@ public class LobbyMenu extends AppMenu {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Result creationResult;
+                CreateLobbyPacket packet;
                 String name = nameField.getText();
                 String password = passwordField.getText();
                 boolean isVisible = visibilitySelectBox.getSelected().equals("visible");
@@ -160,10 +163,19 @@ public class LobbyMenu extends AppMenu {
                 }
                 if (password.isEmpty()) {
                     creationResult  = Lobby.createLobby(name, password, true, isVisible, App.getCurrentPlayer().getUsername());
+                    packet = new CreateLobbyPacket(
+                        ClientApp.getInstance().getConnectionThread().getClientId(),
+                        ,
+                        name, null, password,
+                        true, isVisible,
+
+                        );
                 }
                 else {
                     creationResult  = Lobby.createLobby(name, password, false, isVisible, App.getCurrentPlayer().getUsername());
+                    packet = new CreateLobbyPacket();
                 }
+                ClientApp.getInstance().getConnectionThread().sendPacket(packet);
                 com.badlogic.gdx.scenes.scene2d.ui.Dialog dialog = new com.badlogic.gdx.scenes.scene2d.ui.Dialog("Pop-up", skin) {
                     protected void result(Object object) {
                         this.hide();
@@ -175,14 +187,15 @@ public class LobbyMenu extends AppMenu {
             }
         });
         contentTable.add(createButton).pad(10).row();
-        TextButton closeButton = new TextButton("Close", skin);
-        closeButton.addListener(new ClickListener() {
+        TextButton refreshBtn = new TextButton("Refresh", skin);
+        refreshBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 createWindow.remove();
+                App.main.setScreen(new LobbyMenu());
             }
         });
-        contentTable.add(closeButton).pad(10).row();
+        contentTable.add(refreshBtn).pad(10).row();
         TextButton backButton = new TextButton("Back", skin);
         backButton.addListener(new ClickListener() {
             @Override

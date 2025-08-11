@@ -11,8 +11,8 @@ public class CreateLobbyPacket extends Packet {
     public final boolean isPublic;
     public final boolean isVisible;
     public final String ownerName;
-    public CreateLobbyPacket(String senderId, String senderUsername, String name, String Id, String password, boolean isPublic,
-                             boolean isVisible, String ownerName) {
+    public CreateLobbyPacket(String senderId, String senderUsername, String name, String Id,
+                             String password, boolean isPublic, boolean isVisible, String ownerName) {
         super(senderId, senderUsername);
         this.name = name;
         this.Id = Id;
