@@ -22,6 +22,6 @@ public class ClickPacket extends Packet {
 
     @Override
     public PacketType getTypeEnum() {
-        return PacketType.GIVE_FLOWER_PACKET;
+        return PacketType.CLICK_PACKET;
     }
 }

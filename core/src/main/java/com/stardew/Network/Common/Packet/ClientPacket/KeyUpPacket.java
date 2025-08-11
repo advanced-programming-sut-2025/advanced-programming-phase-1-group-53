@@ -22,6 +22,6 @@ public class KeyUpPacket extends Packet {
 
     @Override
     public PacketType getTypeEnum() {
-        return PacketType.GIVE_FLOWER_PACKET;
+        return PacketType.KEY_UP_PACKET;
     }
 }

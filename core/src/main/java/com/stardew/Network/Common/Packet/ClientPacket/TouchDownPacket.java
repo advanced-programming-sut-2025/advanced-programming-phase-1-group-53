@@ -25,6 +25,6 @@ public class TouchDownPacket extends Packet {
 
     @Override
     public PacketType getTypeEnum() {
-        return PacketType.GIVE_FLOWER_PACKET;
+        return PacketType.TOUCH_DOWN_PACKET;
     }
 }

@@ -22,7 +22,7 @@ public class CreateLobbyPacket extends Packet {
     }
 
     @Override
-    public PacketType getTypeEnum() { return PacketType.CREATE_LOBBY; }
+    public PacketType getTypeEnum() { return PacketType.CREATE_LOBBY_PACKET; }
 
     @Override
     public PacketSender getSender() { return PacketSender.CLIENT; }

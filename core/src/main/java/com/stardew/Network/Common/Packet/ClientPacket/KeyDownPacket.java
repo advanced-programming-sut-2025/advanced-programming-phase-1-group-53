@@ -9,6 +9,7 @@ import com.stardew.Network.Common.Packet.PacketType;
 public class KeyDownPacket extends Packet {
     public int keycode;
     public String className;
+
     public KeyDownPacket(Player sender, int keycode, Class<? extends Screen> clazz) {
         super(sender.personalInfo.getConnectionId(), sender.personalInfo.getName());
         this.keycode = keycode;
@@ -22,6 +23,6 @@ public class KeyDownPacket extends Packet {
 
     @Override
     public PacketType getTypeEnum() {
-        return PacketType.GIVE_FLOWER_PACKET;
+        return PacketType.KEY_DOWN_PACKET;
     }
 }
