@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.stardew.Controllers.LoginRegisterMenuController;
 import com.stardew.Models.Game.App;
+import com.stardew.Views.NetworkMenus.NetSignUpMenu;
 
 public class LoginRegisterMenu extends AppMenu {
     LoginRegisterMenuController controller = new LoginRegisterMenuController();
@@ -69,6 +70,10 @@ public class LoginRegisterMenu extends AppMenu {
         TextButton logoutBtn = new TextButton("Logout", skin);
         logoutBtn.setSize(buttonWidth, buttonHeight);
 
+        TextButton phase3Btn = new TextButton("Enter Phase 3", skin);
+        phase3Btn.setSize(2*buttonWidth, 2*buttonHeight);
+
+
         Label messageLabel = new Label("", skin);
 //        messageLabel.setColor(Color.RED);
 
@@ -123,6 +128,13 @@ public class LoginRegisterMenu extends AppMenu {
             }
         });
 
+        phase3Btn.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                App.main.setScreen(new NetSignUpMenu(App.main));
+            }
+        });
+
         // Layout
         table.add(continueBtn).width(buttonWidth).height(buttonHeight).pad(pad).row();
         table.add(messageLabel).width(fieldWidth).height(fieldHeight).pad(pad).row();
@@ -134,5 +146,6 @@ public class LoginRegisterMenu extends AppMenu {
         table.add(forgotPasswordBtn).width(buttonWidth).height(buttonHeight).pad(pad).row();
         table.add(logoutBtn).width(buttonWidth).height(buttonHeight).pad(pad).row();
         table.add(exitBtn).width(buttonWidth).height(buttonHeight).pad(pad).row();
+        table.add(phase3Btn).width(buttonWidth).height(buttonHeight).pad(pad).row();
     }
 }

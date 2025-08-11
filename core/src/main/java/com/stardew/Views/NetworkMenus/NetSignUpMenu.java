@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
+import com.stardew.Controllers.NetworkControllers.NetSignupController;
 import com.stardew.Controllers.SignUpMenuController;
 import com.stardew.Views.AppMenu;
 import com.stardew.Views.LoginRegisterMenu;
@@ -23,12 +24,12 @@ public class NetSignUpMenu extends AppMenu {
     private Label securityQuestionLabel;
     private Label messageLabel;
 
-    private SignUpMenuController controller;
+    private NetSignupController controller;
     private int securityQuestionIndex; // Store the index of the shown question
 
     public NetSignUpMenu(Game main) {
         super(main);
-        controller = new SignUpMenuController(); // Instantiate the controller
+        controller = new NetSignupController(); // Instantiate the controller
     }
 
     @Override

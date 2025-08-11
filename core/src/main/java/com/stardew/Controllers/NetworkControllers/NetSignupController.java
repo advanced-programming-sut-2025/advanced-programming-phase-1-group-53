@@ -10,6 +10,7 @@ import com.stardew.Enums.Regex;
 import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.Player;
 import com.stardew.Network.Client.ClientApp;
+import com.stardew.Network.Common.Packet.ClientPacket.SignUpPacket;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -63,16 +64,31 @@ public class NetSignupController {
                 return "Username already exists.";
             }
         }
-
-
-
         String hashedPassword = hashPassword(password);
-        newPlayer = new Player(username, nickname, hashedPassword, email, Gender.getGender(gender), ClientApp.getInstance().getConnectionThread().getClientId());
-        return finalizeRegistration(username, nickname, hashedPassword, email, Gender.getGender(gender));
+        newPlayer = new Player(
+            username, nickname, hashedPassword, email, Gender.getGender(gender),
+            ClientApp.getInstance().getConnectionThread().getClientId()
+        );
+        SignUpPacket packet = finalizeRegistration(
+                username, nickname, hashedPassword, email, Gender.getGender(gender)
+        );
+        ClientApp.getInstance().getConnectionThread().sendPacket(packet);
+        //TODO add these two lines when made sure the client responded properly
+//        players.add(newPlayer);
+//        App.setCurrentPlayer(newPlayer);
+        return "still not sure if the user is signed-up or not";
     }
 
-    private String finalizeRegistration(String username, String nickname, String hashedPassword, String email, Gender gender) {
-        return "";
+    private SignUpPacket finalizeRegistration(
+        String username, String nickname,
+        String hashedPassword, String email, Gender gender
+    ) {
+        SignUpPacket packet = new SignUpPacket(
+            ClientApp.getInstance().getConnectionThread().getClientId(),
+            null , username,
+            nickname, hashedPassword, email, gender
+        );
+        return packet;
     }
 
 
