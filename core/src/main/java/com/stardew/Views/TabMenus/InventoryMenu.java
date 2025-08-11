@@ -122,6 +122,8 @@ public class InventoryMenu extends Tab {
 
     @Override
     public boolean keyDown(int keycode) {
+        //TODO packet
+
         System.out.println(keycode);
         if(keycode == Input.Keys.ESCAPE){
             Main.main.setScreen(GameMenu.getInstance());
@@ -132,6 +134,8 @@ public class InventoryMenu extends Tab {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        //TODO packet
+
         if (button == Input.Buttons.LEFT) {
             boolean b1 = GameMenuController.coordinateCollision(screenX, 0,START_X + 350 + 100, WIDGET_WIDTH);
             boolean b2 = GameMenuController.coordinateCollision(SCREEN_HEIGHT-screenY, 0,

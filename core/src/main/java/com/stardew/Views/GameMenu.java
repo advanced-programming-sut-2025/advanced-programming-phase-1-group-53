@@ -357,6 +357,8 @@ public class GameMenu implements AppMenu, InputProcessor {
             sleep.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
+                    //TODO packet
+
                     try{
                         TimeCheatMenu.setIsCheatActivate(true);
                         float time = 6- App.getGame().dateAndTime.getHour();
@@ -374,6 +376,8 @@ public class GameMenu implements AppMenu, InputProcessor {
             cancel.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
+                    //TODO packet
+
                     try{
                         Main.main.setScreen(GameMenu.getInstance());
                     }
@@ -385,6 +389,8 @@ public class GameMenu implements AppMenu, InputProcessor {
             refrigerator.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
+                    //TODO packet
+
                     try{
                         Main.main.setScreen(RefrigeratorMenu.getInstance());
                     }
@@ -450,60 +456,12 @@ public class GameMenu implements AppMenu, InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
-        Vector2 v = GameMap.getPositionByCoordinates((int) (App.getCurrentPlayer().position.getX()),
-            (int) (App.getCurrentPlayer().position.getY()));
-        int x = (int) (v.x+App.getCurrentPlayer().getDirectionVector().x);
-        int y = (int)(v.y + App.getCurrentPlayer().getDirectionVector().y);
-        if(keycode == Input.Keys.W || keycode == Input.Keys.A ||keycode == Input.Keys.S ||
-            keycode == Input.Keys.D){
-            GameMenuController.mvc.movePlayer(keycode);
-            return true;
-        }
-        if(keycode == Input.Keys.ESCAPE){
-            Main.main.setScreen(InventoryMenu.getInstance());
-            return true;
-        }
-        if(keycode == Input.Keys.T){
-            System.out.println("t");
-            triggerThunder();
-        }
-        if(keycode == Input.Keys.H){
-            controller.setHideEnergyBar(!controller.isHideEnergyBar());
-        }
-        if(keycode == Input.Keys.Q){
-            useItem(x, y,
-                    App.getGame().getItemByItemType(App.getCurrentPlayer().backpack.getItemInHand().getItemType()));
-        }
-        if (keycode == Input.Keys.Y) {
-            controller.abilities.normalFarming.plant(ItemType.PomegranateSapling, x, y);
-        }
-        if (keycode == Input.Keys.Z) {
-            controller.abilities.cooking.showCookingRecipes();
-        }
-        if(keycode == Input.Keys.K){
-            Main.main.setScreen(CheatMenu.getInstance());
-        }
-        if(keycode == Input.Keys.C){
-            Main.main.setScreen(CookingMenu.getInstance());
-        }
-        if(keycode == Input.Keys.B){
-            Main.main.setScreen(CraftingMenu.getInstance());
-            return true;
-        }
-        if(keycode == Input.Keys.O){
-            SHOW_TILE_DETAILS = !SHOW_TILE_DETAILS;
-            if(!SHOW_TILE_DETAILS)
-                MessageManager.setShowTileDetailButton(null, 0, 0);
-        }
-        if(keycode == Input.Keys.P){
-            for(Animal animal : App.getCurrentPlayer().backpack.getAnimals()){
-                animal.pet();
-            }
-        }
-        return false;
+        //TODO packet
+
+        return controller.keyDown(keycode).success();
     }
 
-    private void useItem(int x, int y, Item item){
+    public void useItem(int x, int y, Item item){
         if(item instanceof Tool){
             controller.activity.useTool(x, y);
             ((Tool) App.getCurrentPlayer().backpack.getItemInHand()).setMoving(true);
@@ -536,6 +494,8 @@ public class GameMenu implements AppMenu, InputProcessor {
 
     @Override
     public boolean keyUp(int keycode) {
+        //TODO packet
+
         Vector2 v = GameMap.getPositionByCoordinates((int) (App.getCurrentPlayer().position.getX()),
             (int) (App.getCurrentPlayer().position.getY()));
         int x = (int) (v.x+App.getCurrentPlayer().getDirectionVector().x);
@@ -560,6 +520,8 @@ public class GameMenu implements AppMenu, InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        //TODO packet
+
         Vector2 v = GameMap.getPositionByCoordinates((int) (App.getCurrentPlayer().position.getX()),
             (int) (App.getCurrentPlayer().position.getY()));
         int x = (int) (v.x+App.getCurrentPlayer().getDirectionVector().x);
@@ -623,6 +585,8 @@ public class GameMenu implements AppMenu, InputProcessor {
 
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
+        //TODO packet
+
         mouseX = screenX;
         mouseY = SCREEN_HEIGHT - screenY;
         if(SHOW_TILE_DETAILS){
@@ -704,6 +668,14 @@ public class GameMenu implements AppMenu, InputProcessor {
         this.goingInHouse = goingInHouse;
     }
 
+
+    public boolean isSHOW_TILE_DETAILS() {
+        return SHOW_TILE_DETAILS;
+    }
+
+    public void setSHOW_TILE_DETAILS(boolean SHOW_TILE_DETAILS) {
+        this.SHOW_TILE_DETAILS = SHOW_TILE_DETAILS;
+    }
 
     public boolean isShowFullTiles() {
         return showFullTiles;

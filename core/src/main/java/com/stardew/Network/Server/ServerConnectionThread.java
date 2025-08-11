@@ -2,10 +2,12 @@ package com.stardew.Network.Server;
 
 import com.stardew.Models.Game.Player;
 import com.stardew.Models.Lobby;
+import com.stardew.Models.NPC.NPC;
 import com.stardew.Models.Result;
 import com.stardew.Network.Common.ConnectionThread;
 import com.stardew.Network.Common.Packet.*;
 import com.stardew.Network.Common.Packet.ClientPacket.*;
+import com.stardew.Network.Common.Packet.ServerPacket.NPCDialoguePacket;
 import com.stardew.Network.Common.Packet.ServerPacket.ServerGeneralRespondPacket;
 import com.stardew.Network.Common.Packet.ServerPacket.WelcomePacket;
 
@@ -92,6 +94,11 @@ public class ServerConnectionThread extends ConnectionThread {
             result = Lobby.createLobby(createLobbyPacket.name, createLobbyPacket.password,
                 createLobbyPacket.isPublic, createLobbyPacket.isVisible, createLobbyPacket.ownerName);
             ServerApp.getInstance().broadcast(new ServerGeneralRespondPacket(result, createLobbyPacket));
+            return true;
+        } else if (packet instanceof TalkToNPCPacket talkToNPCPacket) {
+            result = NPC.talk(talkToNPCPacket.NPCName, talkToNPCPacket.getSenderUsername());
+            this.sendPacket(new ServerGeneralRespondPacket(result, new NPCDialoguePacket(talkToNPCPacket.getSenderId(),
+                talkToNPCPacket.getSenderUsername(), result.message())));
             return true;
         }
         return false;

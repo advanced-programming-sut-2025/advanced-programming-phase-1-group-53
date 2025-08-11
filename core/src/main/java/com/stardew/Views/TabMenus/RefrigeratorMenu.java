@@ -150,6 +150,8 @@ public class RefrigeratorMenu extends Tab {
 
     @Override
     public boolean keyDown(int keycode) {
+        //TODO packet
+
         System.out.println(keycode);
         if(keycode == Input.Keys.ESCAPE){
             Main.main.setScreen(GameMenu.getInstance());
@@ -160,6 +162,8 @@ public class RefrigeratorMenu extends Tab {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        //TODO packet
+
         if (button == Input.Buttons.LEFT) {
             for(int i = 1; i< sprites.size(); i++){
                 Item item = inventoryItems.get(i-1);

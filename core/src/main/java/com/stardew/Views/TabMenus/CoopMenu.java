@@ -65,6 +65,8 @@ public class CoopMenu extends Tab {
         purchase.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                //TODO packet
+
                 for(CoopAndBarn coopAndBarn : App.getCurrentPlayer().backpack.getCoopsAndBarns()){
                     if(coopAndBarn.getAnimals().contains(animal)){
                         if(animal.isOut()){
@@ -91,6 +93,8 @@ public class CoopMenu extends Tab {
         collect.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                //TODO packet
+
                 for(AnimalProduct animalProduct : animal.getProducedProducts()){
                     App.getCurrentPlayer().backpack.addItem(animalProduct);
                 }
@@ -105,6 +109,8 @@ public class CoopMenu extends Tab {
         sell.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                //TODO packet
+
                 ShippingBin.ShippingBin.getItems().put(animal, App.getCurrentPlayer());
                 mustRemove.add(animal);
                 isChanged = true;
@@ -166,6 +172,8 @@ public class CoopMenu extends Tab {
             back.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
+                    //TODO packet
+
                     Main.main.setScreen(GameMenu.getInstance());
                 }
             });
@@ -186,6 +194,8 @@ public class CoopMenu extends Tab {
             nextPage.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
+                    //TODO packet
+
                     if((currentPage+1)*NUM_OF_ITEMS_IN_A_PAGE < animals.size()) {
                         currentPage++;
                         isChanged = true;
@@ -196,6 +206,8 @@ public class CoopMenu extends Tab {
             previousPage.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
+                    //TODO packet
+
                     if(currentPage > 0) {
                         currentPage--;
                         isChanged = true;

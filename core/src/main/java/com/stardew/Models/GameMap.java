@@ -10,6 +10,7 @@ import com.stardew.Models.Game.Player;
 import com.stardew.Models.Items.Foragings.*;
 import com.stardew.Models.Items.Buildings.*;
 import com.stardew.Models.Items.ShippingBin;
+import com.stardew.Models.NPC.NPC;
 
 import java.util.ArrayList;
 import java.util.HashMap;

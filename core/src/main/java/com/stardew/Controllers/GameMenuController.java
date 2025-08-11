@@ -1,9 +1,10 @@
 package com.stardew.Controllers;
 
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.stardew.Enums.*;
+import com.stardew.Main;
 import com.stardew.Models.*;
 import com.stardew.Models.Abilities.Abilities;
 import com.stardew.Models.Abilities.Activity;
@@ -21,8 +22,9 @@ import com.stardew.Models.Items.Foragings.ForagingTree;
 import com.stardew.Models.Items.Foragings.Tree;
 import com.stardew.Models.Items.Item;
 import com.stardew.Models.Items.ShippingBin;
+import com.stardew.Models.NPC.NPC;
 import com.stardew.Views.GameMenu;
-import com.stardew.Views.TabMenus.TimeCheatMenu;
+import com.stardew.Views.TabMenus.*;
 
 import java.util.*;
 
@@ -761,7 +763,63 @@ public class GameMenuController {
             return;
         }
         Player player = App.getGame().getCurrentPlayer();
-        NPC.talk(npc, player);
+//        NPC.talk(npc, player);
+    }
+
+    public Result keyDown(int keycode) {
+
+        Vector2 v = GameMap.getPositionByCoordinates((int) (App.getCurrentPlayer().position.getX()),
+            (int) (App.getCurrentPlayer().position.getY()));
+        int x = (int) (v.x+App.getCurrentPlayer().getDirectionVector().x);
+        int y = (int)(v.y + App.getCurrentPlayer().getDirectionVector().y);
+        if(keycode == Input.Keys.W || keycode == Input.Keys.A ||keycode == Input.Keys.S ||
+            keycode == Input.Keys.D){
+            GameMenuController.mvc.movePlayer(keycode);
+            return new Result(true, "MovePlayer");
+
+        }
+        if(keycode == Input.Keys.ESCAPE){
+            Main.main.setScreen(InventoryMenu.getInstance());
+            return new Result(true, "Inventory Menu");
+        }
+        if(keycode == Input.Keys.T){
+            System.out.println("t");
+            GameMenu.getInstance().triggerThunder();
+        }
+        if(keycode == Input.Keys.H){
+            setHideEnergyBar(!isHideEnergyBar());
+        }
+        if(keycode == Input.Keys.Q){
+            GameMenu.getInstance().useItem(x, y,
+                App.getGame().getItemByItemType(App.getCurrentPlayer().backpack.getItemInHand().getItemType()));
+        }
+        if (keycode == Input.Keys.Y) {
+            abilities.normalFarming.plant(ItemType.PomegranateSapling, x, y);
+        }
+        if (keycode == Input.Keys.Z) {
+            abilities.cooking.showCookingRecipes();
+        }
+        if(keycode == Input.Keys.K){
+            Main.main.setScreen(CheatMenuController.getInstance());
+        }
+        if(keycode == Input.Keys.C){
+            Main.main.setScreen(CookingMenu.getInstance());
+        }
+        if(keycode == Input.Keys.B){
+            Main.main.setScreen(CraftingMenu.getInstance());
+            return new Result(true, "Crafting Menu");
+        }
+        if(keycode == Input.Keys.O){
+            GameMenu.getInstance().setSHOW_TILE_DETAILS(!GameMenu.getInstance().isSHOW_TILE_DETAILS());
+            if(!GameMenu.getInstance().isSHOW_TILE_DETAILS())
+                MessageManager.setShowTileDetailButton(null, 0, 0);
+        }
+        if(keycode == Input.Keys.P){
+            for(Animal animal : App.getCurrentPlayer().backpack.getAnimals()){
+                animal.pet();
+            }
+        }
+        return new Result(false, "non of your business");
     }
 
     public void giftNPC(String npcName, String itemName) {

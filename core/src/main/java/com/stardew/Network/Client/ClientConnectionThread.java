@@ -6,6 +6,7 @@ import com.stardew.Models.Result;
 import com.stardew.Network.Common.ConnectionThread;
 import com.stardew.Network.Common.Packet.*;
 import com.stardew.Network.Common.Packet.ClientPacket.*;
+import com.stardew.Network.Common.Packet.ServerPacket.NPCDialoguePacket;
 import com.stardew.Network.Common.Packet.ServerPacket.ServerGeneralRespondPacket;
 import com.stardew.Network.Common.Packet.ServerPacket.UpdateMapPacket;
 import com.stardew.Network.Common.Packet.ServerPacket.WelcomePacket;
@@ -104,6 +105,14 @@ public class ClientConnectionThread extends ConnectionThread {
 
             } else if (innerPacket instanceof VotePacket) {
 
+            } else if (innerPacket instanceof NPCDialoguePacket npcDialoguePacket) {
+                if (!result.success()) {
+                    System.out.println(result.message());
+                    return true;
+                }
+                String dialogue = npcDialoguePacket.dialogue;
+                // TODO show dialogue
+                return true;
             }
             return false;
         } else if (packet instanceof UpdateMapPacket) {

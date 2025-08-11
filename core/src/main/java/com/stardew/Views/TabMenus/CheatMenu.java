@@ -47,6 +47,8 @@ public class CheatMenu extends Tab {
         submitButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                //TODO packet
+
                 try{
                     GameMenu.getInstance().check(cheatField.getText());
                     if(cheatField.getText().contains("advance")){
@@ -62,6 +64,8 @@ public class CheatMenu extends Tab {
         backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                //TODO packet
+
                 Main.main.setScreen(GameMenu.getInstance());
             }
         });
@@ -81,6 +85,8 @@ public class CheatMenu extends Tab {
 
     @Override
     public boolean keyDown(int keycode){
+        //TODO packet
+
         if(keycode == Input.Keys.ENTER){
             GameMenu.getInstance().check(cheatField.getText());
         }

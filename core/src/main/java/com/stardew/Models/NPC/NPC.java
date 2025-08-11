@@ -1,10 +1,13 @@
-package com.stardew.Models;
+package com.stardew.Models.NPC;
 
 import com.stardew.Enums.ItemType;
 import com.stardew.Enums.Season;
 import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.Player;
 import com.stardew.Models.Items.Item;
+import com.stardew.Models.Position;
+import com.stardew.Models.Request;
+import com.stardew.Models.Result;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,7 +17,7 @@ public class NPC {
     private final String name;
     private final ArrayList<Item> favoriteItems;
     private final ArrayList<Request> requests;
-    private final HashMap<Season, String> seasonalDialogue;
+    private final String personality;
     private final Position position;
 
     // Example village tile locations (must be asphalt tiles inside the village area)
@@ -25,11 +28,11 @@ public class NPC {
     public static final Position LIA_POSITION       = new Position(28, 36, 1, 1);
     public static final Position ROBIN_POSITION     = new Position(30, 37, 1, 1);
 
-    public NPC(String name, ArrayList<Item> favoriteItems, ArrayList<Request> requests, HashMap<Season, String> seasonalDialogue, Position position) {
+    public NPC(String name, ArrayList<Item> favoriteItems, ArrayList<Request> requests, String personality, Position position) {
         this.name = name;
         this.favoriteItems = favoriteItems;
         this.requests = requests;
-        this.seasonalDialogue = seasonalDialogue;
+        this.personality = personality;
         this.position = position;
     }
 
@@ -45,12 +48,7 @@ public class NPC {
                     new Request(1, App.getGame().getItemByItemType(ItemType.PumpkinPie), 0, null, 5000),
                     new Request(150, App.getGame().getItemByItemType(ItemType.Stone), 50, App.getGame().getItemByItemType(ItemType.Quartz), 0)
             )),
-            new HashMap<Season, String>() {{
-                put(Season.SPRING, "Spring is a good time to ride my bike around the valley.");
-                put(Season.SUMMER, "I like the summer nights. The cool air and the sound of frogs.");
-                put(Season.FALL, "Fall is my favorite season. The rain is calming.");
-                put(Season.WINTER, "Winter is perfect for staying inside and working on my projects.");
-            }},
+            "empty",
             SEBASTIAN_POSITION
     );
 
@@ -67,12 +65,7 @@ public class NPC {
                     new Request(1, App.getGame().getItemByItemType(ItemType.Pizza), 0, null, 5000),
                     new Request(1, App.getGame().getItemByItemType(ItemType.Coffee), 0, null, 5000)
             )),
-            new HashMap<Season, String>() {{
-                put(Season.SPRING, "Spring always makes me want to go on an adventure!");
-                put(Season.SUMMER, "Summer is perfect for exploring the caves.");
-                put(Season.FALL, "I love the mysterious feeling of fall.");
-                put(Season.WINTER, "Winter is a good time to practice my flute indoors.");
-            }},
+        "empty",
             ABIGAIL_POSITION
     );
 
@@ -87,12 +80,7 @@ public class NPC {
                     new Request(2, App.getGame().getItemByItemType(ItemType.Coffee), 1, App.getGame().getItemByItemType(ItemType.Salad), 2000),
                     new Request(5, App.getGame().getItemByItemType(ItemType.Parsnip), 0, null, 1000)
             )),
-            new HashMap<Season, String>() {{
-                put(Season.SPRING, "Spring pollen can be tough for allergies. Take care!");
-                put(Season.SUMMER, "Remember to stay hydrated in the summer heat.");
-                put(Season.FALL, "Fall is a busy time for checkups.");
-                put(Season.WINTER, "Be careful not to catch a cold this winter.");
-            }},
+        "empty",
             HARVEY_POSITION
     );
 
@@ -107,12 +95,7 @@ public class NPC {
                     new Request(10, App.getGame().getItemByItemType(ItemType.Wood), 1, App.getGame().getItemByItemType(ItemType.FruitSalad), 500),
                     new Request(1, App.getGame().getItemByItemType(ItemType.Salad), 0, null, 1000)
             )),
-            new HashMap<Season, String>() {{
-                put(Season.SPRING, "Spring inspires me to create new sculptures.");
-                put(Season.SUMMER, "I love gathering wild berries in the summer.");
-                put(Season.FALL, "The colors of fall are so beautiful for painting.");
-                put(Season.WINTER, "Winter is a quiet time to work on my art indoors.");
-            }},
+        "empty",
             LIA_POSITION
     );
 
@@ -128,12 +111,7 @@ public class NPC {
                     new Request(50, App.getGame().getItemByItemType(ItemType.Stone), 0, null, 1000),
                     new Request(10, App.getGame().getItemByItemType(ItemType.Wine), 0, null, 3000)
             )),
-            new HashMap<Season, String>() {{
-                put(Season.SPRING, "Spring is the best time to start new construction projects.");
-                put(Season.SUMMER, "Summer keeps me busy with repairs around the valley.");
-                put(Season.FALL, "Fall is a good time to stock up on building materials.");
-                put(Season.WINTER, "Winter slows down my work, but I enjoy the break.");
-            }},
+        "empty",
             ROBIN_POSITION
     );
 
@@ -153,21 +131,35 @@ public class NPC {
         return new ArrayList<>(Arrays.asList(Sebastian, Abigail, Harvey, Lia, Robin));
     }
 
-    public String getDialogue() {
-        return seasonalDialogue != null ? seasonalDialogue.getOrDefault(App.getGame().dateAndTime.getSeason(), "") : "";
+    public String getPersonality() {
+        return personality;
     }
 
     public Position getPosition() {
         return position;
     }
 
-    public static void talk(NPC npc, Player player) {
+    public static Result talk(String npcName, String playerUsername) {
+        NPC npc = NPC.findNPCsByName(npcName);
+        if (npc == null) {
+            return new Result(false, "NPC not found");
+        }
+        Player player = App.getInstance().findPlayerByUsername(playerUsername);
+        if (player == null) {
+            return new Result(false, "Player not found");
+        }
         if (!App.getGame().getGameMap().amINearPlayer(npc)) {
-            System.out.println("You are not near the NPC.");
-            return;
+            return new Result(false, "You are not near NPC");
         }
         player.changeNPCsFriendship(20, npc);
-        System.out.println(npc.getDialogue());
+        HttpLanguageModel model = new HttpLanguageModel(
+            "https://api.openai.com/v1/chat/completions", // یا URL لوکال مدل
+            "API_KEY_خودت"
+        );
+
+        DialogueGenerator generator = new DialogueGenerator(model);
+        String dialogue = generator.generateNPCDialogue(npc, player);
+        return new Result(true, dialogue);
     }
 
     public static NPC findNPCsByName(String name) {

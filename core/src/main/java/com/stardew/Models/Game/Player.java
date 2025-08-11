@@ -2,7 +2,6 @@ package com.stardew.Models.Game;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.stardew.Controllers.GameMenuController;
 import com.stardew.Enums.Gender;
@@ -12,8 +11,8 @@ import com.stardew.Models.*;
 import com.stardew.Models.Abilities.Abilities;
 import com.stardew.Models.Abilities.Activity;
 import com.stardew.Models.Items.Item;
+import com.stardew.Models.NPC.NPC;
 import com.stardew.Views.GameMenu;
-import org.w3c.dom.Text;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -46,6 +45,7 @@ public class Player {
     public int level = 2;
     private final ArrayList<Lobby> lobbies = new ArrayList<>();
     private Lobby currentLobby = null;
+    private final HashMap<NPC, StringBuilder> NPCDialogueHistory = new HashMap<>();
 
     public Player(String name, String nickName, String password, String email, Gender gender) {
         this.personalInfo = new PersonalInfo(email, name, nickName, password, gender);
@@ -403,6 +403,16 @@ public class Player {
         Player player = new Player(name, nickName, password, email, gender);
         App.getInstance().getPlayers().add(player);
         return new Result(true, "Player created");
+    }
+
+    public StringBuilder getNPCDialogueHistory(NPC npc) {
+        if (npc == null) {
+            return new StringBuilder();
+        }
+        if (!NPCDialogueHistory.containsKey(npc)) {
+            NPCDialogueHistory.put(npc, new StringBuilder());
+        }
+        return NPCDialogueHistory.get(npc);
     }
 }
 

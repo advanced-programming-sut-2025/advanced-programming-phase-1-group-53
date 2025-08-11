@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.stardew.Controllers.AnimalMenuController;
 import com.stardew.Enums.ItemType;
 import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.GameAssetManager;
@@ -26,6 +27,7 @@ public class AnimalMenu extends Tab {
     private ArrayList<Sprite> sprites = new ArrayList<>();
     private boolean isChanged = true;
     private Animal animal;
+    private static AnimalMenuController controller = new AnimalMenuController();
     int u = 0;
 
 
@@ -42,6 +44,7 @@ public class AnimalMenu extends Tab {
         textButton.setSize(100, 40);
         textButton.setPosition(SCREEN_WIDTH/2-20, SCREEN_HEIGHT/2 - 50);
         textButton.addListener(new ClickListener() {
+            //TODO packet
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 if(u > 0) {
