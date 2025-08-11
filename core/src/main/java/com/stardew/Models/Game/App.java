@@ -3,6 +3,7 @@ package com.stardew.Models.Game;
 import com.stardew.Controllers.GameMenuController;
 import com.stardew.Enums.Gender;
 import com.stardew.Enums.Menu;
+import com.stardew.Models.Lobby;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +19,7 @@ public class App {
     private static Game game;
     private final ArrayList<Player> players = new ArrayList<>();
     private final ArrayList<Game> games = new ArrayList<>();
+    private final ArrayList<Lobby> lobbies = new ArrayList<>();
 
     private App(){
         currentPlayer = new Player("ilia", "ii", "ii", "oo", Gender.MALE);
@@ -78,5 +80,9 @@ public class App {
             }
         }
         return null;
+    }
+
+    public ArrayList<Lobby> getLobbies() {
+        return lobbies;
     }
 }

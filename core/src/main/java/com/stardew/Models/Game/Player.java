@@ -44,6 +44,8 @@ public class Player {
     public final HashMap<NPC, Integer> NPCsFriendship = new HashMap<>();
     public final ArrayList<Item> gifts = new ArrayList<>();
     public int level = 2;
+    private final ArrayList<Lobby> lobbies = new ArrayList<>();
+    private Lobby currentLobby = null;
 
     public Player(String name, String nickName, String password, String email, Gender gender) {
         this.personalInfo = new PersonalInfo(email, name, nickName, password, gender);
@@ -383,6 +385,18 @@ public class Player {
 
     public void setInBuilding(boolean inBuilding) {
         isInBuilding = inBuilding;
+    }
+
+    public ArrayList<Lobby> getLobbies() {
+        return lobbies;
+    }
+
+    public Lobby getCurrentLobby() {
+        return currentLobby;
+    }
+
+    public void setCurrentLobby(Lobby currentLobby) {
+        this.currentLobby = currentLobby;
     }
 }
 

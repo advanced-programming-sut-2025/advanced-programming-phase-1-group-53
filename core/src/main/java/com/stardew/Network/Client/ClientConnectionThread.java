@@ -1,5 +1,7 @@
 package com.stardew.Network.Client;
 
+import com.stardew.Models.Lobby;
+import com.stardew.Models.Result;
 import com.stardew.Network.Common.ConnectionThread;
 import com.stardew.Network.Common.Packet.*;
 import com.stardew.Network.Common.Packet.ClientPacket.*;
@@ -45,13 +47,20 @@ public class ClientConnectionThread extends ConnectionThread {
     protected boolean handlePacket(Packet packet) {
         System.out.println("Received from server: " + packet.getClass().getSimpleName());
 
-        if (packet instanceof ServerGeneralRespondPacket) {
-            Packet innerPacket = ((ServerGeneralRespondPacket) packet).getReceivedPacket();
+        if (packet instanceof ServerGeneralRespondPacket serverGeneralRespondPacket) {
+            Packet innerPacket = serverGeneralRespondPacket.getReceivedPacket();
+            Result result = serverGeneralRespondPacket.result;
 
             if (innerPacket instanceof LoginPacket) {
 
-            } else if (innerPacket instanceof CreateLobbyPacket) {
-
+            } else if (innerPacket instanceof CreateLobbyPacket createLobbyPacket) {
+                if (!result.success()) {
+                    System.out.println(result.message());
+                    return true;
+                }
+                Lobby.createLobby(createLobbyPacket.name, result.message(), createLobbyPacket.password,
+                    createLobbyPacket.isPublic, createLobbyPacket.isVisible, createLobbyPacket.ownerName);
+                return true;
             } else if (innerPacket instanceof GiveFlowerPacket) {
 
             } else if (innerPacket instanceof HuggingPacket) {

@@ -1,19 +1,20 @@
 package com.stardew.Network.Common.Packet.ServerPacket;
 
 import com.google.gson.annotations.SerializedName;
+import com.stardew.Models.Result;
 import com.stardew.Network.Common.Packet.Packet;
 import com.stardew.Network.Common.Packet.PacketSender;
 import com.stardew.Network.Common.Packet.PacketType;
 
 public class ServerGeneralRespondPacket extends Packet {
-    public final boolean success;
+    public final Result result;
 
     @SerializedName("receivedPacket")
     private final Packet receivedPacket;
 
-    public ServerGeneralRespondPacket(boolean success, Packet receivedPacket) {
+    public ServerGeneralRespondPacket(Result result, Packet receivedPacket) {
         super("SERVER", "SERVER");
-        this.success = success;
+        this.result = result;
         this.receivedPacket = receivedPacket;
     }
 

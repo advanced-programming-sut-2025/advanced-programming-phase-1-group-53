@@ -1,5 +1,7 @@
 package com.stardew.Network.Server;
 
+import com.stardew.Models.Lobby;
+import com.stardew.Models.Result;
 import com.stardew.Network.Common.ConnectionThread;
 import com.stardew.Network.Common.Packet.*;
 import com.stardew.Network.Common.Packet.ClientPacket.*;
@@ -47,7 +49,7 @@ public class ServerConnectionThread extends ConnectionThread {
         if (packet instanceof PressKeyPacket) {
             String pk = PacketParser.toJson(packet);
             System.out.println(pk);
-            ServerGeneralRespondPacket respondPacket = new ServerGeneralRespondPacket(true, packet);
+            ServerGeneralRespondPacket respondPacket = new ServerGeneralRespondPacket(new Result(true, "hi"), packet);
             this.sendPacket(respondPacket);
             return true;
 
@@ -81,8 +83,10 @@ public class ServerConnectionThread extends ConnectionThread {
 
         } else if (packet instanceof VotePacket) {
 
-        } else if (packet instanceof CreateLobbyPacket) {
-
+        } else if (packet instanceof CreateLobbyPacket createLobbyPacket) {
+            Result result = Lobby.createLobby(createLobbyPacket.name, createLobbyPacket.password,
+                createLobbyPacket.isPublic, createLobbyPacket.isVisible, createLobbyPacket.ownerName);
+            sendPacket(new ServerGeneralRespondPacket(result, createLobbyPacket));
         }
         return false;
     }
