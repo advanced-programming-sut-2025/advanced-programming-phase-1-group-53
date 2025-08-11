@@ -50,16 +50,18 @@ public class Main extends Game {
         System.out.println("Connecting to server: " + serverIp + ":" + port + " as " + playerId);
         ClientApp app = ClientApp.getInstance();
         app.initializeClient(serverIp, port, playerId);
+//
+//        try{
+//            setScreen(new Tab());
+//            batch = new SpriteBatch();
+//            sprite = new Sprite(new Texture("Animals/Duck.png"),16*3, 16*3, 16, 16);
+//            sprite.setSize(sprite.getWidth()*3, sprite.getHeight()*3);
+//        }
+//        catch (Exception e){
+//            e.printStackTrace();
+//        }
 
-        try{
-            setScreen(new Tab());
-            batch = new SpriteBatch();
-            sprite = new Sprite(new Texture("Animals/Duck.png"),16*3, 16*3, 16, 16);
-            sprite.setSize(sprite.getWidth()*3, sprite.getHeight()*3);
-        }
-        catch (Exception e){
-            e.printStackTrace();
-        }
+        setScreen(new LoginRegisterMenu(this));
 
     }
 
@@ -84,6 +86,5 @@ public class Main extends Game {
     public void dispose() {
         batch.dispose();
         sprite.getTexture().dispose();
-        setScreen(new LoginRegisterMenu(main));  // Or any other AppMenu subclass
     }
 }
