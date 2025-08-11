@@ -5,20 +5,19 @@ import com.stardew.Enums.Menu;
 import com.stardew.Enums.Regex;
 import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.Player;
+import com.stardew.Network.DataBase.RepositorySaving;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.sql.SQLException;
+import java.util.*;
 
-public class SignUpMenuController {
+public class SignUpMenuController implements RepositorySaving {
     private final List<Player> players = App.getInstance().getPlayers();
     Player newPlayer;
 
     public void register(String username, String password, String confirmPassword, String nickname,
-                         String email, String gender) {
+                         String email, String gender) throws SQLException {
         if (!Regex.username.regexMatcher(username)) {
             System.out.println("Invalid username. Username can only contain letters, numbers and -");
             return;
@@ -74,9 +73,10 @@ public class SignUpMenuController {
         listOfQuestions();
     }
 
-    public void finalizeRegistration() {
+    public void finalizeRegistration() throws SQLException {
         players.add(newPlayer);
         App.setCurrentPlayer(newPlayer);
+        savePlayerInfo(newPlayer);
         System.out.println("User data saved successfully.");
     }
 
