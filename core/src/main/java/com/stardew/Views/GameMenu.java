@@ -30,6 +30,9 @@ import com.stardew.Models.Game.Player;
 import com.stardew.Models.Items.*;
 import com.stardew.Models.Items.CraftAbleAndArtisan.Artisan;
 import com.stardew.Models.Items.Foragings.ForagingMineral;
+import com.stardew.Network.Client.ClientApp;
+import com.stardew.Network.Common.Packet.ClientPacket.ClickPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.TextButtonType;
 import com.stardew.Views.TabMenus.*;
 
 import java.util.ArrayList;
@@ -357,7 +360,7 @@ public class GameMenu implements AppMenu, InputProcessor {
             sleep.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    //TODO packet
+                    ClientApp.getInstance().getConnectionThread().sendPacket(new ClickPacket(App.getMyPlayer(), TextButtonType.sleep));
 
                     try{
                         TimeCheatMenu.setIsCheatActivate(true);

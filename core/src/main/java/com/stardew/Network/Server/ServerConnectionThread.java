@@ -50,14 +50,7 @@ public class ServerConnectionThread extends ConnectionThread {
         Result result;
         System.out.println("Received packet from " + getClientId() + ": " + packet.getClass().getSimpleName());
 
-        if (packet instanceof PressKeyPacket) {
-            String pk = PacketParser.toJson(packet);
-            System.out.println(pk);
-            ServerGeneralRespondPacket respondPacket = new ServerGeneralRespondPacket(new Result(true, "hi"), packet);
-            this.sendPacket(respondPacket);
-            return true;
-
-        } else if (packet instanceof GiveFlowerPacket) {
+        if (packet instanceof GiveFlowerPacket) {
 
         } else if (packet instanceof HuggingPacket) {
 
@@ -81,7 +74,7 @@ public class ServerConnectionThread extends ConnectionThread {
 
         }  else if (packet instanceof SignUpPacket signUpPacket) {
             result = Player.createPlayer(signUpPacket.username, signUpPacket.nickname, signUpPacket.password,
-                signUpPacket.email, signUpPacket.gender);
+                signUpPacket.email, signUpPacket.gender, signUpPacket.getSenderId());
             ServerApp.getInstance().broadcast(new ServerGeneralRespondPacket(result, signUpPacket));
             return true;
         } else if (packet instanceof StartGamePacket) {

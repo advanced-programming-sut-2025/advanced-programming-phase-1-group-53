@@ -97,7 +97,7 @@ public class ClientConnectionThread extends ConnectionThread {
                     return true;
                 }
                 Player.createPlayer(signUpPacket.username, signUpPacket.nickname, signUpPacket.password,
-                    signUpPacket.email, signUpPacket.gender);
+                    signUpPacket.email, signUpPacket.gender, signUpPacket.getSenderId());
                 return true;
             } else if (innerPacket instanceof StartGamePacket) {
 

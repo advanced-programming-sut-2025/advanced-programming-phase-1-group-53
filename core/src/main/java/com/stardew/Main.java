@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.stardew.Network.Client.ClientApp;
 import com.stardew.Network.Client.ClientConnectionThread;
-import com.stardew.Network.Common.Packet.ClientPacket.PressKeyPacket;
 
 import java.util.Scanner;
 
@@ -47,10 +46,10 @@ public class Main extends Game {
         String input = "a";
         while ((input = scanner.nextLine()) != "q") {
             ClientConnectionThread connectionThread = ClientApp.getInstance().getConnectionThread();
-            if (input.equalsIgnoreCase("presskeypacket")) {
-                PressKeyPacket pk = new PressKeyPacket(connectionThread.getClientId(), connectionThread.getClientId(), Input.Keys.W);
-                connectionThread.sendPacket(pk);
-            }
+//            if (input.equalsIgnoreCase("presskeypacket")) {
+//                PressKeyPacket pk = new PressKeyPacket(connectionThread.getClientId(), connectionThread.getClientId(), Input.Keys.W);
+//                connectionThread.sendPacket(pk);
+//            }
         }
     }
 

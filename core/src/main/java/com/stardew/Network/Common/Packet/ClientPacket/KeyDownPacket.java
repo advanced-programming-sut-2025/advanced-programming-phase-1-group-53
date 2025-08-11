@@ -5,9 +5,11 @@ import com.stardew.Network.Common.Packet.Packet;
 import com.stardew.Network.Common.Packet.PacketSender;
 import com.stardew.Network.Common.Packet.PacketType;
 
-public class SaveGamePacket extends Packet {
-    public SaveGamePacket(Player sender) {
+public class KeyDownPacket extends Packet {
+    public int keycode;
+    public KeyDownPacket(Player sender, int keycode) {
         super(sender.personalInfo.getConnectionId(), sender.personalInfo.getName());
+        this.keycode = keycode;
     }
 
     @Override
@@ -17,6 +19,6 @@ public class SaveGamePacket extends Packet {
 
     @Override
     public PacketType getTypeEnum() {
-        return PacketType.SAVE_GAME_PACKET;
+        return PacketType.GIVE_FLOWER_PACKET;
     }
 }

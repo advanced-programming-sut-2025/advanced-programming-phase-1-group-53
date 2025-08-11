@@ -1,0 +1,14 @@
+package com.stardew.Network.Common.Packet.ClientPacket;
+
+public enum TextButtonType {
+    sleep,
+    name,
+    refrigerator,
+    feed,
+    submit,
+    cancel,
+    back,
+    purchase,
+    enter_cheat_code,
+    move_out,
+}

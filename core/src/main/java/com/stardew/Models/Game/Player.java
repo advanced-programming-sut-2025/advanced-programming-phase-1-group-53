@@ -47,8 +47,8 @@ public class Player {
     private Lobby currentLobby = null;
     private final HashMap<NPC, StringBuilder> NPCDialogueHistory = new HashMap<>();
 
-    public Player(String name, String nickName, String password, String email, Gender gender) {
-        this.personalInfo = new PersonalInfo(email, name, nickName, password, gender);
+    public Player(String name, String nickName, String password, String email, Gender gender, String connectionId) {
+        this.personalInfo = new PersonalInfo(email, name, nickName, password, gender, connectionId);
     }
 
     public Player setSprite(Texture texture){
@@ -399,8 +399,8 @@ public class Player {
         this.currentLobby = currentLobby;
     }
 
-    public static Result createPlayer(String name, String nickName, String password, String email, Gender gender) {
-        Player player = new Player(name, nickName, password, email, gender);
+    public static Result createPlayer(String name, String nickName, String password, String email, Gender gender, String connectionId) {
+        Player player = new Player(name, nickName, password, email, gender, connectionId);
         App.getInstance().getPlayers().add(player);
         return new Result(true, "Player created");
     }

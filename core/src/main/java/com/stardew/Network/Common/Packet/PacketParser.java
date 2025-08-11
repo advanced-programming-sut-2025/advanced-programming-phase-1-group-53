@@ -3,7 +3,6 @@ package com.stardew.Network.Common.Packet;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.stardew.Network.Common.Packet.ClientPacket.LoginPacket;
-import com.stardew.Network.Common.Packet.ClientPacket.PressKeyPacket;
 import com.stardew.Network.Common.Packet.ServerPacket.ServerGeneralRespondPacket;
 import com.stardew.Network.Common.Packet.ServerPacket.WelcomePacket;
 import com.stardew.Network.Common.RuntimeTypeAdapterFactory;

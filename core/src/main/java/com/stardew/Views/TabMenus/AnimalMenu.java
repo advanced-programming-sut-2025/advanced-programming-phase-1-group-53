@@ -13,6 +13,9 @@ import com.stardew.Enums.ItemType;
 import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.GameAssetManager;
 import com.stardew.Models.Items.*;
+import com.stardew.Network.Client.ClientApp;
+import com.stardew.Network.Common.Packet.ClientPacket.ClickPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.TextButtonType;
 import com.stardew.Views.GameMenu;
 import com.stardew.Views.Tab;
 import org.w3c.dom.Text;
@@ -44,9 +47,9 @@ public class AnimalMenu extends Tab {
         textButton.setSize(100, 40);
         textButton.setPosition(SCREEN_WIDTH/2-20, SCREEN_HEIGHT/2 - 50);
         textButton.addListener(new ClickListener() {
-            //TODO packet
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                ClientApp.getInstance().getConnectionThread().sendPacket(new ClickPacket(App.getMyPlayer(), TextButtonType.feed));
                 if(u > 0) {
                     animal.feed();
                     App.getCurrentPlayer().backpack.getItems().compute(App.getGame().getItemByItemType(ItemType.Hay),

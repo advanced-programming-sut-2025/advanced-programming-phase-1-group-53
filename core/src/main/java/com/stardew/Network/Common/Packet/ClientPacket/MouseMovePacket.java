@@ -5,9 +5,12 @@ import com.stardew.Network.Common.Packet.Packet;
 import com.stardew.Network.Common.Packet.PacketSender;
 import com.stardew.Network.Common.Packet.PacketType;
 
-public class SaveGamePacket extends Packet {
-    public SaveGamePacket(Player sender) {
+public class MouseMovePacket extends Packet {
+    public int screenX, screenY;
+    public MouseMovePacket(Player sender, int screenX, int screenY) {
         super(sender.personalInfo.getConnectionId(), sender.personalInfo.getName());
+        this.screenX = screenX;
+        this.screenY = screenY;
     }
 
     @Override
@@ -17,6 +20,6 @@ public class SaveGamePacket extends Packet {
 
     @Override
     public PacketType getTypeEnum() {
-        return PacketType.SAVE_GAME_PACKET;
+        return PacketType.GIVE_FLOWER_PACKET;
     }
 }
