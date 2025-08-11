@@ -28,6 +28,7 @@ public abstract class AppMenu implements Screen {
 
     @Override
     public void show() {
+        Gdx.input.setInputProcessor(stage); // Ensure input processor is set
         stage.clear(); // Clear old actors if switching back
         stage.addActor(table);
     }
