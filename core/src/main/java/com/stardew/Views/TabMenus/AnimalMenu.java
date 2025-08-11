@@ -49,7 +49,7 @@ public class AnimalMenu extends Tab {
         textButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ClientApp.getInstance().getConnectionThread().sendPacket(new ClickPacket(App.getMyPlayer(), TextButtonType.feed));
+                ClientApp.getInstance().getConnectionThread().sendPacket(new ClickPacket(App.getMyPlayer(), TextButtonType.feed, AnimalMenu.class));
                 if(u > 0) {
                     animal.feed();
                     App.getCurrentPlayer().backpack.getItems().compute(App.getGame().getItemByItemType(ItemType.Hay),

@@ -11,4 +11,8 @@ public enum TextButtonType {
     purchase,
     enter_cheat_code,
     move_out,
+    collect,
+    sell,
+    next_page,
+    previous_page,
 }

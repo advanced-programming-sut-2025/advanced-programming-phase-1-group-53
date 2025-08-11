@@ -14,6 +14,10 @@ import com.stardew.Main;
 import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.GameAssetManager;
 import com.stardew.Models.MessageManager;
+import com.stardew.Network.Client.ClientApp;
+import com.stardew.Network.Common.Packet.ClientPacket.ClickPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.KeyDownPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.TextButtonType;
 import com.stardew.Views.GameMenu;
 import com.stardew.Views.Tab;
 
@@ -47,7 +51,7 @@ public class CheatMenu extends Tab {
         submitButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                //TODO packet
+                ClientApp.getInstance().getConnectionThread().sendPacket(new ClickPacket(App.getMyPlayer(), TextButtonType.submit, CheatMenu.class));
 
                 try{
                     GameMenu.getInstance().check(cheatField.getText());
@@ -64,7 +68,6 @@ public class CheatMenu extends Tab {
         backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                //TODO packet
 
                 Main.main.setScreen(GameMenu.getInstance());
             }
@@ -85,7 +88,7 @@ public class CheatMenu extends Tab {
 
     @Override
     public boolean keyDown(int keycode){
-        //TODO packet
+        ClientApp.getInstance().getConnectionThread().sendPacket(new KeyDownPacket(App.getMyPlayer(), keycode, CheatMenu.class));
 
         if(keycode == Input.Keys.ENTER){
             GameMenu.getInstance().check(cheatField.getText());

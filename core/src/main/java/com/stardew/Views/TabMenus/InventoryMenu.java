@@ -125,7 +125,6 @@ public class InventoryMenu extends Tab {
 
     @Override
     public boolean keyDown(int keycode) {
-        ClientApp.getInstance().getConnectionThread().sendPacket(new KeyDownPacket(App.getMyPlayer(), keycode));
 
         System.out.println(keycode);
         if(keycode == Input.Keys.ESCAPE){
@@ -137,7 +136,7 @@ public class InventoryMenu extends Tab {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        ClientApp.getInstance().getConnectionThread().sendPacket(new TouchDownPacket(App.getMyPlayer(), screenX, screenY, pointer, button));
+        ClientApp.getInstance().getConnectionThread().sendPacket(new TouchDownPacket(App.getMyPlayer(), screenX, screenY, pointer, button, InventoryMenu.class));
 
         if (button == Input.Buttons.LEFT) {
             boolean b1 = GameMenuController.coordinateCollision(screenX, 0,START_X + 350 + 100, WIDGET_WIDTH);

@@ -31,8 +31,7 @@ import com.stardew.Models.Items.*;
 import com.stardew.Models.Items.CraftAbleAndArtisan.Artisan;
 import com.stardew.Models.Items.Foragings.ForagingMineral;
 import com.stardew.Network.Client.ClientApp;
-import com.stardew.Network.Common.Packet.ClientPacket.ClickPacket;
-import com.stardew.Network.Common.Packet.ClientPacket.TextButtonType;
+import com.stardew.Network.Common.Packet.ClientPacket.*;
 import com.stardew.Views.TabMenus.*;
 
 import java.util.ArrayList;
@@ -360,7 +359,7 @@ public class GameMenu implements AppMenu, InputProcessor {
             sleep.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    ClientApp.getInstance().getConnectionThread().sendPacket(new ClickPacket(App.getMyPlayer(), TextButtonType.sleep));
+                    ClientApp.getInstance().getConnectionThread().sendPacket(new ClickPacket(App.getMyPlayer(), TextButtonType.sleep, GameMenu.class));
 
                     try{
                         TimeCheatMenu.setIsCheatActivate(true);
@@ -379,7 +378,6 @@ public class GameMenu implements AppMenu, InputProcessor {
             cancel.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    //TODO packet
 
                     try{
                         Main.main.setScreen(GameMenu.getInstance());
@@ -392,7 +390,6 @@ public class GameMenu implements AppMenu, InputProcessor {
             refrigerator.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    //TODO packet
 
                     try{
                         Main.main.setScreen(RefrigeratorMenu.getInstance());
@@ -459,7 +456,7 @@ public class GameMenu implements AppMenu, InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
-        //TODO packet
+        ClientApp.getInstance().getConnectionThread().sendPacket(new KeyDownPacket(App.getMyPlayer(),keycode, GameMenu.class));
 
         return controller.keyDown(keycode).success();
     }
@@ -497,7 +494,7 @@ public class GameMenu implements AppMenu, InputProcessor {
 
     @Override
     public boolean keyUp(int keycode) {
-        //TODO packet
+        ClientApp.getInstance().getConnectionThread().sendPacket(new KeyUpPacket(App.getMyPlayer(), keycode, GameMenu.class));
 
         Vector2 v = GameMap.getPositionByCoordinates((int) (App.getCurrentPlayer().position.getX()),
             (int) (App.getCurrentPlayer().position.getY()));
@@ -523,7 +520,8 @@ public class GameMenu implements AppMenu, InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        //TODO packet
+
+        ClientApp.getInstance().getConnectionThread().sendPacket(new TouchDownPacket(App.getMyPlayer(), screenX, screenY, pointer, button ,GameMenu.class));
 
         Vector2 v = GameMap.getPositionByCoordinates((int) (App.getCurrentPlayer().position.getX()),
             (int) (App.getCurrentPlayer().position.getY()));
@@ -588,7 +586,8 @@ public class GameMenu implements AppMenu, InputProcessor {
 
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
-        //TODO packet
+
+        ClientApp.getInstance().getConnectionThread().sendPacket(new MouseMovePacket(App.getMyPlayer(), screenX, screenY, GameMenu.class));
 
         mouseX = screenX;
         mouseY = SCREEN_HEIGHT - screenY;
