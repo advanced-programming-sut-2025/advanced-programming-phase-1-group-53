@@ -17,6 +17,7 @@ public class App {
 
     //TODO: fix into multiplayer
     private static Player currentPlayer = null;
+    private static Player myPlayer = null;
     private static App app = null;
     private static Menu currentMenu = Menu.gameMenu;
     private static Game game;
@@ -28,11 +29,11 @@ public class App {
     public static Main main = Main.getInstance();
 
     private App(){
-        currentPlayer = new Player("ilia", "ii", "ii", "oo", Gender.MALE);
+        currentPlayer = new Player("ilia", "ii", "ii", "oo", Gender.MALE, "a");
         players.add(currentPlayer);
-        players.add(new Player("ilias", "ii", "ii", "ooo", Gender.MALE));
-        players.add(new Player("iliass", "ii", "ii", "oooo", Gender.MALE));
-        players.add(new Player("iliasss", "ii", "ii", "oooooo", Gender.MALE));
+        players.add(new Player("ilias", "ii", "ii", "ooo", Gender.MALE, "a"));
+        players.add(new Player("iliass", "ii", "ii", "oooo", Gender.MALE, "a"));
+        players.add(new Player("iliasss", "ii", "ii", "oooooo", Gender.MALE, "a"));
     }
 
     public static App getInstance(){
@@ -116,5 +117,13 @@ public class App {
         if (task != null) {
             task.cancel(false);
         }
+    }
+
+    public static Player getMyPlayer() {
+        return myPlayer;
+    }
+
+    public static void setMyPlayer(Player myPlayer) {
+        App.myPlayer = myPlayer;
     }
 }

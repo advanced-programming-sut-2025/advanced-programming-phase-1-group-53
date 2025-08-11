@@ -2,10 +2,12 @@ package com.stardew.Network.Server;
 
 import com.stardew.Models.Game.Player;
 import com.stardew.Models.Lobby;
+import com.stardew.Models.NPC.NPC;
 import com.stardew.Models.Result;
 import com.stardew.Network.Common.ConnectionThread;
 import com.stardew.Network.Common.Packet.*;
 import com.stardew.Network.Common.Packet.ClientPacket.*;
+import com.stardew.Network.Common.Packet.ServerPacket.NPCDialoguePacket;
 import com.stardew.Network.Common.Packet.ServerPacket.ServerGeneralRespondPacket;
 import com.stardew.Network.Common.Packet.ServerPacket.WelcomePacket;
 
@@ -48,14 +50,7 @@ public class ServerConnectionThread extends ConnectionThread {
         Result result;
         System.out.println("Received packet from " + getClientId() + ": " + packet.getClass().getSimpleName());
 
-        if (packet instanceof PressKeyPacket) {
-            String pk = PacketParser.toJson(packet);
-            System.out.println(pk);
-            ServerGeneralRespondPacket respondPacket = new ServerGeneralRespondPacket(new Result(true, "hi"), packet);
-            this.sendPacket(respondPacket);
-            return true;
-
-        } else if (packet instanceof GiveFlowerPacket) {
+        if (packet instanceof GiveFlowerPacket) {
 
         } else if (packet instanceof HuggingPacket) {
 
@@ -79,7 +74,7 @@ public class ServerConnectionThread extends ConnectionThread {
 
         }  else if (packet instanceof SignUpPacket signUpPacket) {
             result = Player.createPlayer(signUpPacket.username, signUpPacket.nickname, signUpPacket.password,
-                signUpPacket.email, signUpPacket.gender);
+                signUpPacket.email, signUpPacket.gender, signUpPacket.getSenderId());
             ServerApp.getInstance().broadcast(new ServerGeneralRespondPacket(result, signUpPacket));
             return true;
         } else if (packet instanceof StartGamePacket) {
@@ -92,6 +87,11 @@ public class ServerConnectionThread extends ConnectionThread {
             result = Lobby.createLobby(createLobbyPacket.name, createLobbyPacket.password,
                 createLobbyPacket.isPublic, createLobbyPacket.isVisible, createLobbyPacket.ownerName);
             ServerApp.getInstance().broadcast(new ServerGeneralRespondPacket(result, createLobbyPacket));
+            return true;
+        } else if (packet instanceof TalkToNPCPacket talkToNPCPacket) {
+            result = NPC.talk(talkToNPCPacket.NPCName, talkToNPCPacket.getSenderUsername());
+            this.sendPacket(new ServerGeneralRespondPacket(result, new NPCDialoguePacket(talkToNPCPacket.getSenderId(),
+                talkToNPCPacket.getSenderUsername(), result.message())));
             return true;
         }
         return false;

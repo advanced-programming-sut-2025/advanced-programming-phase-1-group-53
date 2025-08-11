@@ -8,10 +8,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.stardew.Controllers.AnimalMenuController;
 import com.stardew.Enums.ItemType;
 import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.GameAssetManager;
 import com.stardew.Models.Items.*;
+import com.stardew.Network.Client.ClientApp;
+import com.stardew.Network.Common.Packet.ClientPacket.ClickPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.TextButtonType;
 import com.stardew.Views.GameMenu;
 import com.stardew.Views.Tab;
 import org.w3c.dom.Text;
@@ -26,6 +30,7 @@ public class AnimalMenu extends Tab {
     private ArrayList<Sprite> sprites = new ArrayList<>();
     private boolean isChanged = true;
     private Animal animal;
+    private static AnimalMenuController controller = new AnimalMenuController();
     int u = 0;
 
 
@@ -44,6 +49,7 @@ public class AnimalMenu extends Tab {
         textButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                ClientApp.getInstance().getConnectionThread().sendPacket(new ClickPacket(App.getMyPlayer(), TextButtonType.feed));
                 if(u > 0) {
                     animal.feed();
                     App.getCurrentPlayer().backpack.getItems().compute(App.getGame().getItemByItemType(ItemType.Hay),

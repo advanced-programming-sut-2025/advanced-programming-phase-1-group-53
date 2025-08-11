@@ -242,6 +242,8 @@ public class OceanMenu extends Tab {
 
     @Override
     public boolean keyDown(int keycode){
+        //TODO packet
+
         if(keycode == Input.Keys.ESCAPE){
             Main.main.setScreen(GameMenu.getInstance());
             return true;
@@ -251,6 +253,8 @@ public class OceanMenu extends Tab {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        //TODO packet
+
         if(button == Input.Buttons.LEFT){
             takeRodUp = isRodOpen;
             isRodOpen = !isRodOpen;

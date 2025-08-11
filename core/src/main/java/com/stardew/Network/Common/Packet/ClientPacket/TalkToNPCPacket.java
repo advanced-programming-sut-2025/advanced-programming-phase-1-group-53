@@ -5,9 +5,11 @@ import com.stardew.Network.Common.Packet.Packet;
 import com.stardew.Network.Common.Packet.PacketSender;
 import com.stardew.Network.Common.Packet.PacketType;
 
-public class SaveGamePacket extends Packet {
-    public SaveGamePacket(Player sender) {
+public class TalkToNPCPacket extends Packet {
+    public String NPCName;
+    public TalkToNPCPacket(Player sender, String NPCName) {
         super(sender.personalInfo.getConnectionId(), sender.personalInfo.getName());
+        this.NPCName = NPCName;
     }
 
     @Override
@@ -17,6 +19,6 @@ public class SaveGamePacket extends Packet {
 
     @Override
     public PacketType getTypeEnum() {
-        return PacketType.SAVE_GAME_PACKET;
+        return PacketType.START_VOTING_PACKET;
     }
 }
