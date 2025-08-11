@@ -1,6 +1,7 @@
-package com.stardew.Controllers;
+package com.stardew.Controllers.NetworkControllers;
 
-import com.stardew.Views.LobbyMenu;
+
+import com.stardew.Views.NetworkMenus.LobbyMenu;
 
 public class LobbyController {
     public void startGame(LobbyMenu lobbyMenu) {

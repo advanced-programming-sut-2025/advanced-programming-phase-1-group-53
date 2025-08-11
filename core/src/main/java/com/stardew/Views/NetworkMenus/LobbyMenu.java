@@ -1,53 +1,45 @@
-package com.stardew.Views;
+package com.stardew.Views.NetworkMenus;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.stardew.Controllers.LobbyController;
+import com.badlogic.gdx.utils.Select;
+import com.stardew.Controllers.NetworkControllers.LobbyController;
+import com.stardew.Main;
+import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.Player;
+import com.stardew.Models.Lobby;
+import com.stardew.Models.Result;
+import com.stardew.Views.AppMenu;
+import com.stardew.Views.ExitMenu;
+import com.stardew.Views.MainMenu;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Scanner;
 import java.util.UUID;
 
 public class LobbyMenu extends AppMenu {
-    private final String name;
-    private final String id;
-    private final ArrayList<Player> players;
-    private final Player admin;
-    private final boolean isPrivate;
-    private final boolean isVisible;
+    private String name;
+    private String id;
+    private ArrayList<Player> players;
+    private Player admin;
+    private boolean isPrivate;
+    private boolean isVisible;
     private String password;
     private SelectBox<String> playerSelectBox;
+    private SelectBox<String> lobbySelectBox;
     private Label playersCountLabel;
     private final LobbyController controller = new LobbyController();
+    private com.badlogic.gdx.scenes.scene2d.ui.Window lobbyWindow;
+    private com.badlogic.gdx.scenes.scene2d.ui.Window createWindow;
 
-    public LobbyMenu(Player admin, String name, boolean isVisible, Game main) {
-        super(main);
-        this.name = name;
-        this.admin = admin;
-        this.id = UUID.randomUUID().toString().substring(0, 6);
-        this.players = new ArrayList<>();
-        this.players.add(admin);
-        this.isPrivate = false;
-        this.isVisible = isVisible;
-    }
-
-    public LobbyMenu(Player admin, String name, boolean isVisible, Game main, String password) {
-        super(main);
-        this.name = name;
-        this.admin = admin;
-        this.id = UUID.randomUUID().toString().substring(0, 6);
-        this.players = new ArrayList<>();
-        this.players.add(admin);
-        this.password = hashPassword(password);
-        this.isPrivate = true;
-        this.isVisible = isVisible;
+    public LobbyMenu() {
+        super(App.main);
     }
 
     private String hashPassword(String password) {
@@ -68,15 +60,165 @@ public class LobbyMenu extends AppMenu {
 
     @Override
     public void show() {
-        // Remove window, add items directly to table
         table.clear();
-        table.add(new Label("Lobby ID: " + id, skin)).pad(10).row();
-        table.add(new Label("Admin: " + admin.getPersonalInfo().getName(), skin)).pad(10).row();
+
+        lobbySelectBox = new SelectBox<>(skin);
+        ArrayList<String> lobbyNames = new ArrayList<>();
+        for (Lobby lobby : App.getInstance().getLobbies()) {
+            lobbyNames.add(lobby.getName());
+        }
+        lobbySelectBox.setItems(lobbyNames.toArray(new String[0]));
+        table.add(lobbySelectBox).pad(20).row();
+
+        TextButton openLobbyWindowButton = new TextButton("Show Lobby Info", skin);
+        openLobbyWindowButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                String selectedLobbyName = lobbySelectBox.getSelected();
+                Lobby selectedLobby = null;
+                for (Lobby lobby : App.getInstance().getLobbies()) {
+                    if (lobby.getName().equals(selectedLobbyName)) {
+                        selectedLobby = lobby;
+                        break;
+                    }
+                }
+                if (selectedLobby != null) {
+                    showLobbyWindow(selectedLobby);
+                }
+            }
+        });
+        table.add(openLobbyWindowButton).pad(20).row();
+
+        TextButton createLobbyBtn = new TextButton("Create New Lobby", skin);
+        createLobbyBtn.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                openCreateWindow();
+            }
+        });
+        table.add(createLobbyBtn).pad(20).row();
+
+        TextButton BackBtn = new TextButton("Back", skin);
+        BackBtn.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                App.main.setScreen(new MainMenu(App.main));
+            }
+        });
+        table.add(BackBtn).pad(20).row();
+
+        TextButton ExitBtn = new TextButton("Exit", skin);
+        ExitBtn.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                App.main.setScreen(new ExitMenu(App.main));
+            }
+        });
+        table.add(ExitBtn).pad(20).row();
+
+        stage.addActor(table);
+    }
+
+    private void openCreateWindow() {
+        createWindow = new com.badlogic.gdx.scenes.scene2d.ui.Window("Create Lobby", skin);
+        createWindow.setSize(600, 400);
+        float worldWidth = stage.getViewport().getWorldWidth();
+        float worldHeight = stage.getViewport().getWorldHeight();
+        createWindow.setPosition((worldWidth - 600) / 2f, (worldHeight - 400) / 2f);
+
+        com.badlogic.gdx.scenes.scene2d.ui.Table contentTable = new com.badlogic.gdx.scenes.scene2d.ui.Table();
+        contentTable.add(new Label("Lobby Name:", skin)).pad(10).row();
+        com.badlogic.gdx.scenes.scene2d.ui.TextField nameField = new com.badlogic.gdx.scenes.scene2d.ui.TextField("", skin);
+        contentTable.add(nameField).pad(10).row();
+        contentTable.add(new Label("Lobby Password:", skin)).pad(10).row();
+        com.badlogic.gdx.scenes.scene2d.ui.TextField passwordField = new com.badlogic.gdx.scenes.scene2d.ui.TextField("", skin);
+        passwordField.setPasswordMode(true);
+        passwordField.setPasswordCharacter('*');
+        contentTable.add(passwordField).pad(10).row();
+        contentTable.add(new Label("Lobby Visibility:", skin)).pad(10).row();
+        SelectBox<String> visibilitySelectBox = new SelectBox<>(skin);
+        visibilitySelectBox.setItems("visible", "hidden");
+        contentTable.add(visibilitySelectBox).pad(10).row();
+        TextButton createButton = new TextButton("Create", skin);
+        createButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Result creationResult;
+                String name = nameField.getText();
+                String password = passwordField.getText();
+                boolean isVisible = visibilitySelectBox.getSelected().equals("visible");
+                if (name.isEmpty()) {
+                    com.badlogic.gdx.scenes.scene2d.ui.Dialog dialog = new com.badlogic.gdx.scenes.scene2d.ui.Dialog("Error", skin) {
+                        protected void result(Object object) {
+                            this.hide();
+                        }
+                    };
+                    dialog.text("All fields must be filled!");
+                    dialog.button("OK");
+                    dialog.show(stage);
+                    return;
+                }
+                if (password.isEmpty()) {
+                    creationResult  = Lobby.createLobby(name, password, true, isVisible, App.getCurrentPlayer().getUsername());
+                }
+                else {
+                    creationResult  = Lobby.createLobby(name, password, false, isVisible, App.getCurrentPlayer().getUsername());
+                }
+                com.badlogic.gdx.scenes.scene2d.ui.Dialog dialog = new com.badlogic.gdx.scenes.scene2d.ui.Dialog("Pop-up", skin) {
+                    protected void result(Object object) {
+                        this.hide();
+                    }
+                };
+                dialog.text(creationResult.message());
+                dialog.button("OK");
+                dialog.show(stage);
+            }
+        });
+        contentTable.add(createButton).pad(10).row();
+        TextButton closeButton = new TextButton("Close", skin);
+        closeButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                createWindow.remove();
+            }
+        });
+        contentTable.add(closeButton).pad(10).row();
+        TextButton backButton = new TextButton("Back", skin);
+        backButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                createWindow.remove();
+            }
+        });
+        contentTable.add(backButton).pad(10).row();
+
+        com.badlogic.gdx.scenes.scene2d.ui.ScrollPane scrollPane = new com.badlogic.gdx.scenes.scene2d.ui.ScrollPane(contentTable, skin);
+        createWindow.add(scrollPane).expand().fill();
+        stage.addActor(createWindow);
+    }
+
+    private void showLobbyWindow(Lobby lobby) {
+        this.id = lobby.getId();
+        this.admin = lobby.getAdmin();
+        this.players = lobby.getPlayers();
+        this.isPrivate = !lobby.isPublic();
+        this.isVisible = lobby.isVisible();
+        this.password = lobby.getPassword();
+
+        lobbyWindow = new com.badlogic.gdx.scenes.scene2d.ui.Window("Lobby Info", skin);
+        lobbyWindow.setSize(600, 400);
+        float worldWidth = stage.getViewport().getWorldWidth();
+        float worldHeight = stage.getViewport().getWorldHeight();
+        lobbyWindow.setPosition((worldWidth - 600) / 2f, (worldHeight - 400) / 2f);
+
+        com.badlogic.gdx.scenes.scene2d.ui.Table contentTable = new com.badlogic.gdx.scenes.scene2d.ui.Table();
+        contentTable.add(new Label("Lobby ID: " + id, skin)).pad(10).row();
+        contentTable.add(new Label("Admin: " + admin.getPersonalInfo().getName(), skin)).pad(10).row();
         playersCountLabel = new Label("Players (" + players.size() + ")", skin);
-        table.add(playersCountLabel).pad(10).row();
+        contentTable.add(playersCountLabel).pad(10).row();
         playerSelectBox = new SelectBox<>(skin);
         refreshPlayers();
-        table.add(playerSelectBox).pad(10).row();
+        contentTable.add(playerSelectBox).pad(10).row();
         TextButton startButton = new TextButton("Start Game", skin);
         startButton.addListener(new ClickListener() {
             @Override
@@ -84,7 +226,7 @@ public class LobbyMenu extends AppMenu {
                 controller.startGame(LobbyMenu.this);
             }
         });
-        table.add(startButton).pad(10).row();
+        contentTable.add(startButton).pad(10).row();
         TextButton leaveButton = new TextButton("Leave Lobby", skin);
         leaveButton.addListener(new ClickListener() {
             @Override
@@ -92,7 +234,7 @@ public class LobbyMenu extends AppMenu {
                 controller.leaveLobby(LobbyMenu.this);
             }
         });
-        table.add(leaveButton).pad(10).row();
+        contentTable.add(leaveButton).pad(10).row();
         if (isAdmin()) {
             TextButton deleteButton = new TextButton("Delete Lobby", skin);
             deleteButton.addListener(new ClickListener() {
@@ -101,7 +243,26 @@ public class LobbyMenu extends AppMenu {
                     controller.deleteLobby(LobbyMenu.this);
                 }
             });
-            table.add(deleteButton).pad(10).row();
+            contentTable.add(deleteButton).pad(10).row();
+        }
+        TextButton closeButton = new TextButton("Close Lobby", skin);
+        closeButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                closeLobbyWindow();
+            }
+        });
+        contentTable.add(closeButton).pad(10).row();
+
+        com.badlogic.gdx.scenes.scene2d.ui.ScrollPane scrollPane = new com.badlogic.gdx.scenes.scene2d.ui.ScrollPane(contentTable, skin);
+        lobbyWindow.add(scrollPane).expand().fill();
+        stage.addActor(lobbyWindow);
+    }
+
+    public void closeLobbyWindow() {
+        if (lobbyWindow != null) {
+            lobbyWindow.remove();
+            lobbyWindow = null;
         }
     }
 

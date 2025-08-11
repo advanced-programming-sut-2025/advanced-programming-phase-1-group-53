@@ -1,5 +1,6 @@
 package com.stardew.Enums;
 
+import com.badlogic.gdx.Screen;
 import com.stardew.Main;
 import com.stardew.Models.Game.App;
 import com.stardew.Views.*;
@@ -39,5 +40,9 @@ public enum Menu {
             default:
                 return null;
         }
+    }
+
+    public AppMenu getMenu() {
+        return menu;
     }
 }

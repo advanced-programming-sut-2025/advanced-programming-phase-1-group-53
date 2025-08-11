@@ -64,6 +64,10 @@ public class App {
     }
     public static void setCurrentPlayer(Player currentPlayer) {
         App.currentPlayer = currentPlayer;
+        App appInstance = getInstance();
+        if (!appInstance.players.contains(currentPlayer)) {
+            appInstance.players.add(currentPlayer);
+        }
     }
 
     public void setPlayers(List<Player> players) {

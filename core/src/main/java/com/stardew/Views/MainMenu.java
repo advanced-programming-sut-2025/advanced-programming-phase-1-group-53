@@ -42,6 +42,16 @@ public class MainMenu extends AppMenu {
         });
         table.add(gameMenuButton).pad(10).row();
 
+        TextButton LobbyMenuBtn = new TextButton("", skin);
+        LobbyMenuBtn.setText("Lobby Menu");
+        LobbyMenuBtn.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
+            @Override
+            public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
+                main.setScreen(new com.stardew.Views.NetworkMenus.LobbyMenu());
+            }
+        });
+        table.add(LobbyMenuBtn).pad(10).row();
+
         TextButton logoutButton = new TextButton("Logout", skin);
         logoutButton.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
             @Override
