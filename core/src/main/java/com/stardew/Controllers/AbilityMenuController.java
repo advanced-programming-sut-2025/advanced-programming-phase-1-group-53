@@ -11,12 +11,12 @@ public class AbilityMenuController {
         System.out.println(keycode);
         if(keycode == Input.Keys.ESCAPE){
             Main.main.setScreen(GameMenu.getInstance());
-            return true;
+            return new Result(true, "");
         }
         if(keycode == Input.Keys.M){
             Main.main.setScreen(MapMenu.getInstance());
-            return true;
+            return new Result(true, "");
         }
-        return false;
+        return new Result(false, "");
     }
 }

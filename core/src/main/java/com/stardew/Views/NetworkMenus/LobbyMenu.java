@@ -162,26 +162,24 @@ public class LobbyMenu extends AppMenu {
                     return;
                 }
                 if (password.isEmpty()) {
-                    creationResult  = Lobby.createLobby(name, password, true, isVisible, App.getCurrentPlayer().getUsername());
                     packet = new CreateLobbyPacket(
-                        ClientApp.getInstance().getConnectionThread().getClientId(),
-                        ,
-                        name, null, password,
-                        true, isVisible,
-
-                        );
+                        App.getCurrentPlayer(), name, password,
+                        true, isVisible, App.getCurrentPlayer().getUsername()
+                    );
                 }
                 else {
-                    creationResult  = Lobby.createLobby(name, password, false, isVisible, App.getCurrentPlayer().getUsername());
-                    packet = new CreateLobbyPacket();
+                    packet = new CreateLobbyPacket(
+                        App.getCurrentPlayer(), name, password,
+                        false, isVisible, App.getCurrentPlayer().getUsername());
                 }
                 ClientApp.getInstance().getConnectionThread().sendPacket(packet);
+
                 com.badlogic.gdx.scenes.scene2d.ui.Dialog dialog = new com.badlogic.gdx.scenes.scene2d.ui.Dialog("Pop-up", skin) {
                     protected void result(Object object) {
                         this.hide();
                     }
                 };
-                dialog.text(creationResult.message());
+                dialog.text("the message is not yet fixed");
                 dialog.button("OK");
                 dialog.show(stage);
             }

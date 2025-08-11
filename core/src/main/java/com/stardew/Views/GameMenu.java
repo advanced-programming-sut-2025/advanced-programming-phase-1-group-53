@@ -30,6 +30,10 @@ import com.stardew.Models.GameMap;
 import com.stardew.Models.Items.*;
 import com.stardew.Models.Items.CraftAbleAndArtisan.Artisan;
 import com.stardew.Models.Items.Foragings.ForagingMineral;
+import com.stardew.Models.MessageManager;
+import com.stardew.Network.Client.ClientApp;
+import com.stardew.Network.Common.Packet.ClientPacket.ClickPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.TextButtonType;
 import com.stardew.Views.TabMenus.*;
 
 import java.util.ArrayList;

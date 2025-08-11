@@ -10,6 +10,7 @@ import com.stardew.Enums.Regex;
 import com.stardew.Main;
 import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.Player;
+import com.stardew.Network.Client.ClientApp;
 import com.stardew.Views.LoginRegisterMenu;
 
 import java.security.MessageDigest;
@@ -67,14 +68,14 @@ public class SignUpMenuController {
 
 
         String hashedPassword = hashPassword(password);
-        newPlayer = new Player(username, nickname, hashedPassword, email, Gender.getGender(gender));
+        newPlayer = new Player(username, nickname, hashedPassword, email, Gender.getGender(gender), ClientApp.getInstance().getConnectionThread().getClientId());
         return finalizeRegistration(username, nickname, hashedPassword, email, Gender.getGender(gender));
     }
 
 
     public String finalizeRegistration(String username, String nickname, String hashedPassword, String email, Gender gender) {
         FileHandle profileFile = Gdx.files.local(PROFILE_DIR + username + ".json");
-        newPlayer = new Player(username, nickname, hashedPassword, email, gender);
+        newPlayer = new Player(username, nickname, hashedPassword, email, gender, ClientApp.getInstance().getConnectionThread().getClientId());
 
         if (profileFile.exists()) {
             return "Username already exists.";
