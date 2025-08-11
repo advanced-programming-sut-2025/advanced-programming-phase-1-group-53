@@ -11,6 +11,7 @@ import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.Player;
 import com.stardew.Network.Client.ClientApp;
 import com.stardew.Network.Common.Packet.ClientPacket.SignUpPacket;
+import com.stardew.Views.NetworkMenus.LobbyMenu;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -76,6 +77,8 @@ public class NetSignupController {
         //TODO add these two lines when made sure the client responded properly
 //        players.add(newPlayer);
 //        App.setCurrentPlayer(newPlayer);
+        System.out.println("still not sure if the user is signed-up or not");
+        App.main.setScreen(new LobbyMenu());
         return "still not sure if the user is signed-up or not";
     }
 
