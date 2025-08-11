@@ -3,9 +3,12 @@ package com.stardew.Models.Game;
 import com.stardew.Controllers.GameMenuController;
 import com.stardew.Enums.Gender;
 import com.stardew.Enums.Menu;
+import com.stardew.Models.Lobby;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.*;
 
 public class App {
     public static final float TAKING_STEP_TIME_GAP = 0.18f;
@@ -18,6 +21,9 @@ public class App {
     private static Game game;
     private final ArrayList<Player> players = new ArrayList<>();
     private final ArrayList<Game> games = new ArrayList<>();
+    private final ArrayList<Lobby> lobbies = new ArrayList<>();
+    private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    private final Map<Lobby, ScheduledFuture<?>> lobbyRemovalTasks = new ConcurrentHashMap<>();
 
     private App(){
         currentPlayer = new Player("ilia", "ii", "ii", "oo", Gender.MALE);
@@ -78,5 +84,31 @@ public class App {
             }
         }
         return null;
+    }
+
+    public ArrayList<Lobby> getLobbies() {
+        return lobbies;
+    }
+
+    // زمان‌بندی حذف لابی
+    public void scheduleLobbyRemoval(Lobby lobby) {
+        ScheduledFuture<?> task = scheduler.schedule(() -> {
+            synchronized (this) {
+                if (lobby.getPlayers().size() <= 1) {
+                    getLobbies().remove(lobby);
+                    System.out.println("Lobby " + lobby.getName() + " removed after 5 minutes of inactivity.");
+                }
+            }
+        }, 5, TimeUnit.MINUTES);
+
+        lobbyRemovalTasks.put(lobby, task);
+    }
+
+    // لغو تایمر حذف لابی
+    public void cancelLobbyRemoval(Lobby lobby) {
+        ScheduledFuture<?> task = lobbyRemovalTasks.remove(lobby);
+        if (task != null) {
+            task.cancel(false);
+        }
     }
 }

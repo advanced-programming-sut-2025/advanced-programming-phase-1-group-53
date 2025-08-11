@@ -1,27 +1,13 @@
 package com.stardew;
 
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.utils.ScreenUtils;
-import com.stardew.Enums.ItemType;
-import com.stardew.Models.Game.GameAssetManager;
-import com.stardew.Models.GameMap;
 import com.stardew.Network.Client.ClientApp;
-import com.stardew.Views.AppView;
-import com.stardew.Views.GameMenu;
-import com.stardew.Views.Tab;
-import com.stardew.Views.TabMenus.AbilityMenu;
-import com.stardew.Views.TabMenus.InventoryMenu;
-import com.stardew.Views.TabMenus.MapMenu;
+import com.stardew.Network.Client.ClientConnectionThread;
+import com.stardew.Network.Common.Packet.ClientPacket.PressKeyPacket;
 
 import java.util.Scanner;
 
@@ -36,6 +22,7 @@ public class Main extends Game {
     private final String serverIp = "127.0.1.1";
     private final int port = 12345;
     private final String playerId = "Player1";
+    Scanner scanner = new Scanner(System.in);
 
     @Override
     public void create() {
@@ -48,16 +35,23 @@ public class Main extends Game {
         ClientApp app = ClientApp.getInstance();
         app.initializeClient(serverIp, port, playerId);
 
-        try{
-            setScreen(new Tab());
-            batch = new SpriteBatch();
-            sprite = new Sprite(new Texture("Animals/Duck.png"),16*3, 16*3, 16, 16);
-            sprite.setSize(sprite.getWidth()*3, sprite.getHeight()*3);
+//        try{
+//            setScreen(new Tab());
+//            batch = new SpriteBatch();
+//            sprite = new Sprite(new Texture("Animals/Duck.png"),16*3, 16*3, 16, 16);
+//            sprite.setSize(sprite.getWidth()*3, sprite.getHeight()*3);
+//        }
+//        catch (Exception e){
+//            e.printStackTrace();
+//        }
+        String input = "a";
+        while ((input = scanner.nextLine()) != "q") {
+            ClientConnectionThread connectionThread = ClientApp.getInstance().getConnectionThread();
+            if (input.equalsIgnoreCase("presskeypacket")) {
+                PressKeyPacket pk = new PressKeyPacket(connectionThread.getClientId(), connectionThread.getClientId(), Input.Keys.W);
+                connectionThread.sendPacket(pk);
+            }
         }
-        catch (Exception e){
-            e.printStackTrace();
-        }
-
     }
 
     @Override
