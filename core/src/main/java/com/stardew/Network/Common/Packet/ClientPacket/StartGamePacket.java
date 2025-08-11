@@ -5,8 +5,10 @@ import com.stardew.Network.Common.Packet.PacketSender;
 import com.stardew.Network.Common.Packet.PacketType;
 
 public class StartGamePacket extends Packet {
-    public StartGamePacket(String senderId, String senderUsername) {
+    public String lobbyId;
+    public StartGamePacket(String senderId, String senderUsername, String lobbyId) {
         super(senderId, senderUsername);
+        this.lobbyId = lobbyId;
     }
 
     @Override

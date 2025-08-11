@@ -44,6 +44,7 @@ public class ServerConnectionThread extends ConnectionThread {
 
     @Override
     protected boolean handlePacket(Packet packet) {
+        Result result;
         System.out.println("Received packet from " + getClientId() + ": " + packet.getClass().getSimpleName());
 
         if (packet instanceof PressKeyPacket) {
@@ -57,10 +58,14 @@ public class ServerConnectionThread extends ConnectionThread {
 
         } else if (packet instanceof HuggingPacket) {
 
-        } else if (packet instanceof JoinLobbyPacket) {
-
-        } else if (packet instanceof LeaveLobbyPacket) {
-
+        } else if (packet instanceof JoinLobbyPacket joinLobbyPacket) {
+            result = Lobby.addPlayer(joinLobbyPacket.playerUsername, joinLobbyPacket.lobbyId, joinLobbyPacket.password);
+            ServerApp.getInstance().broadcast(new ServerGeneralRespondPacket(result, joinLobbyPacket));
+            return true;
+        } else if (packet instanceof LeaveLobbyPacket leaveLobbyPacket) {
+            result = Lobby.removePlayer(leaveLobbyPacket.playerUsername, leaveLobbyPacket.lobbyId);
+            ServerApp.getInstance().broadcast(new ServerGeneralRespondPacket(result, leaveLobbyPacket));
+            return true;
         } else if (packet instanceof MarrigePacket) {
 
         } else if (packet instanceof ReactionPacket) {
@@ -84,9 +89,10 @@ public class ServerConnectionThread extends ConnectionThread {
         } else if (packet instanceof VotePacket) {
 
         } else if (packet instanceof CreateLobbyPacket createLobbyPacket) {
-            Result result = Lobby.createLobby(createLobbyPacket.name, createLobbyPacket.password,
+            result = Lobby.createLobby(createLobbyPacket.name, createLobbyPacket.password,
                 createLobbyPacket.isPublic, createLobbyPacket.isVisible, createLobbyPacket.ownerName);
-            sendPacket(new ServerGeneralRespondPacket(result, createLobbyPacket));
+            ServerApp.getInstance().broadcast(new ServerGeneralRespondPacket(result, createLobbyPacket));
+            return true;
         }
         return false;
     }

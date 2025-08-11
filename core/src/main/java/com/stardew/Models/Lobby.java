@@ -12,8 +12,9 @@ public class Lobby {
     private final String password;
     private final boolean isPublic;
     private final boolean isVisible;
-    private final String ownerName;
+    private String ownerName;
     private final ArrayList<Player> players;
+
     private Lobby(String name, String id, String password, boolean isPublic, boolean isVisible, String ownerName) {
         this.name = name;
         this.id = id;
@@ -41,6 +42,7 @@ public class Lobby {
         Lobby lobby = new Lobby(name, id, password, isPublic, isVisible, ownerName);
         lobbies.add(lobby);
         player.getLobbies().add(lobby);
+        App.getInstance().scheduleLobbyRemoval(lobby);
         return new Result(true, id);
     }
 
@@ -53,23 +55,70 @@ public class Lobby {
         Lobby lobby = new Lobby(name, id, password, isPublic, isVisible, ownerName);
         lobbies.add(lobby);
         player.getLobbies().add(lobby);
+        App.getInstance().scheduleLobbyRemoval(lobby);
         return new Result(true, "lobby created");
     }
 
-    public Result addPlayer(String name) {
+    public static Result addPlayer(String name, String lobbyId, String password) {
+        Lobby lobby = Lobby.findLobbyById(lobbyId);
+        if (lobby == null) {
+            return new Result(false, "lobby not found");
+        }
+        if (!lobby.isPublic) {
+            if (!password.equals(lobby.password)) {
+                return new Result(false, "password does not match");
+            }
+        }
         Player player = App.getInstance().findPlayerByUsername(name);
         if (player == null) {
             return new Result(false, "Player not found");
         }
-        if (this.players.contains(player)) {
+        if (lobby.players.contains(player)) {
             new Result(false, "Player already exists");
         }
         if (player.getCurrentLobby() != null) {
             return new Result(false, "Player already in a lobby");
         }
-        this.players.add(player);
-        player.setCurrentLobby(this);
+        lobby.players.add(player);
+        player.setCurrentLobby(lobby);
+        App.getInstance().cancelLobbyRemoval(lobby);
         return new Result(true, "Player added");
+    }
+
+    public static Result removePlayer(String name, String lobbyId) {
+        Lobby lobby = Lobby.findLobbyById(lobbyId);
+        if (lobby == null) {
+            return new Result(false, "lobby not found");
+        }
+        Player player = App.getInstance().findPlayerByUsername(name);
+        if (player == null) {
+            return new Result(false, "player not found");
+        }
+        Lobby playerCurrentLobby = player.getCurrentLobby();
+        if (playerCurrentLobby == null || !playerCurrentLobby.equals(lobby)) {
+            return new Result(false, "player not in lobby");
+        }
+        Player admin = App.getInstance().findPlayerByUsername(lobby.ownerName);
+        if (admin == null) {
+            return new Result(false, "admin not found");
+        }
+        lobby.players.remove(player);
+        player.setCurrentLobby(null);
+        if (lobby.players.isEmpty()) {
+            App.getInstance().getLobbies().remove(lobby);
+            return new Result(true, "lobby removed");
+        }
+        lobby.setOwnerName(lobby.getPlayers().get(0).personalInfo.getName());
+        return new Result(true, "player removed");
+    }
+
+    public static Lobby findLobbyById(String lobbyId) {
+        for (Lobby lobby : App.getInstance().getLobbies()) {
+            if (lobby.getId().equals(lobbyId)) {
+                return lobby;
+            }
+        }
+        return null;
     }
 
     public String getName() {
@@ -99,4 +148,9 @@ public class Lobby {
     public ArrayList<Player> getPlayers() {
         return players;
     }
+
+    public void setOwnerName(String ownerName) {
+        this.ownerName = ownerName;
+    }
 }
+

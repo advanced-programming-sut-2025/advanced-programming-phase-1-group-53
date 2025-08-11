@@ -5,8 +5,12 @@ import com.stardew.Network.Common.Packet.PacketSender;
 import com.stardew.Network.Common.Packet.PacketType;
 
 public class LeaveLobbyPacket extends Packet {
-    public LeaveLobbyPacket(String senderId, String senderUsername) {
+    public String playerUsername;
+    public String lobbyId;
+    public LeaveLobbyPacket(String senderId, String senderUsername, String playerUsername, String lobbyId) {
         super(senderId, senderUsername);
+        this.playerUsername = playerUsername;
+        this.lobbyId = lobbyId;
     }
 
     @Override

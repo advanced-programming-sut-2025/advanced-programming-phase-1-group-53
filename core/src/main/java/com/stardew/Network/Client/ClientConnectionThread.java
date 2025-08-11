@@ -65,10 +65,20 @@ public class ClientConnectionThread extends ConnectionThread {
 
             } else if (innerPacket instanceof HuggingPacket) {
 
-            } else if (innerPacket instanceof JoinLobbyPacket) {
-
-            } else if (innerPacket instanceof LeaveLobbyPacket) {
-
+            } else if (innerPacket instanceof JoinLobbyPacket joinLobbyPacket) {
+                if (!result.success()) {
+                    System.out.println(result.message());
+                    return true;
+                }
+                Lobby.addPlayer(joinLobbyPacket.playerUsername, joinLobbyPacket.lobbyId, joinLobbyPacket.password);
+                return true;
+            } else if (innerPacket instanceof LeaveLobbyPacket leaveLobbyPacket) {
+                if (!result.success()) {
+                    System.out.println(result.message());
+                    return true;
+                }
+                Lobby.removePlayer(leaveLobbyPacket.playerUsername, leaveLobbyPacket.lobbyId);
+                return true;
             } else if (innerPacket instanceof MarrigePacket) {
 
             } else if (innerPacket instanceof ReactionPacket) {
@@ -92,6 +102,7 @@ public class ClientConnectionThread extends ConnectionThread {
             } else if (innerPacket instanceof VotePacket) {
 
             }
+            return false;
         } else if (packet instanceof UpdateMapPacket) {
 
         } else if (packet instanceof WelcomePacket) {
