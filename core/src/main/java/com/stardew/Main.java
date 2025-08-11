@@ -2,6 +2,7 @@ package com.stardew;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -34,23 +35,23 @@ public class Main extends Game {
         ClientApp app = ClientApp.getInstance();
         app.initializeClient(serverIp, port, playerId);
 
-//        try{
+        try{
 //            setScreen(new Tab());
-//            batch = new SpriteBatch();
-//            sprite = new Sprite(new Texture("Animals/Duck.png"),16*3, 16*3, 16, 16);
-//            sprite.setSize(sprite.getWidth()*3, sprite.getHeight()*3);
-//        }
-//        catch (Exception e){
-//            e.printStackTrace();
-//        }
-        String input = "a";
-        while ((input = scanner.nextLine()) != "q") {
-            ClientConnectionThread connectionThread = ClientApp.getInstance().getConnectionThread();
+            batch = new SpriteBatch();
+            sprite = new Sprite(new Texture("Animals/Duck.png"),16*3, 16*3, 16, 16);
+            sprite.setSize(sprite.getWidth()*3, sprite.getHeight()*3);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+//        String input = "a";
+//        while ((input = scanner.nextLine()) != "q") {
+//            ClientConnectionThread connectionThread = ClientApp.getInstance().getConnectionThread();
 //            if (input.equalsIgnoreCase("presskeypacket")) {
 //                PressKeyPacket pk = new PressKeyPacket(connectionThread.getClientId(), connectionThread.getClientId(), Input.Keys.W);
 //                connectionThread.sendPacket(pk);
 //            }
-        }
+//        }
     }
 
     @Override
@@ -73,6 +74,6 @@ public class Main extends Game {
     @Override
     public void dispose() {
         batch.dispose();
-        sprite.getTexture().dispose();
+        Main.sprite.getTexture().dispose();
     }
 }

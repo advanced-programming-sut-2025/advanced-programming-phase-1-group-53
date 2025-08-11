@@ -68,7 +68,8 @@ public class SignUpMenuController {
         }
 
         String hashedPassword = hashPassword(password);
-        newPlayer = new Player(username, nickname, hashedPassword, email, Gender.getGender(gender));
+        // TODO fix connectionId
+        newPlayer = new Player(username, nickname, hashedPassword, email, Gender.getGender(gender), "");
         finalizeRegistration();
         System.out.println("Registered successfully!");
         listOfQuestions();
