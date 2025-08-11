@@ -1,5 +1,6 @@
 package com.stardew.Network.Server;
 
+import com.stardew.Models.Game.Player;
 import com.stardew.Models.Lobby;
 import com.stardew.Models.Result;
 import com.stardew.Network.Common.ConnectionThread;
@@ -70,18 +71,17 @@ public class ServerConnectionThread extends ConnectionThread {
 
         } else if (packet instanceof ReactionPacket) {
 
-        } else if (packet instanceof RefreshLobbyPacket) {
-
         } else if (packet instanceof RestartGamePacket) {
 
         } else if (packet instanceof SaveGamePacket) {
 
         } else if (packet instanceof SendMessagePacket) {
 
-        } else if (packet instanceof SignInPacket) {
-
-        } else if (packet instanceof SignUpPacket) {
-
+        }  else if (packet instanceof SignUpPacket signUpPacket) {
+            result = Player.createPlayer(signUpPacket.username, signUpPacket.nickname, signUpPacket.password,
+                signUpPacket.email, signUpPacket.gender);
+            ServerApp.getInstance().broadcast(new ServerGeneralRespondPacket(result, signUpPacket));
+            return true;
         } else if (packet instanceof StartGamePacket) {
 
         } else if (packet instanceof StartVotingPacket) {

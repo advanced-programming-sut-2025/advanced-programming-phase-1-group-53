@@ -398,5 +398,11 @@ public class Player {
     public void setCurrentLobby(Lobby currentLobby) {
         this.currentLobby = currentLobby;
     }
+
+    public static Result createPlayer(String name, String nickName, String password, String email, Gender gender) {
+        Player player = new Player(name, nickName, password, email, gender);
+        App.getInstance().getPlayers().add(player);
+        return new Result(true, "Player created");
+    }
 }
 
