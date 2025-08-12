@@ -70,10 +70,11 @@ public class NetSignupController {
                 username, nickname, hashedPassword, email, Gender.getGender(gender)
         );
         ClientApp.getInstance().getConnectionThread().sendPacket(packet);
-        //TODO add these two lines when made sure the client responded properly
-//        players.add(newPlayer);
-//        App.setCurrentPlayer(newPlayer);
-//        System.out.println("still not sure if the user is signed-up or not");
+        try {
+            Thread.sleep(50);
+        } catch (InterruptedException e) {
+            // ignore
+        }
         if (App.getMyPlayer() == null) {
             return "you have to register first";
         }

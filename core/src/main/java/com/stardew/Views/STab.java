@@ -25,13 +25,15 @@ public class STab implements Screen, InputProcessor {
     TextButton textButton;
 
     public static TextButton createTextButton(String text){
-        TextButton tb= new TextButton(text, skin);
+        TextButton tb= new TextButton("", skin);
+        tb.setText(text);
         tb.setSize(60, 80);
         return tb;
     }
 
     public static TextButton createTextButton(String text, int width, int height){
-        TextButton tb= new TextButton(text, skin);
+        TextButton tb= new TextButton("", skin);
+        tb.setText(text);
         tb.setSize(width, height);
         return tb;
     }
