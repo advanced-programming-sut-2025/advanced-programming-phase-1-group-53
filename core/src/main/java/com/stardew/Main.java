@@ -9,6 +9,7 @@ import com.stardew.Models.Game.App;
 import com.stardew.Network.Client.ClientApp;
 //import com.stardew.Views.AppView;
 import com.stardew.Views.LoginRegisterMenu;
+import com.stardew.Views.NetworkMenus.NetMainMenu;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Main extends Game {
@@ -49,7 +50,7 @@ public class Main extends Game {
 //            e.printStackTrace();
 //        }
 
-        setScreen(new LoginRegisterMenu(main));
+        setScreen(new NetMainMenu(main));
 
     }
 

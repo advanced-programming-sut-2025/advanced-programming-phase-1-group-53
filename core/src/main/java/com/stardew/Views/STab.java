@@ -10,15 +10,14 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
-public class Tab implements Screen, InputProcessor {
+public class STab implements Screen, InputProcessor {
     private static final float SCREEN_WIDTH = Gdx.graphics.getWidth();
     private static final float SCREEN_HEIGHT = Gdx.graphics.getHeight();
     protected  float START_X = SCREEN_WIDTH/3;
     protected  float START_Y = SCREEN_HEIGHT /3;
     protected float WIDTH = SCREEN_WIDTH /3;
     protected float HEIGHT = SCREEN_HEIGHT /3;
-    public static Skin skin = new Skin(Gdx.files.internal("skin/comic-ui.json"));
-    public static Skin stardewSkin =  new Skin(Gdx.files.internal("skin/LibGdx-Skin-main/NzSkin.json"));
+    public static Skin skin =  new Skin(Gdx.files.internal("skin/LibGdx-Skin-main/NzSkin.json"));
     protected boolean menuVisible = false;
     protected Stage stage;
     protected Table table = new Table();

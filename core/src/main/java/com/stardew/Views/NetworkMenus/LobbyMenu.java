@@ -11,10 +11,7 @@ import com.stardew.Network.Client.ClientApp;
 import com.stardew.Network.Common.Packet.ClientPacket.JoinLobbyPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.LeaveLobbyPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.StartGamePacket;
-import com.stardew.Views.AppMenu;
-import com.stardew.Views.ExitMenu;
-import com.stardew.Views.MainMenu;
-import com.stardew.Views.Tab;
+import com.stardew.Views.*;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -91,7 +88,7 @@ public class LobbyMenu extends AppMenu {
                     showLobbyWindow(selectedLobby, joinPasswordField.getText());
                     return;
                 }
-                Dialog dialog = Tab.dialogStardewSkin("couldn't open the lobby!\nit may be full or closed.", "OK");
+                Dialog dialog = STab.createDialog("couldn't open the lobby!\nit may be full or closed.", "OK");
                 dialog.show(stage);
             }
         });
@@ -203,7 +200,7 @@ public class LobbyMenu extends AppMenu {
         this.password = lobby.getPassword();
 
         if (isPrivate && password.isEmpty()) {
-            Dialog dialog = Tab.dialogStardewSkin("The lobby is private!\n" +
+            Dialog dialog = STab.createDialog("The lobby is private!\n" +
                 "You need the password to login.", "OK");
             dialog.show(stage);
             return;
@@ -234,7 +231,7 @@ public class LobbyMenu extends AppMenu {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 if (!lobby.getAdmin().equals(App.getCurrentPlayer()) || lobby.getPlayers().size() < 2) {
-                    Dialog dialog = Tab.dialogStardewSkin("couldn't start the game", "OK");
+                    Dialog dialog = STab.createDialog("couldn't start the game", "OK");
                     dialog.show(stage);
                     return;
                 }

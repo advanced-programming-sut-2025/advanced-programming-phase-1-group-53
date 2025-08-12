@@ -3,9 +3,12 @@ package com.stardew.Views.NetworkMenus;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.stardew.Controllers.MainMenuController;
 import com.stardew.Controllers.NetworkControllers.NetMainMenuController;
+import com.stardew.Controllers.NetworkControllers.PlayersMenu;
 import com.stardew.Controllers.ShareController;
+import com.stardew.Models.Game.App;
 import com.stardew.Views.*;
 
 
@@ -45,15 +48,24 @@ public class NetMainMenu extends AppMenu {
         });
         table.add(gameMenuButton).pad(10).row();
 
-        TextButton LobbyMenuBtn = new TextButton("", skin);
-        LobbyMenuBtn.setText("Lobby Menu");
-        LobbyMenuBtn.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
+        TextButton lobbyMenuBtn = new TextButton("", skin);
+        lobbyMenuBtn.setText("Lobby Menu");
+        lobbyMenuBtn.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
             @Override
             public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
                 main.setScreen(new LobbyMenu());
             }
         });
-        table.add(LobbyMenuBtn).pad(10).row();
+        table.add(lobbyMenuBtn).pad(10).row();
+
+        TextButton onlinePlayersBtn = STab.createTextButton("Online Players");
+        onlinePlayersBtn.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
+            @Override
+            public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
+                App.main.setScreen(new PlayersMenu());
+            }
+        });
+        table.add(onlinePlayersBtn).pad(10).row();
 
         TextButton exitButton = new TextButton("Exit", skin);
         exitButton.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
