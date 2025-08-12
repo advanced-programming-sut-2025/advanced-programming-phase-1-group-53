@@ -77,7 +77,10 @@ public class NetSignupController {
         //TODO add these two lines when made sure the client responded properly
 //        players.add(newPlayer);
 //        App.setCurrentPlayer(newPlayer);
-        System.out.println("still not sure if the user is signed-up or not");
+//        System.out.println("still not sure if the user is signed-up or not");
+        if (App.getMyPlayer() == null) {
+            return "you have to register first";
+        }
         App.main.setScreen(new LobbyMenu());
         return "still not sure if the user is signed-up or not";
     }
