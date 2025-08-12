@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.stardew.Controllers.LoginRegisterMenuController;
 import com.stardew.Models.Game.App;
+import com.stardew.Views.NetworkMenus.NetMainMenu;
 import com.stardew.Views.NetworkMenus.NetSignUpMenu;
 
 public class LoginRegisterMenu extends AppMenu {
@@ -131,7 +132,7 @@ public class LoginRegisterMenu extends AppMenu {
         phase3Btn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                App.main.setScreen(new NetSignUpMenu(App.main));
+                App.main.setScreen(new NetMainMenu(App.main));
             }
         });
 

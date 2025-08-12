@@ -94,7 +94,7 @@ public class NetSignUpMenu extends AppMenu {
         backBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                main.setScreen(new LoginRegisterMenu(main));
+                main.setScreen(new NetMainMenu(main));
             }
         });
 

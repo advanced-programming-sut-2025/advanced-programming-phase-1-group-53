@@ -119,7 +119,7 @@ public class LobbyMenu extends AppMenu {
         BackBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                App.main.setScreen(new MainMenu(App.main));
+                App.main.setScreen(new NetMainMenu(App.main));
             }
         });
         table.add(BackBtn).pad(20).row();
