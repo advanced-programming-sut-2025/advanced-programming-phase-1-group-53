@@ -107,7 +107,7 @@ public class ServerConnectionThread extends ConnectionThread {
             ServerApp.getInstance().broadcast(new ServerGeneralRespondPacket(result, createLobbyPacket));
             return true;
         } else if (packet instanceof TalkToNPCPacket talkToNPCPacket) {
-            result = NPC.talk(talkToNPCPacket.NPCName, talkToNPCPacket.getSenderUsername());
+            result = NPC.generateDialogue(talkToNPCPacket.NPCName, talkToNPCPacket.getSenderUsername());
             System.out.println(result.message());
             this.sendPacket(new ServerGeneralRespondPacket(result, new NPCDialoguePacket(talkToNPCPacket.getSenderId(),
                 talkToNPCPacket.getSenderUsername(), result.message())));

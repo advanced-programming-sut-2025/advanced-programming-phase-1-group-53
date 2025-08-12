@@ -6,11 +6,11 @@ import java.net.URL;
 
 public class HttpLanguageModel implements LanguageModel {
     private final String apiUrl;
-    private final String apiKey;
+    private final String modelName;
 
-    public HttpLanguageModel(String apiUrl, String apiKey) {
+    public HttpLanguageModel(String apiUrl, String modelName) {
         this.apiUrl = apiUrl;
-        this.apiKey = apiKey;
+        this.modelName = modelName;
     }
 
     @Override
@@ -20,29 +20,43 @@ public class HttpLanguageModel implements LanguageModel {
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
             conn.setRequestMethod("POST");
-            conn.setRequestProperty("Authorization", "Bearer " + apiKey);
             conn.setRequestProperty("Content-Type", "application/json");
             conn.setDoOutput(true);
 
-            String body = "{\"model\":\"gpt-4\",\"messages\":[{\"role\":\"user\",\"content\":\""
-                + prompt.replace("\"", "\\\"") + "\"}]}";
+            String body = String.format(
+                "{\"model\":\"%s\",\"prompt\":\"%s\"}",
+                modelName,
+                prompt.replace("\"", "\\\"")
+            );
 
             try (OutputStream os = conn.getOutputStream()) {
                 os.write(body.getBytes());
             }
 
+            StringBuilder finalText = new StringBuilder();
+
+            // Ollama stream JSON objects, we read line-by-line
             try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
-                StringBuilder response = new StringBuilder();
                 String line;
                 while ((line = br.readLine()) != null) {
-                    response.append(line);
+                    // پیدا کردن فیلد "response"
+                    int idx = line.indexOf("\"response\":\"");
+                    if (idx != -1) {
+                        int start = idx + 12; // بعد از "response":
+                        int end = line.indexOf("\"", start);
+                        if (end != -1) {
+                            String chunk = line.substring(start, end);
+                            finalText.append(chunk);
+                        }
+                    }
                 }
-                return response.toString(); // اینجا باید JSON رو پارس کنی تا متن خالص رو بگیری
             }
+
+            return finalText.toString().trim();
 
         } catch (IOException e) {
             e.printStackTrace();
-            return "خطا در ارتباط با مدل زبانی.";
+            return "خطا در ارتباط با Ollama.";
         }
     }
 }

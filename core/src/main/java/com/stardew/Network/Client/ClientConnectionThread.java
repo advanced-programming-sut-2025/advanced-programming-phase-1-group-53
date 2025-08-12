@@ -4,6 +4,7 @@ import com.stardew.Controllers.Controller;
 import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.Player;
 import com.stardew.Models.Lobby;
+import com.stardew.Models.NPC.NPC;
 import com.stardew.Models.Result;
 import com.stardew.Network.Common.ConnectionThread;
 import com.stardew.Network.Common.Packet.*;
@@ -134,6 +135,7 @@ public class ClientConnectionThread extends ConnectionThread {
                     return true;
                 }
                 String dialogue = npcDialoguePacket.dialogue;
+                // کلاینت به دیالوگ هیستوری دسترسی نداره
                 // TODO show dialogue
                 return true;
             } else if (innerPacket instanceof KeyUpPacket keyUpPacket) {

@@ -37,83 +37,84 @@ public class NPC {
     }
 
     public static final NPC Sebastian = new NPC(
-            "Sebastian",
-            new ArrayList<>(Arrays.asList(
-                    App.getGame().getItemByItemType(ItemType.SheepWool),
-                    App.getGame().getItemByItemType(ItemType.PumpkinPie),
-                    App.getGame().getItemByItemType(ItemType.Pizza)
-            )),
-            new ArrayList<>(Arrays.asList(
-                    new Request(50, App.getGame().getItemByItemType(ItemType.IronBar), 2, App.getGame().getItemByItemType(ItemType.Diamond), 0),
-                    new Request(1, App.getGame().getItemByItemType(ItemType.PumpkinPie), 0, null, 5000),
-                    new Request(150, App.getGame().getItemByItemType(ItemType.Stone), 50, App.getGame().getItemByItemType(ItemType.Quartz), 0)
-            )),
-            "empty",
-            SEBASTIAN_POSITION
+        "Sebastian",
+        new ArrayList<>(Arrays.asList(
+            App.getGame().getItemByItemType(ItemType.SheepWool),
+            App.getGame().getItemByItemType(ItemType.PumpkinPie),
+            App.getGame().getItemByItemType(ItemType.Pizza)
+        )),
+        new ArrayList<>(Arrays.asList(
+            new Request(50, App.getGame().getItemByItemType(ItemType.IronBar), 2, App.getGame().getItemByItemType(ItemType.Diamond), 0),
+            new Request(1, App.getGame().getItemByItemType(ItemType.PumpkinPie), 0, null, 5000),
+            new Request(150, App.getGame().getItemByItemType(ItemType.Stone), 50, App.getGame().getItemByItemType(ItemType.Quartz), 0)
+        )),
+        "Sebastian is a quiet, introspective young man who spends most of his time in his room, tinkering with computers or riding his motorcycle. He enjoys sarcastic humor, rainy days, and dislikes large crowds.",
+        SEBASTIAN_POSITION
     );
 
     public static final NPC Abigail = new NPC(
-            "Abigail",
-            new ArrayList<>(Arrays.asList(
-                    App.getGame().getItemByItemType(ItemType.Stone),
-                    App.getGame().getItemByItemType(ItemType.IronOre),
-                    App.getGame().getItemByItemType(ItemType.Coffee)
-            )),
-            new ArrayList<>(Arrays.asList(
-                    new Request(1, App.getGame().getItemByItemType(ItemType.GoldBar), 0, null, 10000),
-                    new Request(1, App.getGame().getItemByItemType(ItemType.Pumpkin), 0, null, 5000),
-                    new Request(1, App.getGame().getItemByItemType(ItemType.Pizza), 0, null, 5000),
-                    new Request(1, App.getGame().getItemByItemType(ItemType.Coffee), 0, null, 5000)
-            )),
-        "empty",
-            ABIGAIL_POSITION
+        "Abigail",
+        new ArrayList<>(Arrays.asList(
+            App.getGame().getItemByItemType(ItemType.Stone),
+            App.getGame().getItemByItemType(ItemType.IronOre),
+            App.getGame().getItemByItemType(ItemType.Coffee)
+        )),
+        new ArrayList<>(Arrays.asList(
+            new Request(1, App.getGame().getItemByItemType(ItemType.GoldBar), 0, null, 10000),
+            new Request(1, App.getGame().getItemByItemType(ItemType.Pumpkin), 0, null, 5000),
+            new Request(1, App.getGame().getItemByItemType(ItemType.Pizza), 0, null, 5000),
+            new Request(1, App.getGame().getItemByItemType(ItemType.Coffee), 0, null, 5000)
+        )),
+        "Abigail is adventurous, bold, and a little rebellious. She loves exploring mines, playing the flute, and eating anything unusual. She has a mischievous side and enjoys teasing her friends.",
+        ABIGAIL_POSITION
     );
 
     public static final NPC Harvey = new NPC(
-            "Harvey",
-            new ArrayList<>(Arrays.asList(
-                    App.getGame().getItemByItemType(ItemType.Coffee),
-                    App.getGame().getItemByItemType(ItemType.Parsnip),
-                    App.getGame().getItemByItemType(ItemType.Salad)
-            )),
-            new ArrayList<>(Arrays.asList(
-                    new Request(2, App.getGame().getItemByItemType(ItemType.Coffee), 1, App.getGame().getItemByItemType(ItemType.Salad), 2000),
-                    new Request(5, App.getGame().getItemByItemType(ItemType.Parsnip), 0, null, 1000)
-            )),
-        "empty",
-            HARVEY_POSITION
+        "Harvey",
+        new ArrayList<>(Arrays.asList(
+            App.getGame().getItemByItemType(ItemType.Coffee),
+            App.getGame().getItemByItemType(ItemType.Parsnip),
+            App.getGame().getItemByItemType(ItemType.Salad)
+        )),
+        new ArrayList<>(Arrays.asList(
+            new Request(2, App.getGame().getItemByItemType(ItemType.Coffee), 1, App.getGame().getItemByItemType(ItemType.Salad), 2000),
+            new Request(5, App.getGame().getItemByItemType(ItemType.Parsnip), 0, null, 1000)
+        )),
+        "Harvey is a gentle, slightly anxious town doctor who cares deeply for everyone's health. He’s polite, well-mannered, and enjoys calm conversations over a cup of coffee.",
+        HARVEY_POSITION
     );
 
     public static final NPC Lia = new NPC(
-            "Lia",
-            new ArrayList<>(Arrays.asList(
-                    App.getGame().getItemByItemType(ItemType.Salad),
-                    App.getGame().getItemByItemType(ItemType.FruitSalad),
-                    App.getGame().getItemByItemType(ItemType.Wood)
-            )),
-            new ArrayList<>(Arrays.asList(
-                    new Request(10, App.getGame().getItemByItemType(ItemType.Wood), 1, App.getGame().getItemByItemType(ItemType.FruitSalad), 500),
-                    new Request(1, App.getGame().getItemByItemType(ItemType.Salad), 0, null, 1000)
-            )),
-        "empty",
-            LIA_POSITION
+        "Lia",
+        new ArrayList<>(Arrays.asList(
+            App.getGame().getItemByItemType(ItemType.Salad),
+            App.getGame().getItemByItemType(ItemType.FruitSalad),
+            App.getGame().getItemByItemType(ItemType.Wood)
+        )),
+        new ArrayList<>(Arrays.asList(
+            new Request(10, App.getGame().getItemByItemType(ItemType.Wood), 1, App.getGame().getItemByItemType(ItemType.FruitSalad), 500),
+            new Request(1, App.getGame().getItemByItemType(ItemType.Salad), 0, null, 1000)
+        )),
+        "Lia is a warm, creative artist who loves sculpting and painting. She’s kind-hearted, enjoys quiet walks in nature, and often finds inspiration in the simplest things.",
+        LIA_POSITION
     );
 
     public static final NPC Robin = new NPC(
-            "Robin",
-            new ArrayList<>(Arrays.asList(
-                    App.getGame().getItemByItemType(ItemType.Wood),
-                    App.getGame().getItemByItemType(ItemType.Stone),
-                    App.getGame().getItemByItemType(ItemType.Wine)
-            )),
-            new ArrayList<>(Arrays.asList(
-                    new Request(100, App.getGame().getItemByItemType(ItemType.Wood), 0, null, 2000),
-                    new Request(50, App.getGame().getItemByItemType(ItemType.Stone), 0, null, 1000),
-                    new Request(10, App.getGame().getItemByItemType(ItemType.Wine), 0, null, 3000)
-            )),
-        "empty",
-            ROBIN_POSITION
+        "Robin",
+        new ArrayList<>(Arrays.asList(
+            App.getGame().getItemByItemType(ItemType.Wood),
+            App.getGame().getItemByItemType(ItemType.Stone),
+            App.getGame().getItemByItemType(ItemType.Wine)
+        )),
+        new ArrayList<>(Arrays.asList(
+            new Request(100, App.getGame().getItemByItemType(ItemType.Wood), 0, null, 2000),
+            new Request(50, App.getGame().getItemByItemType(ItemType.Stone), 0, null, 1000),
+            new Request(10, App.getGame().getItemByItemType(ItemType.Wine), 0, null, 3000)
+        )),
+        "Robin is an energetic, friendly carpenter who loves building and improving homes. She’s practical, resourceful, and always ready to share a laugh.",
+        ROBIN_POSITION
     );
+
 
     public String getName() {
         return name;
@@ -139,7 +140,7 @@ public class NPC {
         return position;
     }
 
-    public static Result talk(String npcName, String playerUsername) {
+    public static Result generateDialogue(String npcName, String playerUsername) {
         NPC npc = NPC.findNPCsByName(npcName);
         if (npc == null) {
             return new Result(false, "NPC not found");
@@ -152,13 +153,14 @@ public class NPC {
             return new Result(false, "You are not near NPC");
         }
         player.changeNPCsFriendship(20, npc);
-        HttpLanguageModel model = new HttpLanguageModel(
-            "https://api.openai.com/v1/chat/completions", // یا URL لوکال مدل
-            "API_KEY_خودت"
+        LanguageModel npcModel = new HttpLanguageModel(
+            "http://localhost:11434/api/generate",
+            "llama3"
         );
 
-        DialogueGenerator generator = new DialogueGenerator(model);
+        DialogueGenerator generator = new DialogueGenerator(npcModel);
         String dialogue = generator.generateNPCDialogue(npc, player);
+        player.getNPCDialogueHistory(npc).append(dialogue).append("\\n");
         return new Result(true, dialogue);
     }
 
