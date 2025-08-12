@@ -35,7 +35,6 @@ public class PacketParser {
                 .registerSubtype(SignUpPacket.class, PacketType.SIGN_UP_PACKET.name())
                 .registerSubtype(StartGamePacket.class, PacketType.START_GAME_PACKET.name())
                 .registerSubtype(StartVotingPacket.class, PacketType.START_VOTING_PACKET.name())
-                .registerSubtype(VotePacket.class, PacketType.VOTE_PACKET.name())
                 .registerSubtype(CreateLobbyPacket.class, PacketType.CREATE_LOBBY_PACKET.name())
                 .registerSubtype(ServerGeneralRespondPacket.class, PacketType.SERVER_GENERAL_RESPOND_PACKET.name())
                 .registerSubtype(UpdateMapPacket.class, PacketType.UPDATE_MAP_PACKET.name())
