@@ -1,5 +1,7 @@
 package com.stardew.Models.Game;
 
+import com.stardew.Controllers.AbilityMenuController;
+import com.stardew.Controllers.Controller;
 import com.stardew.Controllers.GameMenuController;
 import com.stardew.Enums.Gender;
 import com.stardew.Enums.Menu;
@@ -7,6 +9,7 @@ import com.stardew.Main;
 import com.stardew.Models.Lobby;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
@@ -22,6 +25,7 @@ public class App {
     private static Menu currentMenu = null;
         //TODO unnull
     private static Game game;
+    private final Map<String, Controller> controllerRegistry = new HashMap<>();
     private final ArrayList<Player> players = new ArrayList<>();
     private final ArrayList<Game> games = new ArrayList<>();
     private final ArrayList<Lobby> lobbies = new ArrayList<>();
@@ -40,6 +44,8 @@ public class App {
     public static App getInstance(){
         if(app == null){
             app = new App();
+            app.controllerRegistry.put(AbilityMenuController.MENU_NAME, new AbilityMenuController());
+            //TODO other controllers
             new GameMenuController().newGame("ilias", "iliass", "iliasss");
         }
         return app;
@@ -126,5 +132,9 @@ public class App {
 
     public static void setMyPlayer(Player myPlayer) {
         App.myPlayer = myPlayer;
+    }
+
+    public Controller getController(String className) {
+        return controllerRegistry.get(className);
     }
 }

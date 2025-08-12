@@ -1,5 +1,7 @@
 package com.stardew.Network.Server;
 
+import com.badlogic.gdx.Screen;
+import com.stardew.Controllers.Controller;
 import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.Player;
 import com.stardew.Models.Lobby;
@@ -13,6 +15,7 @@ import com.stardew.Network.Common.Packet.ServerPacket.ServerGeneralRespondPacket
 import com.stardew.Network.Common.Packet.ServerPacket.WelcomePacket;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.net.Socket;
 
 public class ServerConnectionThread extends ConnectionThread {
@@ -108,6 +111,61 @@ public class ServerConnectionThread extends ConnectionThread {
             System.out.println(result.message());
             this.sendPacket(new ServerGeneralRespondPacket(result, new NPCDialoguePacket(talkToNPCPacket.getSenderId(),
                 talkToNPCPacket.getSenderUsername(), result.message())));
+            return true;
+        } else if (packet instanceof KeyUpPacket keyUpPacket) {
+            Controller controller = App.getInstance().getController(keyUpPacket.className);
+            if (controller == null) {
+                ServerApp.getInstance().broadcast(new ServerGeneralRespondPacket(new Result(false, "controller not found"), keyUpPacket));
+                System.out.println("controller not found");
+                return true;
+            }
+            result = controller.keyUp(keyUpPacket);
+            System.out.println(result.message());
+            ServerApp.getInstance().broadcast(new ServerGeneralRespondPacket(result, keyUpPacket));
+            return true;
+        } else if (packet instanceof KeyDownPacket keyDownPacket) {
+            Controller controller = App.getInstance().getController(keyDownPacket.className);
+            if (controller == null) {
+                ServerApp.getInstance().broadcast(new ServerGeneralRespondPacket(new Result(false, "controller not found"), keyDownPacket));
+                System.out.println("controller not found");
+                return true;
+            }
+            result = controller.keyDown(keyDownPacket);
+            System.out.println(result.message());
+            ServerApp.getInstance().broadcast(new ServerGeneralRespondPacket(result, keyDownPacket));
+            return true;
+        } else if (packet instanceof TouchDownPacket touchDownPacket) {
+            Controller controller = App.getInstance().getController(touchDownPacket.className);
+            if (controller == null) {
+                ServerApp.getInstance().broadcast(new ServerGeneralRespondPacket(new Result(false, "controller not found"), touchDownPacket));
+                System.out.println("controller not found");
+                return true;
+            }
+            result = controller.touchDown(touchDownPacket);
+            System.out.println(result.message());
+            ServerApp.getInstance().broadcast(new ServerGeneralRespondPacket(result, touchDownPacket));
+            return true;
+        } else if (packet instanceof MouseMovePacket mouseMovePacket) {
+            Controller controller = App.getInstance().getController(mouseMovePacket.className);
+            if (controller == null) {
+                ServerApp.getInstance().broadcast(new ServerGeneralRespondPacket(new Result(false, "controller not found"), mouseMovePacket));
+                System.out.println("controller not found");
+                return true;
+            }
+            result = controller.mouseMove(mouseMovePacket);
+            System.out.println(result.message());
+            ServerApp.getInstance().broadcast(new ServerGeneralRespondPacket(result, mouseMovePacket));
+            return true;
+        } else if (packet instanceof ClickPacket clickPacket) {
+            Controller controller = App.getInstance().getController(clickPacket.className);
+            if (controller == null) {
+                ServerApp.getInstance().broadcast(new ServerGeneralRespondPacket(new Result(false, "controller not found"), clickPacket));
+                System.out.println("controller not found");
+                return true;
+            }
+            result = controller.click(clickPacket);
+            System.out.println(result.message());
+            ServerApp.getInstance().broadcast(new ServerGeneralRespondPacket(result, clickPacket));
             return true;
         }
         return false;
