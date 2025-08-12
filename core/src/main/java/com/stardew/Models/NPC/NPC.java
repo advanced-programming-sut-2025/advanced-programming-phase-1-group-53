@@ -153,15 +153,17 @@ public class NPC {
             return new Result(false, "You are not near NPC");
         }
         player.changeNPCsFriendship(20, npc);
-        LanguageModel npcModel = new HttpLanguageModel(
+        LanguageModelAsync npcModel = new HttpLanguageModel(
             "http://localhost:11434/api/generate",
             "llama3"
         );
-
         DialogueGenerator generator = new DialogueGenerator(npcModel);
-        String dialogue = generator.generateNPCDialogue(npc, player);
-        player.getNPCDialogueHistory(npc).append(dialogue).append("\\n");
-        return new Result(true, dialogue);
+
+        StringBuilder allDialogue = new StringBuilder();
+        generator.generateNPCDialogueAsync(npc, player)
+            .thenAccept(allDialogue::append);
+        player.getNPCDialogueHistory(npc).append(allDialogue).append("\\n");
+        return new Result(true, allDialogue.toString());
     }
 
     public static NPC findNPCsByName(String name) {
