@@ -53,11 +53,12 @@ public class MovementController {
             App.getCurrentPlayer().position.getY() + y).getTileKind().equals(TileKind.shop)){
             Shop shop = Shop.getShopByPosition((int)v2.x, (int)v2. y);
             if(shop != null){
-                shop.setUpShopMenu();
+//                shop.setUpShopMenu();            //TODO uncomment
             }
         }if(App.getGame().getGameMap().getTileByPixelCoordinate(App.getCurrentPlayer().position.getX() + x,
             App.getCurrentPlayer().position.getY() + y).getTileKind().equals(TileKind.shippingBin)){
-            ShippingBin.ShippingBin.setUpSellingMenu();
+//            ShippingBin.ShippingBin.setUpSellingMenu();
+            //TODO uncomment
         }
         if(App.getGame().getGameMap().getTileByPixelCoordinate(App.getCurrentPlayer().position.getX() + x,
             App.getCurrentPlayer().position.getY() + y).getTileKind().equals(TileKind.coop)){

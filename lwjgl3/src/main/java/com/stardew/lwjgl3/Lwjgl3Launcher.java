@@ -8,10 +8,13 @@ import com.stardew.Main;
 public class Lwjgl3Launcher {
     public static void main(String[] args) {
         if (StartupHelper.startNewJvmIfRequired()) return; // This handles macOS support and helps on Windows.
-        createApplication();
     }
 
-    private static Lwjgl3Application createApplication() {
+    public static Lwjgl3Application createApplication() {
+        Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
+        config.setTitle("My Game");
+        config.setWindowedMode(2048, 1152);
+        config.useVsync(true);
         return new Lwjgl3Application(new Main(), getDefaultConfiguration());
     }
 

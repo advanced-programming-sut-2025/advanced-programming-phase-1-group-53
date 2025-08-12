@@ -163,15 +163,16 @@ public class LobbyMenu extends AppMenu {
                 }
                 if (password.isEmpty()) {
                     packet = new CreateLobbyPacket(
-                        App.getCurrentPlayer(), name, password,
-                        true, isVisible, App.getCurrentPlayer().getUsername()
+                        App.getMyPlayer(), name, password,
+                        true, isVisible, App.getMyPlayer().getUsername()
                     );
                 }
                 else {
                     packet = new CreateLobbyPacket(
-                        App.getCurrentPlayer(), name, password,
-                        false, isVisible, App.getCurrentPlayer().getUsername());
+                        App.getMyPlayer(), name, password,
+                        false, isVisible, App.getMyPlayer().getUsername());
                 }
+                System.out.println("lobby created");
                 ClientApp.getInstance().getConnectionThread().sendPacket(packet);
 
                 com.badlogic.gdx.scenes.scene2d.ui.Dialog dialog = new com.badlogic.gdx.scenes.scene2d.ui.Dialog("Pop-up", skin) {

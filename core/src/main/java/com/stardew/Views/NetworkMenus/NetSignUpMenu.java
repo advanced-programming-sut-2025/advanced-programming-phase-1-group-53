@@ -62,6 +62,14 @@ public class NetSignUpMenu extends AppMenu {
         passwordField.setMessageText("Password");
         confirmPasswordField.setMessageText("Confirm Password");
 
+        usernameField.setText("Username");
+        nicknameField.setText("Nickname");
+        emailField.setText("Email@gmail.com");
+        genderField.setText("MALE");
+        passwordField.setText("dgaG12#A");
+        confirmPasswordField.setText("Cjnkjsd");
+        //TODO erase the code above
+
         passwordField.setPasswordMode(true);
         passwordField.setPasswordCharacter('*');
         confirmPasswordField.setPasswordMode(true);

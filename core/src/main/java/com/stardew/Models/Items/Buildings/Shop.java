@@ -22,7 +22,7 @@ public class Shop extends Building {
 
     private final ArrayList<Product> products;
     private final ShopNames shopName;
-    private ShopMenu shopMenu = new ShopMenu();
+//    private ShopMenu shopMenu = new ShopMenu();
 
     private Shop(Position position, ShopNames shopName, ArrayList<Product> products) {
         super(position);
@@ -80,11 +80,13 @@ public class Shop extends Building {
 //        add(TheStardropSaloon);
     }};
 
-    public void setUpShopMenu(){
-        shopMenu.setProducts(products);
-        Main.main.setScreen(shopMenu);
-        shopMenu.setChanged(true);
-    }
+//    public void setUpShopMenu(){
+//        shopMenu.setProducts(products);
+//        Main.main.setScreen(shopMenu);
+//        shopMenu.setChanged(true);
+//    }
+    //TODO uncomment
+
 
     public static Shop getShopByPosition(int x, int y){
         for(Shop shop : shops){

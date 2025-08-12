@@ -66,20 +66,13 @@ public class NetSignupController {
             }
         }
         String hashedPassword = hashPassword(password);
-        newPlayer = new Player(
-            username, nickname, hashedPassword, email, Gender.getGender(gender),
-            ClientApp.getInstance().getConnectionThread().getClientId()
-        );
         SignUpPacket packet = finalizeRegistration(
                 username, nickname, hashedPassword, email, Gender.getGender(gender)
         );
         ClientApp.getInstance().getConnectionThread().sendPacket(packet);
         //TODO add these two lines when made sure the client responded properly
-//        players.add(newPlayer);
-//        App.setCurrentPlayer(newPlayer);
-        System.out.println("still not sure if the user is signed-up or not");
         App.main.setScreen(new LobbyMenu());
-        return "still not sure if the user is signed-up or not";
+        return "client signup packet sent";
     }
 
     private SignUpPacket finalizeRegistration(
@@ -88,7 +81,7 @@ public class NetSignupController {
     ) {
         SignUpPacket packet = new SignUpPacket(
             ClientApp.getInstance().getConnectionThread().getClientId(),
-            null , username,
+            username , username,
             nickname, hashedPassword, email, gender
         );
         return packet;

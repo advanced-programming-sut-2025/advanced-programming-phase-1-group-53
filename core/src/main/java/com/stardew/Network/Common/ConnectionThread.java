@@ -77,7 +77,7 @@ public abstract class ConnectionThread implements Runnable {
                     // other processing...
                 }
             } catch (Exception e) {
-                System.err.println("Error in connection thread [" + clientId + "]: " + e.getMessage());
+                e.printStackTrace();
                 break;
             }
         }
