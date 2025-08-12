@@ -12,20 +12,28 @@ public class Abilities {
 
     private final int[] abilities = new int[4];// 0 for mining 1 for fishing 2 for farming 3 for foraging
 
-    public Abilities(){
-        for(int i = 0; i<4; i++){
+    private int miningLevel = 0;
+    private int fishingLevel = 0;
+    private int farmingLevel = 0;
+    private int foragingLevel = 0;
+
+    public Abilities() {
+        for (int i = 0; i < 4; i++) {
             abilities[i] = 0;
         }
     }
+
     public int getMiningLevel() {
-        return Math.min((abilities[0]-50)/100, 0);
+        return Math.min((abilities[0] - 50) / 100, 0);
     }
 
     public void setMiningLevel(int miningLevel) {
-        if(miningLevel == 0)
-            abilities[0] +=10;
-        else
+        if (miningLevel == 0) {
+            abilities[0] += 10;
+            this.miningLevel += 10;
+        } else
             abilities[0] += miningLevel;
+        this.miningLevel += miningLevel;
     }
 
     public int[] getAbilities() {
@@ -33,37 +41,42 @@ public class Abilities {
     }
 
     public int getFishingLevel() {
-        return Math.min((abilities[1]-50)/100, 0);
+        return Math.min((abilities[1] - 50) / 100, 0);
     }
 
     public void setFishingLevel(int fishingLevel) {
-        if(fishingLevel == 0)
-            abilities[1] +=5;
-        else
+        if (fishingLevel == 0) {
+            abilities[1] += 5;
+            this.fishingLevel += 5;
+        } else
             abilities[1] += fishingLevel;
+        this.fishingLevel += fishingLevel;
     }
 
     public int getFarmingLevel() {
-        return Math.min((abilities[2]-50)/100, 0);
+        return Math.min((abilities[2] - 50) / 100, 0);
     }
 
     public void setFarmingLevel(int farmingLevel) {
-        if(farmingLevel == 0)
-            abilities[2] +=5;
-        else
+        if (farmingLevel == 0) {
+            abilities[2] += 5;
+            this.farmingLevel += 5;
+        } else
             abilities[2] += farmingLevel;
+        this.farmingLevel += farmingLevel;
     }
 
     public int getForagingLevel() {
-        return Math.min((abilities[3]-50)/100, 0);
+        return Math.min((abilities[3] - 50) / 100, 0);
     }
 
     public void setForagingLevel(int foragingLevel) {
-        if(foragingLevel == 0)
-            abilities[3] +=10;
-        else
+        if (foragingLevel == 0) {
+            abilities[3] += 10;
+            this.foragingLevel += 10;
+        } else
             abilities[3] += foragingLevel;
+        this.foragingLevel += foragingLevel;
     }
-
 
 }

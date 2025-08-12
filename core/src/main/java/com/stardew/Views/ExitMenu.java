@@ -1,44 +1,19 @@
 package com.stardew.Views;
 
-import java.util.Scanner;
+import com.badlogic.gdx.Game;
 
-public class ExitMenu implements AppMenu {
+public class ExitMenu extends AppMenu {
+
+    public ExitMenu(Game main) {
+        super(main);
+    }
 
     @Override
-    public void check(String s) {}
+    public void check(String scanner) {}
 
     @Override
     public void show() {
-
-    }
-
-    @Override
-    public void render(float delta) {
-
-    }
-
-    @Override
-    public void resize(int width, int height) {
-
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void hide() {
-
-    }
-
-    @Override
-    public void dispose() {
-
+        table.clear();
+        table.add("Exit Screen Placeholder").pad(20);
     }
 }

@@ -25,6 +25,8 @@ public class Lobby {
         this.players = new ArrayList<>();
     }
 
+
+
     public static Result createLobby(String name, String password, boolean isPublic, boolean isVisible, String ownerName) {
         Player player = App.getInstance().findPlayerByUsername(ownerName);
         if (player == null) {
@@ -152,5 +154,8 @@ public class Lobby {
     public void setOwnerName(String ownerName) {
         this.ownerName = ownerName;
     }
-}
 
+    public Player getAdmin() {
+        return App.getInstance().findPlayerByUsername(ownerName);
+    }
+}

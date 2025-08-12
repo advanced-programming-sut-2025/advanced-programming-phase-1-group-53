@@ -9,14 +9,14 @@ public class ServerLauncher {
     public static void main(String[] args) {
         ServerApp app = ServerApp.getInstance();
         app.initializeServer();
-        Scanner scanner = new Scanner(System.in);
-        String input = "a";
-        while ((input = scanner.nextLine()) != "q") {
-            ServerConnectionThread connectionThread = app.getConnection("Player1");
-            if (input.equalsIgnoreCase("server")) {
-//                connectionThread.sendPacket(new ServerGeneralRespondPacket(true));
-            }
-        }
+//        Scanner scanner = new Scanner(System.in);
+//        String input = "a";
+//        while ((input = scanner.nextLine()) != "q") {
+//            ServerConnectionThread connectionThread = app.getConnection("Player1");
+//            if (input.equalsIgnoreCase("server")) {
+////                connectionThread.sendPacket(new ServerGeneralRespondPacket(true));
+//            }
+//        }
     }
 }
 

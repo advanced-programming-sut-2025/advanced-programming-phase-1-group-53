@@ -1,5 +1,7 @@
 package com.stardew.Models;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.stardew.Enums.Gender;
 
 public class PersonalInfo {
@@ -12,13 +14,15 @@ public class PersonalInfo {
     private int gold = 22222220;
     private String securityQuestion;
     private int securityAnswer;
+    private String connectionId;
 
-    public PersonalInfo(String email, String name, String nickname, String password, Gender gender) {
+    public PersonalInfo(String email, String name, String nickname, String password, Gender gender, String connectionId) {
         this.email = email;
         this.name = name;
         this.nickname = nickname;
         this.password = password;
         this.gender = gender;
+        this.connectionId = connectionId;
     }
 
     public String getEmail() {
@@ -102,4 +106,23 @@ public class PersonalInfo {
             return true;
         return false;
     }
+
+    public String getConnectionId() {
+        return connectionId;
+    }
+
+    public void setConnectionId(String connectionId) {
+        this.connectionId = connectionId;
+    }
+
+    public String toJson() {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        return gson.toJson(this);
+    }
+
+    public static PersonalInfo fromJson(String json) {
+        Gson gson = new GsonBuilder().create();
+        return gson.fromJson(json, PersonalInfo.class);
+    }
 }
+

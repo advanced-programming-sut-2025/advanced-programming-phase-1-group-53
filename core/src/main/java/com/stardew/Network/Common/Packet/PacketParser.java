@@ -2,9 +2,10 @@ package com.stardew.Network.Common.Packet;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.stardew.Network.Common.Packet.ClientPacket.LoginPacket;
-import com.stardew.Network.Common.Packet.ClientPacket.PressKeyPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.*;
+import com.stardew.Network.Common.Packet.ServerPacket.NPCDialoguePacket;
 import com.stardew.Network.Common.Packet.ServerPacket.ServerGeneralRespondPacket;
+import com.stardew.Network.Common.Packet.ServerPacket.UpdateMapPacket;
 import com.stardew.Network.Common.Packet.ServerPacket.WelcomePacket;
 import com.stardew.Network.Common.RuntimeTypeAdapterFactory;
 
@@ -20,15 +21,36 @@ public class PacketParser {
         // ایجاد Adapter برای پشتیبانی از همه انواع Packet
         RuntimeTypeAdapterFactory<Packet> packetAdapter =
             RuntimeTypeAdapterFactory.of(Packet.class, "type")
-                .registerSubtype(LoginPacket.class, PacketType.LOGIN.name())
-                .registerSubtype(WelcomePacket.class, PacketType.WELCOME.name())
-                .registerSubtype(PressKeyPacket.class, PacketType.PRESSKEYPACKET.name())
-                .registerSubtype(ServerGeneralRespondPacket.class, PacketType.SERVER_GENERAL_RESPOND_PACKET.name());
+                .registerSubtype(LoginPacket.class, PacketType.LOGIN_PACKET.name())
+                .registerSubtype(WelcomePacket.class, PacketType.WELCOME_PACKET.name())
+                .registerSubtype(GiveFlowerPacket.class, PacketType.GIVE_FLOWER_PACKET.name())
+                .registerSubtype(HuggingPacket.class, PacketType.HUGGING_PACKET.name())
+                .registerSubtype(JoinLobbyPacket.class, PacketType.JOIN_LOBBY_PACKET.name())
+                .registerSubtype(LeaveLobbyPacket.class, PacketType.LEAVE_LOBBY_PACKET.name())
+                .registerSubtype(MarrigePacket.class, PacketType.MARRIAGE_PACKET.name())
+                .registerSubtype(ReactionPacket.class, PacketType.REACTION_PACKET.name())
+                .registerSubtype(RestartGamePacket.class, PacketType.RESTART_GAME_PACKET.name())
+                .registerSubtype(SaveGamePacket.class, PacketType.SAVE_GAME_PACKET.name())
+                .registerSubtype(SendMessagePacket.class, PacketType.SEND_MESSAGE_PACKET.name())
+                .registerSubtype(SignUpPacket.class, PacketType.SIGN_UP_PACKET.name())
+                .registerSubtype(StartGamePacket.class, PacketType.START_GAME_PACKET.name())
+                .registerSubtype(StartVotingPacket.class, PacketType.START_VOTING_PACKET.name())
+                .registerSubtype(CreateLobbyPacket.class, PacketType.CREATE_LOBBY_PACKET.name())
+                .registerSubtype(ServerGeneralRespondPacket.class, PacketType.SERVER_GENERAL_RESPOND_PACKET.name())
+                .registerSubtype(UpdateMapPacket.class, PacketType.UPDATE_MAP_PACKET.name())
+                .registerSubtype(ClickPacket.class, PacketType.CLICK_PACKET.name())
+                .registerSubtype(KeyDownPacket.class, PacketType.KEY_DOWN_PACKET.name())
+                .registerSubtype(KeyUpPacket.class, PacketType.KEY_UP_PACKET.name())
+                .registerSubtype(MouseMovePacket.class, PacketType.MOUSE_MOVE_PACKET.name())
+                .registerSubtype(TalkToNPCPacket.class, PacketType.TALK_TO_NPC_PACKET.name())
+                .registerSubtype(TouchDownPacket.class, PacketType.TOUCH_DOWN_PACKET.name())
+                .registerSubtype(NPCDialoguePacket.class, PacketType.NPC_DIALOGUE_PACKET.name());
 
         gson = new GsonBuilder()
             .registerTypeAdapterFactory(packetAdapter)
             .create();
     }
+
 
     public static Packet parse(String json) {
         try {

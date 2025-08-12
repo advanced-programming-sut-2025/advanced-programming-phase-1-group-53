@@ -16,6 +16,10 @@ import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.GameAssetManager;
 import com.stardew.Models.Items.Animal;
 import com.stardew.Models.Product;
+import com.stardew.Network.Client.ClientApp;
+import com.stardew.Network.Common.Packet.ClientPacket.ClickPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.KeyDownPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.TextButtonType;
 import com.stardew.Views.GameMenu;
 import com.stardew.Views.Tab;
 
@@ -73,6 +77,8 @@ public class ShopMenu extends Tab {
         purchase.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                ClientApp.getInstance().getConnectionThread().sendPacket(new ClickPacket(App.getMyPlayer(), TextButtonType.purchase, ShopMenu.class));
+
                 if(App.getGame().getItemByItemType(product.getItemType()) instanceof Animal)
                     GameMenu.getInstance().getController().abilities.shopping.purchase(product.getItemType(), textField.getText());
                 else{
@@ -138,6 +144,7 @@ public class ShopMenu extends Tab {
             back.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
+
                     Main.main.setScreen(GameMenu.getInstance());
                 }
             });
@@ -158,6 +165,8 @@ public class ShopMenu extends Tab {
             nextPage.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
+                    ClientApp.getInstance().getConnectionThread().sendPacket(new ClickPacket(App.getMyPlayer(), TextButtonType.next_page, ShopMenu.class));
+
                     if((currentPage+1)*NUM_OF_ITEMS_IN_A_PAGE < products.size()) {
                         currentPage++;
                         isChanged = true;
@@ -168,6 +177,8 @@ public class ShopMenu extends Tab {
             previousPage.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
+                    ClientApp.getInstance().getConnectionThread().sendPacket(new ClickPacket(App.getMyPlayer(), TextButtonType.previous_page, ShopMenu.class));
+
                     if(currentPage > 0) {
                         currentPage--;
                         isChanged = true;

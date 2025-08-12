@@ -11,8 +11,10 @@ public class SignUpPacket extends Packet {
     public String password;
     public String email;
     public Gender gender;
-    public SignUpPacket(String senderId, String senderUsername, String username, String nickname, String password,
-                        String email, Gender gender) {
+    public SignUpPacket(
+        String senderId, String senderUsername, String username,
+        String nickname, String password, String email, Gender gender
+    ) {
         super(senderId, senderUsername);
         this.username = username;
         this.nickname = nickname;

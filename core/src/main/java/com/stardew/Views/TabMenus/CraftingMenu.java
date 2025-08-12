@@ -18,6 +18,9 @@ import com.stardew.Models.Items.CraftAbleAndArtisan.CraftAble;
 import com.stardew.Models.Items.Item;
 import com.stardew.Models.MessageManager;
 import com.stardew.Models.Result;
+import com.stardew.Network.Client.ClientApp;
+import com.stardew.Network.Common.Packet.ClientPacket.KeyDownPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.TouchDownPacket;
 import com.stardew.Views.GameMenu;
 import com.stardew.Views.Tab;
 
@@ -109,6 +112,7 @@ public class CraftingMenu extends Tab {
 
     @Override
     public boolean keyDown(int keycode) {
+
         System.out.println(keycode);
         if(keycode == Input.Keys.ESCAPE){
             Main.main.setScreen(GameMenu.getInstance());
@@ -119,6 +123,8 @@ public class CraftingMenu extends Tab {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        ClientApp.getInstance().getConnectionThread().sendPacket(new TouchDownPacket(App.getMyPlayer(), screenX, screenY, pointer, button, CraftingMenu.class));
+
         if(button == Input.Buttons.LEFT) {
             for(int i = 0;i<allCraftables.size(); i++){
                 Sprite s = sprites.get(i+1);

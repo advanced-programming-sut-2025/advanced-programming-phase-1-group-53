@@ -1,14 +1,19 @@
 package com.stardew.Network.Client;
 
+import com.stardew.Controllers.Controller;
+import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.Player;
 import com.stardew.Models.Lobby;
+import com.stardew.Models.NPC.NPC;
 import com.stardew.Models.Result;
 import com.stardew.Network.Common.ConnectionThread;
 import com.stardew.Network.Common.Packet.*;
 import com.stardew.Network.Common.Packet.ClientPacket.*;
+import com.stardew.Network.Common.Packet.ServerPacket.NPCDialoguePacket;
 import com.stardew.Network.Common.Packet.ServerPacket.ServerGeneralRespondPacket;
 import com.stardew.Network.Common.Packet.ServerPacket.UpdateMapPacket;
 import com.stardew.Network.Common.Packet.ServerPacket.WelcomePacket;
+import com.stardew.Network.Server.ServerApp;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -46,11 +51,19 @@ public class ClientConnectionThread extends ConnectionThread {
 
     @Override
     protected boolean handlePacket(Packet packet) {
+//        for (Player player : App.getGame().getPlayers()) {
+//            System.out.println(player.personalInfo.getName());
+//        }
         System.out.println("Received from server: " + packet.getClass().getSimpleName());
 
         if (packet instanceof ServerGeneralRespondPacket serverGeneralRespondPacket) {
             Packet innerPacket = serverGeneralRespondPacket.getReceivedPacket();
             Result result = serverGeneralRespondPacket.result;
+            Player player = App.getInstance().findPlayerByUsername(innerPacket.getSenderId());
+            System.out.println(innerPacket.getSenderId());
+            if (player != null) {
+                App.setCurrentPlayer(player);
+            }
 
             if (innerPacket instanceof LoginPacket) {
 
@@ -96,7 +109,19 @@ public class ClientConnectionThread extends ConnectionThread {
                     return true;
                 }
                 Player.createPlayer(signUpPacket.username, signUpPacket.nickname, signUpPacket.password,
-                    signUpPacket.email, signUpPacket.gender);
+                    signUpPacket.email, signUpPacket.gender, signUpPacket.getSenderId());
+//                System.out.println(result.message());
+//                System.out.println(App.getInstance().getPlayers().get(0).personalInfo.getName());
+//                System.out.println(signUpPacket.getSenderId());
+//                System.out.println(signUpPacket.username);
+//                System.out.println(signUpPacket.getSenderUsername());
+                Player player1 = App.getInstance().findPlayerByUsername(signUpPacket.getSenderUsername());
+                if (player1 == null) {
+                    System.out.println("what the fuck");
+                }
+                if (ClientApp.getInstance().getConnectionThread().getClientId().equals(signUpPacket.getSenderId())) {
+                    App.setMyPlayer(player1);
+                }
                 return true;
             } else if (innerPacket instanceof StartGamePacket) {
 
@@ -104,6 +129,80 @@ public class ClientConnectionThread extends ConnectionThread {
 
             } else if (innerPacket instanceof VotePacket) {
 
+            } else if (innerPacket instanceof NPCDialoguePacket npcDialoguePacket) {
+                if (!result.success()) {
+                    System.out.println(result.message());
+                    return true;
+                }
+                String dialogue = npcDialoguePacket.dialogue;
+                // کلاینت به دیالوگ هیستوری دسترسی نداره
+                // TODO show dialogue
+                return true;
+            } else if (innerPacket instanceof KeyUpPacket keyUpPacket) {
+                if (!result.success()) {
+                    System.out.println(result.message());
+                    return true;
+                }
+                Controller controller = App.getInstance().getController(keyUpPacket.className);
+                if (controller == null) {
+                    System.out.println("controller not found");
+                    return true;
+                }
+                controller.keyUp(keyUpPacket);
+                System.out.println(result.message());
+                return true;
+            } else if (innerPacket instanceof KeyDownPacket keyDownPacket) {
+                if (!result.success()) {
+                    System.out.println(result.message());
+                    return true;
+                }
+                Controller controller = App.getInstance().getController(keyDownPacket.className);
+                if (controller == null) {
+                    System.out.println("controller not found");
+                    return true;
+                }
+                controller.keyDown(keyDownPacket);
+                System.out.println(result.message());
+                return true;
+            } else if (innerPacket instanceof TouchDownPacket touchDownPacket) {
+                if (!result.success()) {
+                    System.out.println(result.message());
+                    return true;
+                }
+                Controller controller = App.getInstance().getController(touchDownPacket.className);
+                if (controller == null) {
+                    System.out.println("controller not found");
+                    return true;
+                }
+                controller.touchDown(touchDownPacket);
+                System.out.println(result.message());
+                return true;
+            } else if (innerPacket instanceof MouseMovePacket mouseMovePacket) {
+                if (!result.success()) {
+                    System.out.println(result.message());
+                    return true;
+                }
+                Controller controller = App.getInstance().getController(mouseMovePacket.className);
+                if (controller == null) {
+                    System.out.println("controller not found");
+                    return true;
+                }
+                controller.mouseMove(mouseMovePacket);
+                System.out.println(result.message());
+                return true;
+            } else if (innerPacket instanceof ClickPacket clickPacket) {
+                if (!result.success()) {
+                    System.out.println(result.message());
+                    return true;
+                }
+                Controller controller = App.getInstance().getController(clickPacket.className);
+                if (controller == null) {
+                    System.out.println("controller not found");
+                    return true;
+                }
+                controller.click(clickPacket);
+                System.out.println(result.message());
+                return true;
             }
             return false;
         } else if (packet instanceof UpdateMapPacket) {

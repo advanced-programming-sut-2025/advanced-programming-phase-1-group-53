@@ -15,7 +15,7 @@ public class WelcomePacket extends Packet {
     }
     @Override
     public PacketType getTypeEnum() {
-        return PacketType.WELCOME;
+        return PacketType.WELCOME_PACKET;
     }
 
     @Override

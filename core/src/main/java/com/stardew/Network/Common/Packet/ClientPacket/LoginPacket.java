@@ -9,7 +9,7 @@ public class LoginPacket extends Packet {
         super(senderId, "LOGIN");
     }
     @Override
-    public PacketType getTypeEnum() { return PacketType.LOGIN; }
+    public PacketType getTypeEnum() { return PacketType.LOGIN_PACKET; }
 
     @Override
     public PacketSender getSender() { return PacketSender.CLIENT; }

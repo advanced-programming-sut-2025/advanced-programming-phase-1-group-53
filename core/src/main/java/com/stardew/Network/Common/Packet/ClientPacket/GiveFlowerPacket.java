@@ -1,12 +1,13 @@
 package com.stardew.Network.Common.Packet.ClientPacket;
 
+import com.stardew.Models.Game.Player;
 import com.stardew.Network.Common.Packet.Packet;
 import com.stardew.Network.Common.Packet.PacketSender;
 import com.stardew.Network.Common.Packet.PacketType;
 
 public class GiveFlowerPacket extends Packet {
-    public GiveFlowerPacket(String senderId, String senderUsername) {
-        super(senderId, senderUsername);
+    public GiveFlowerPacket(Player sender) {
+        super(sender.personalInfo.getConnectionId(), sender.personalInfo.getName());
     }
 
     @Override

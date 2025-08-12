@@ -2,7 +2,6 @@ package com.stardew.Models.Items;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.stardew.Controllers.GameMenuController;
 import com.stardew.Enums.ItemType;
 import com.stardew.Models.Game.GameAssetManager;
@@ -29,7 +28,7 @@ public class Item {
 
     public Sprite fixSpriteCoordinatesForPrint(){
         sprite.setX(position.getX()* GameMap.getTilePrintSize() - GameMenuController.getPrintStartX());
-        sprite.setX(position.getY()*GameMap.getTilePrintSize() - GameMenuController.getPrintStartY());
+        sprite.setY(position.getY()*GameMap.getTilePrintSize() - GameMenuController.getPrintStartY());
         return sprite;
     }
 
