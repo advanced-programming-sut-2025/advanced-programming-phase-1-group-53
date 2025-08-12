@@ -75,10 +75,10 @@ public class ClientConnectionThread extends ConnectionThread {
                 Lobby.createLobby(createLobbyPacket.name, result.message(), createLobbyPacket.password,
                     createLobbyPacket.isPublic, createLobbyPacket.isVisible, createLobbyPacket.ownerName);
                 return true;
-            } else if (innerPacket instanceof GiveFlowerPacket) {
-
-            } else if (innerPacket instanceof HuggingPacket) {
-
+            } else if (innerPacket instanceof GiveFlowerPacket giveFlowerPacket) {
+                //TODO
+            } else if (innerPacket instanceof HuggingPacket huggingPacket) {
+                //TODO
             } else if (innerPacket instanceof JoinLobbyPacket joinLobbyPacket) {
                 if (!result.success()) {
                     System.out.println(result.message());
@@ -93,8 +93,10 @@ public class ClientConnectionThread extends ConnectionThread {
                 }
                 Lobby.removePlayer(leaveLobbyPacket.playerUsername, leaveLobbyPacket.lobbyId);
                 return true;
-            } else if (innerPacket instanceof MarrigePacket) {
-
+            } else if (innerPacket instanceof MarrigePacket marrigePacket) {
+                //TODO
+            } else if (innerPacket instanceof GiftingPacket giftingPacket) {
+                //TODO
             } else if (innerPacket instanceof ReactionPacket) {
 
             } else if (innerPacket instanceof RestartGamePacket) {

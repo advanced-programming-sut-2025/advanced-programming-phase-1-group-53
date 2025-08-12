@@ -6,8 +6,12 @@ import com.stardew.Network.Common.Packet.PacketSender;
 import com.stardew.Network.Common.Packet.PacketType;
 
 public class MarrigePacket extends Packet {
-    public MarrigePacket(Player sender) {
+    public String doerUsername;
+    public String receiverUsername;
+    public MarrigePacket(Player sender, String doerUsername, String receiverUsername) {
         super(sender.personalInfo.getConnectionId(), sender.personalInfo.getName());
+        this.doerUsername = doerUsername;
+        this.receiverUsername = receiverUsername;
     }
 
     @Override

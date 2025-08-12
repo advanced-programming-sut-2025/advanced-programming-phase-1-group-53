@@ -62,10 +62,10 @@ public class ServerConnectionThread extends ConnectionThread {
         Result result;
         System.out.println("Received packet from " + getClientId() + ": " + packet.getClass().getSimpleName());
 
-        if (packet instanceof GiveFlowerPacket) {
-
-        } else if (packet instanceof HuggingPacket) {
-
+        if (packet instanceof GiveFlowerPacket giveFlowerPacket) {
+            //TODO
+        } else if (packet instanceof HuggingPacket huggingPacket) {
+            //TODO
         } else if (packet instanceof JoinLobbyPacket joinLobbyPacket) {
             result = Lobby.addPlayer(joinLobbyPacket.playerUsername, joinLobbyPacket.lobbyId, joinLobbyPacket.password);
             System.out.println(result.message());
@@ -76,8 +76,10 @@ public class ServerConnectionThread extends ConnectionThread {
             System.out.println(result.message());
             ServerApp.getInstance().broadcast(new ServerGeneralRespondPacket(result, leaveLobbyPacket));
             return true;
-        } else if (packet instanceof MarrigePacket) {
-
+        } else if (packet instanceof MarrigePacket marrigePacket) {
+            //TODO
+        } else if (packet instanceof GiftingPacket giftingPacket) {
+            //TODO
         } else if (packet instanceof ReactionPacket) {
 
         } else if (packet instanceof RestartGamePacket) {
@@ -91,8 +93,6 @@ public class ServerConnectionThread extends ConnectionThread {
                 signUpPacket.email, signUpPacket.gender, signUpPacket.getSenderId());
             System.out.println(result.message());
             ServerApp.getInstance().broadcast(new ServerGeneralRespondPacket(result, signUpPacket));
-//            this.sendPacket(new ServerGeneralRespondPacket(result, signUpPacket));
-            System.out.println("server send response for clientId: " + clientId);
             return true;
         } else if (packet instanceof StartGamePacket) {
 

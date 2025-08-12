@@ -6,13 +6,15 @@ import com.stardew.Network.Common.Packet.Packet;
 import com.stardew.Network.Common.Packet.PacketSender;
 import com.stardew.Network.Common.Packet.PacketType;
 
-public class GiveFlowerPacket extends Packet {
+public class GiftingPacket extends Packet {
     public String doerUsername;
     public String receiverUsername;
-    public GiveFlowerPacket(Player sender, String doerUsername, String receiverUsername) {
+    public ItemType itemType;
+    public GiftingPacket(Player sender, String doerUsername, String receiverUsername, ItemType itemType) {
         super(sender.personalInfo.getConnectionId(), sender.personalInfo.getName());
         this.doerUsername = doerUsername;
         this.receiverUsername = receiverUsername;
+        this.itemType = itemType;
     }
 
     @Override
@@ -22,6 +24,6 @@ public class GiveFlowerPacket extends Packet {
 
     @Override
     public PacketType getTypeEnum() {
-        return PacketType.GIVE_FLOWER_PACKET;
+        return PacketType.GIFTING_PACKET;
     }
 }

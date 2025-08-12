@@ -29,4 +29,5 @@ public enum PacketType {
     TOUCH_DOWN_PACKET,
     NPC_DIALOGUE_PACKET,
     UPDATE_MAP,
+    GIFTING_PACKET,
 }
