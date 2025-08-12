@@ -44,7 +44,6 @@ public class PacketParser {
                 .registerSubtype(MouseMovePacket.class, PacketType.MOUSE_MOVE_PACKET.name())
                 .registerSubtype(TalkToNPCPacket.class, PacketType.TALK_TO_NPC_PACKET.name())
                 .registerSubtype(TouchDownPacket.class, PacketType.TOUCH_DOWN_PACKET.name())
-                .registerSubtype(VotePacket.class, PacketType.VOTE_PACKET.name())
                 .registerSubtype(NPCDialoguePacket.class, PacketType.NPC_DIALOGUE_PACKET.name());
 
         gson = new GsonBuilder()

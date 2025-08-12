@@ -1,28 +1,34 @@
 package com.stardew;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.stardew.Controllers.GameMenuController;
+import com.stardew.Models.Game.App;
 import com.stardew.Network.Client.ClientApp;
-import com.stardew.Network.Client.ClientConnectionThread;
-
-import java.util.Scanner;
+//import com.stardew.Views.AppView;
+import com.stardew.Views.LoginRegisterMenu;
+import com.stardew.Views.Tab;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Main extends Game {
-    public static Main main = new Main();
+    public static Main main;
     private SpriteBatch batch;
     public static Sprite sprite;
     public Stage stage;
 
-
     private final String serverIp = "127.0.1.1";
     private final int port = 12345;
     private final String playerId = "Player1";
-    Scanner scanner = new Scanner(System.in);
+
+    public static Main getInstance(){
+        if(main == null){
+            main = new Main();
+        }
+        return main;
+    }
 
     @Override
     public void create() {
@@ -34,7 +40,7 @@ public class Main extends Game {
         System.out.println("Connecting to server: " + serverIp + ":" + port + " as " + playerId);
         ClientApp app = ClientApp.getInstance();
         app.initializeClient(serverIp, port, playerId);
-
+//
         try{
 //            setScreen(new Tab());
             batch = new SpriteBatch();
@@ -44,14 +50,9 @@ public class Main extends Game {
         catch (Exception e){
             e.printStackTrace();
         }
-//        String input = "a";
-//        while ((input = scanner.nextLine()) != "q") {
-//            ClientConnectionThread connectionThread = ClientApp.getInstance().getConnectionThread();
-//            if (input.equalsIgnoreCase("presskeypacket")) {
-//                PressKeyPacket pk = new PressKeyPacket(connectionThread.getClientId(), connectionThread.getClientId(), Input.Keys.W);
-//                connectionThread.sendPacket(pk);
-//            }
-//        }
+
+        setScreen(new LoginRegisterMenu(main));
+
     }
 
     @Override
@@ -74,6 +75,6 @@ public class Main extends Game {
     @Override
     public void dispose() {
         batch.dispose();
-        Main.sprite.getTexture().dispose();
+        sprite.getTexture().dispose();
     }
 }

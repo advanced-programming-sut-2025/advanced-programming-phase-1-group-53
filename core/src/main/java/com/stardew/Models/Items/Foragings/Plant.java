@@ -55,9 +55,7 @@ public abstract class Plant extends Item {
     }
 
     public boolean isDestroyed() {
-        if(hitsRemainedToDestroy <= 0)
-            return true;
-        return false;
+        return hitsRemainedToDestroy <= 0;
     }
 
     static final ArrayList<Season> specialSeasons = new ArrayList<>() {{

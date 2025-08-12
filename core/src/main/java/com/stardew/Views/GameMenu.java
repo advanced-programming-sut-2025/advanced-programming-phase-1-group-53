@@ -6,8 +6,6 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -15,33 +13,33 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.Game;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
+import com.badlogic.gdx.utils.Array;
 import com.stardew.Controllers.GameMenuController;
 import com.stardew.Controllers.ShareController;
 import com.stardew.Enums.GameMenuCommand;
 import com.stardew.Enums.ItemType;
-import com.stardew.Enums.MessageTypes;
 import com.stardew.Enums.TileKind;
 import com.stardew.Main;
-import com.stardew.Models.*;
+import com.stardew.Models.Energy;
 import com.stardew.Models.Game.App;
-import com.stardew.Models.Game.Game;
-import com.stardew.Models.Game.GameAssetManager;
-import com.stardew.Models.Game.Player;
+import com.stardew.Models.GameMap;
 import com.stardew.Models.Items.*;
 import com.stardew.Models.Items.CraftAbleAndArtisan.Artisan;
 import com.stardew.Models.Items.Foragings.ForagingMineral;
+import com.stardew.Models.MessageManager;
 import com.stardew.Network.Client.ClientApp;
 import com.stardew.Network.Common.Packet.ClientPacket.*;
 import com.stardew.Views.TabMenus.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 import java.util.regex.Matcher;
 
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.addListener;
-
-public class GameMenu implements AppMenu, InputProcessor {
+public class GameMenu extends AppMenu implements InputProcessor {
     private static float TOTAL_TIME_SPENT = 0;
     private static int SCREEN_WIDTH;
     private static int SCREEN_HEIGHT;
@@ -82,10 +80,15 @@ public class GameMenu implements AppMenu, InputProcessor {
     public static void renewInstance(){
         gameMenu = null;
     }
+    private String currentPlayerName = App.getCurrentPlayer().getPersonalInfo().getName();
+
+    public GameMenu(Game main) {
+        super(main);
+    }
 
     @Override
-    public void check(String s) {
-        String input = s.trim();
+    public void check(String scanner) {
+        String input = scanner;
         Matcher matcher;
 
         if ((matcher = GameMenuCommand.showCurrentMenu.getMatcher(input)) != null) {
@@ -139,12 +142,20 @@ public class GameMenu implements AppMenu, InputProcessor {
             controller.dateTime();
         } else if ((matcher = GameMenuCommand.dayOfTheWeek.getMatcher(input)) != null) {
             controller.dayOfTheWeek();
+        } else if ((matcher = GameMenuCommand.advanceTime.getMatcher(input)) != null) {
+            controller.advanceTime(Integer.parseInt(matcher.group("time")));
+        } else if ((matcher = GameMenuCommand.advanceDate.getMatcher(input)) != null) {
+            controller.advanceDate(Integer.parseInt(matcher.group("date")));
         } else if ((matcher = GameMenuCommand.season.getMatcher(input)) != null) {
             controller.season();
+        } else if ((matcher = GameMenuCommand.thor.getMatcher(input)) != null) {
+            controller.thor(Integer.parseInt(matcher.group("x")), Integer.parseInt(matcher.group("y")));
         } else if ((matcher = GameMenuCommand.weather.getMatcher(input)) != null) {
             controller.weather();
         } else if ((matcher = GameMenuCommand.weatherForeCast.getMatcher(input)) != null) {
             controller.weatherForecast();
+        } else if ((matcher = GameMenuCommand.weatherSet.getMatcher(input)) != null) {
+            controller.weatherSet(matcher.group("weather"));
         } else if ((matcher = GameMenuCommand.buildGreenHouse.getMatcher(input)) != null) {
             controller.buildGreenHouse();
         } else if ((matcher = GameMenuCommand.walk.getMatcher(input)) != null) {
@@ -180,8 +191,7 @@ public class GameMenu implements AppMenu, InputProcessor {
         } else if ((matcher = GameMenuCommand.showPlant.getMatcher(input)) != null) {
             controller.showPlant(Integer.parseInt(matcher.group("x")), Integer.parseInt(matcher.group("y")));
         } else if ((matcher = GameMenuCommand.fertilize.getMatcher(input)) != null) {
-            //controller.fertilize(matcher.group("fertilizer"), matcher.group("direction"));
-            System.out.println("not working command");
+//            controller.fertilize(matcher.group("fertilizer"), matcher.group("direction"));
         } else if ((matcher = GameMenuCommand.howMuchWater.getMatcher(input)) != null) {
             controller.howMuchWater();
         } else if ((matcher = GameMenuCommand.showCraftingRecipes.getMatcher(input)) != null) {
@@ -190,7 +200,9 @@ public class GameMenu implements AppMenu, InputProcessor {
             controller.craft(matcher.group("name"));
         } else if ((matcher = GameMenuCommand.placeItem.getMatcher(input)) != null) {
             controller.placeItem(matcher.group("ItemName"), matcher.group("direction"));
-        }else if ((matcher = GameMenuCommand.refigratoratorPut.getMatcher(input)) != null) {
+        } else if ((matcher = GameMenuCommand.addItem.getMatcher(input)) != null) {
+            controller.addItem(matcher.group("ItemName"), Integer.parseInt(matcher.group("count")));
+        } else if ((matcher = GameMenuCommand.refigratoratorPut.getMatcher(input)) != null) {
             controller.refrigerator(false, matcher.group("ItemName"));
         } else if ((matcher = GameMenuCommand.refigratoratorPick.getMatcher(input)) != null) {
             controller.refrigerator(true, matcher.group("ItemName"));
@@ -206,6 +218,8 @@ public class GameMenu implements AppMenu, InputProcessor {
             controller.buyAnimal(matcher.group("animal"), matcher.group("animalName"));
         } else if ((matcher = GameMenuCommand.pet.getMatcher(input)) != null) {
             controller.pet(matcher.group("animalName"));
+        } else if ((matcher = GameMenuCommand.setFreindship.getMatcher(input)) != null) {
+            controller.setFriendship(matcher.group("animalName"), Integer.parseInt(matcher.group("value")));
         } else if ((matcher = GameMenuCommand.Animals.getMatcher(input)) != null) {
             controller.animals();
         } else if ((matcher = GameMenuCommand.shepherdAnimals.getMatcher(input)) != null) {
@@ -235,6 +249,8 @@ public class GameMenu implements AppMenu, InputProcessor {
             controller.showAvailableProducts();
         } else if ((matcher = GameMenuCommand.purchase.getMatcher(input)) != null) {
             controller.Purchase(matcher.group("productName"), Integer.parseInt(matcher.group("count")));
+        } else if ((matcher = GameMenuCommand.addDollars.getMatcher(input)) != null) {
+            controller.addDollars(Integer.parseInt(matcher.group("count")));
         } else if ((matcher = GameMenuCommand.sell.getMatcher(input)) != null) {
             controller.sell(matcher.group("productName"),Integer.parseInt( matcher.group("count")));
         } else if ((matcher = GameMenuCommand.friendships.getMatcher(input)) != null) {
@@ -268,26 +284,34 @@ public class GameMenu implements AppMenu, InputProcessor {
         } else {
             System.out.println("invalid command");
         }
-    }
+
+}
 
     @Override
     public void show() {
+        table.clear();
         stage = new Stage();
-
-        for(Tile[] t : App.getGame().getGameMap().getTiles()){
-            for(Tile tt: t){
-                if(tt.getItem() != null){
-                    //System.out.println(tt.getPosition().getX()+" "+tt.getPosition().getY()+" "+tt.getTileKind()+" "+tt.getItem().getItemType());
-                }
-//                else{
-//                    System.out.println(tt.getPosition().getX()+" "+tt.getPosition().getY()+" "+tt.getTileKind()+" "+tt.getItem());
-//                }
-            }
-        }
         batch = new SpriteBatch();
-        Gdx.input.setInputProcessor(this);
         shapeRenderer = new ShapeRenderer();
-
+        Gdx.input.setInputProcessor(this);
+        Label title = new Label("Game Menu", skin);
+        table.add(title).pad(20).row();
+        TextButton playersButton = new TextButton("Players", skin);
+        playersButton.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
+            @Override
+            public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
+                showPlayersWindow();
+            }
+        });
+        table.add(playersButton).pad(10).row();
+        TextButton backButton = new TextButton("Back", skin);
+        backButton.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
+            @Override
+            public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
+                main.setScreen(new MainMenu(main));
+            }
+        });
+        table.add(backButton).pad(20).row();
         for(TextButton textButton : MessageManager.getTextButtons().keySet()){
             stage.addActor(textButton);
             MessageManager.setChanged(false);
@@ -685,5 +709,65 @@ public class GameMenu implements AppMenu, InputProcessor {
 
     public void setShowFullTiles(boolean showFullTiles) {
         this.showFullTiles = showFullTiles;
+    }
+
+
+    private void showPlayersWindow() {
+        Array<String> usernames = new Array<String>();
+        try {
+            String projectRoot = System.getProperty("user.dir");
+            com.badlogic.gdx.files.FileHandle profilesDir = Gdx.files.absolute(projectRoot + "/profiles");
+            if (profilesDir.exists()) {
+                for (com.badlogic.gdx.files.FileHandle file : profilesDir.list()) {
+                    if (file.extension().equals("json")
+                        && !file.nameWithoutExtension().equalsIgnoreCase("lastlog")
+                        && !file.nameWithoutExtension().equalsIgnoreCase(currentPlayerName)
+                    ) {
+                        usernames.add(file.nameWithoutExtension());
+                    }
+                }
+            }
+        } catch (Exception e) {
+        }
+        if (usernames.size == 0) {
+            usernames.add("ali");
+            usernames.add("mammad");
+            usernames.add("sadra");
+        }
+
+        Window playersWindow = new Window("Select Players", skin);
+        playersWindow.setSize(600, 700);
+        playersWindow.setPosition(Gdx.graphics.getWidth() / 2 - playersWindow.getWidth() / 2,
+                Gdx.graphics.getHeight() / 2 - playersWindow.getHeight() / 2);
+
+        TextButton profileDropdown1 = new TextButton(App.getCurrentPlayer().getPersonalInfo().getName(), skin);
+        playersWindow.add(new Label("Profile 1:", skin)).pad(10);
+        playersWindow.add(profileDropdown1).pad(10).row();
+
+        SelectBox<String> profileDropdown2 = new SelectBox<String>(skin);
+        profileDropdown2.setItems(usernames);
+        playersWindow.add(new Label("Profile 2:", skin)).pad(10);
+        playersWindow.add(profileDropdown2).pad(10).row();
+
+        SelectBox<String> profileDropdown3 = new SelectBox<String>(skin);
+        profileDropdown3.setItems(usernames);
+        playersWindow.add(new Label("Profile 3:", skin)).pad(10);
+        playersWindow.add(profileDropdown3).pad(10).row();
+
+        SelectBox<String> profileDropdown4 = new SelectBox<String>(skin);
+        profileDropdown4.setItems(usernames);
+        playersWindow.add(new Label("Profile 4:", skin)).pad(10);
+        playersWindow.add(profileDropdown4).pad(10).row();
+
+        TextButton closeButton = new TextButton("Close", skin);
+        closeButton.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
+            @Override
+            public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
+                playersWindow.remove();
+            }
+        });
+        playersWindow.add(closeButton).pad(10).colspan(2);
+
+        stage.addActor(playersWindow);
     }
 }

@@ -1,10 +1,17 @@
 package com.stardew.Controllers;
 
+import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.stardew.Enums.Gender;
-import com.stardew.Enums.Menu;
 import com.stardew.Enums.Regex;
+import com.stardew.Main;
 import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.Player;
+import com.stardew.Network.Client.ClientApp;
+import com.stardew.Views.LoginRegisterMenu;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -14,71 +21,75 @@ import java.util.List;
 import java.util.Random;
 
 public class SignUpMenuController {
+    private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    private static final String PROFILE_DIR = "profiles/";
     private final List<Player> players = App.getInstance().getPlayers();
     Player newPlayer;
+    Game main;
+    String message;
+    private int securityQuestionIndex = 0;
 
-    public void register(String username, String password, String confirmPassword, String nickname,
-                         String email, String gender) {
+    public int getSecurityQuestionIndex() {
+        return securityQuestionIndex;
+    }
+
+    public void setSecurityQuestionIndex(int securityQuestionIndex) {
+        this.securityQuestionIndex = securityQuestionIndex;
+    }
+
+    public String register(String username, String password, String confirmPassword,
+                           String nickname, String email, String gender, Game main) {
+        this.main = main;
+
         if (!Regex.username.regexMatcher(username)) {
-            System.out.println("Invalid username. Username can only contain letters, numbers and -");
-            return;
+            return "Invalid username. Username can only contain letters, numbers and -";
         }
         if (isUsernameTaken(username)) {
-            System.out.println("Username already exists. Please try again.");
-            return;
+            return "Username already exists. Please try again.";
         }
-        if (!Regex.email.regexMatcher(email)){
-            String[] parts = email.split("@");
-            if (parts.length != 2) {
-                System.out.println("You can use only one '@'.");
-                return;
-            }
-            String localPart = parts[0];
-            String domain = parts[1];
-            if (Regex.EMAIL_USERNAME_VALID.regexMatcher(localPart) && Regex.NO_DOUBLE_DOTS.regexMatcher(localPart)) {
-                System.out.println("Invalid email username.");
-                return;
-            }else {
-                if (Regex.DOMAIN_VALID.regexMatcher(domain) && Regex.NO_DOUBLE_DOTS.regexMatcher(domain)) {
-                    System.out.println("Invalid email domain.");
-                    return;
-                }else {
-                    System.out.println("Invalid email.");
-                    return;
-                }
-            }
+
+        if (!Regex.email.regexMatcher(email)) {
+            return "Invalid email.";
         }
+
         if (password.equals("accidentally") && confirmPassword.equals("accidentally")) {
             password = generatePassword();
-        }
-        else {
-            if (confirmPassword != null && !password.equals(confirmPassword)) {
-                System.out.println("Confirmed password is not valid.");
-                return;
+        } else {
+            if (!isValidPassword(password)) {
+                return "Password must be at least 8 chars, include upper case, number, special char.";
             }
-            if (!Regex.password.regexMatcher(password)) {
-                if (!Regex.MINIMUM_LENGTH.regexMatcher(password)) {
-                    System.out.println("Password should contain at least 8 characters");
-                    return;
-                } else {
-                    System.out.println("Invalid password");
-                    return;
-                }
+
+            FileHandle profileFile = Gdx.files.local(PROFILE_DIR + username + ".json");
+            if (profileFile.exists()) {
+                return "Username already exists.";
             }
         }
 
         String hashedPassword = hashPassword(password);
         // TODO fix connectionId
-        newPlayer = new Player(username, nickname, hashedPassword, email, Gender.getGender(gender), "");
-        finalizeRegistration();
-        System.out.println("Registered successfully!");
-        listOfQuestions();
+//        newPlayer = new Player(
+//            username, nickname, hashedPassword, email, Gender.getGender(gender),
+//            ClientApp.getInstance().getConnectionThread().getClientId()
+//        );
+
+        return "Registered successfully!";
     }
 
-    public void finalizeRegistration() {
+
+    public String finalizeRegistration(String username, String nickname, String hashedPassword, String email, Gender gender) {
+        FileHandle profileFile = Gdx.files.local(PROFILE_DIR + username + ".json");
+        newPlayer = new Player(username, nickname, hashedPassword, email, gender, ClientApp.getInstance().getConnectionThread().getClientId());
+
+        if (profileFile.exists()) {
+            return "Username already exists.";
+        }
+        if (!Gdx.files.local(PROFILE_DIR).exists()) {
+            Gdx.files.local(PROFILE_DIR).file().mkdirs();
+        }
+        profileFile.writeString(gson.toJson(newPlayer.personalInfo), false);
         players.add(newPlayer);
         App.setCurrentPlayer(newPlayer);
-        System.out.println("User data saved successfully.");
+        return "User data saved successfully.";
     }
 
     private boolean isUsernameTaken(String username) {
@@ -106,63 +117,74 @@ public class SignUpMenuController {
         }
     }
 
-    private void listOfQuestions() {
-        final ArrayList<String> questions = new ArrayList<>();
-        questions.add("9 + 0 =");
-        questions.add("10 - 6/2 =");
-        questions.add("2 * 3 =");
-        for (String question : questions) {
-            System.out.println(question);
+    public static class SecurityQuestion {
+        public final int index;
+        public final String question;
+        public SecurityQuestion(int index, String question) {
+            this.index = index;
+            this.question = question;
         }
     }
-    public void handleQuestions(String Index, String answer, String confirmAnswer){
+
+    public SecurityQuestion getRandomQuestionWithIndex() {
+        List<String> questions = new ArrayList<>();
+        questions.add("9 + 0 ="); // index 0
+        questions.add("10 - 6÷2 ="); // index 1
+        questions.add("2 * 3 ="); // index 2
+        int randomIndex = new Random().nextInt(questions.size());
+        return new SecurityQuestion(randomIndex, questions.get(randomIndex));
+    }
+
+    public boolean handleQuestions(String Index, String answer, String confirmAnswer, Player newPlayer) {
         int questionIndex;
         int ans;
         int confirmAns;
+        message = "";
+
         try {
             questionIndex = Integer.parseInt(Index);
             ans = Integer.parseInt(answer);
             confirmAns = Integer.parseInt(confirmAnswer);
         } catch (NumberFormatException e) {
-            System.out.println("Invalid question number.");
-            return;
+            message = "Invalid question number.";
+            return false;
         }
         if (!answer.equals(confirmAnswer)) {
-            System.out.println("Confirmed answer is not valid.");
-            return;
+            message = "Confirmed answer is not valid.";
+            return false;
         }
         else {
             switch (questionIndex){
                 case 1:
                     if (ans != 9) {
-                        System.out.println("Answer is not valid.");
-                        return;
+                        message = "Answer is not valid.";
+                        return false;
                     }
                     newPlayer.personalInfo.setSecurityQuestion("9 + 0 =");
                     newPlayer.personalInfo.setSecurityAnswer(9);
                     break;
                 case 2:
                     if (ans != 7) {
-                        System.out.println("Answer is not valid.");
-                        return;
+                        message = "Answer is not valid.";
+                        return false;
                     }
                     newPlayer.personalInfo.setSecurityQuestion("10 - 6/2 =");
                     newPlayer.personalInfo.setSecurityAnswer(7);
                     break;
                 case 3:
                     if (ans != 6) {
-                        System.out.println("Answer is not valid.");
-                        return;
+                        message = "Answer is not valid.";
+                        return false;
                     }
                     newPlayer.personalInfo.setSecurityQuestion("2 * 3 =");
                     newPlayer.personalInfo.setSecurityAnswer(6);
                     break;
                 default:
-                    System.out.println("Invalid question number.");
-                    return;
+                    message = "Invalid question number.";
+                    return false;
             }
-            System.out.println("Security question saved successfully.\nRedirecting to login menu...");
-            App.setCurrentMenu(Menu.loginRegisterMenu);
+            message = Index;
+            return true;
         }
     }
     public String generatePassword() {
@@ -191,5 +213,12 @@ public class SignUpMenuController {
         for (char c : chars) shuffled.append(c);
 
         return shuffled.toString();
+    }
+
+    private boolean isValidPassword(String password) {
+        return password.length() >= 8 &&
+            password.matches(".*[A-Z].*") &&
+            password.matches(".*[0-9].*") &&
+            password.matches(".*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?].*");
     }
 }

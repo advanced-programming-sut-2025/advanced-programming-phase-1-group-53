@@ -1,16 +1,20 @@
 package com.stardew.Enums;
 
+import com.badlogic.gdx.Screen;
+import com.stardew.Main;
+import com.stardew.Models.Game.App;
 import com.stardew.Views.*;
 
 import java.util.Scanner;
 
 public enum Menu {
-    loginRegisterMenu(new LoginRegisterMenu()),
+    loginRegisterMenu(new LoginRegisterMenu(Main.main)),
     gameMenu(GameMenu.getInstance()),
-    profileMenu(new ProfileMenu()),
-    mainMenu(new MainMenu()),
-    exitMenu(new ExitMenu()),
-    signUpMenu(new SignUpMenu());
+    profileMenu(new ProfileMenu(Main.main, App.getCurrentPlayer().getPersonalInfo().getName())),
+    mainMenu(new MainMenu(Main.main)),
+    exitMenu(new ExitMenu(Main.main)),
+    signUpMenu(new SignUpMenu(Main.main))
+    ;
     private final AppMenu menu;
 
     Menu(AppMenu menu) {
@@ -36,5 +40,9 @@ public enum Menu {
             default:
                 return null;
         }
+    }
+
+    public AppMenu getMenu() {
+        return menu;
     }
 }

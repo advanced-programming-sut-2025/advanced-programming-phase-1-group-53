@@ -1,5 +1,7 @@
 package com.stardew.Models;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.stardew.Enums.Gender;
 
 public class PersonalInfo {
@@ -112,4 +114,15 @@ public class PersonalInfo {
     public void setConnectionId(String connectionId) {
         this.connectionId = connectionId;
     }
+
+    public String toJson() {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        return gson.toJson(this);
+    }
+
+    public static PersonalInfo fromJson(String json) {
+        Gson gson = new GsonBuilder().create();
+        return gson.fromJson(json, PersonalInfo.class);
+    }
 }
+

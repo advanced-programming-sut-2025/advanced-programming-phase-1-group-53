@@ -21,7 +21,7 @@ public class Animal extends Item{
     private boolean isPettedToday = false;
     private boolean isFedToday = false;
     private boolean isOut = false;
-    private String name;
+    private String animalName;
     private final int cycleOfProduceDuring;
     private int daysToProduce;
     private int homeX;
@@ -86,7 +86,7 @@ public class Animal extends Item{
     }
 
     public String getName() {
-        return name;
+        return animalName;
     }
 
     public int getCycleOfProduceDuring() {
@@ -153,7 +153,7 @@ public class Animal extends Item{
     public String details(){
         StringBuilder sb = new StringBuilder();
         sb.append("Animal : "+ itemType);
-        sb.append(", Name : "+ name);
+        sb.append(", Name : ");
         sb.append("\nfriendship level : "+friendship);
         sb.append("\n is petted today : "+ isPettedToday);
         sb.append(", is fed today : "+ isFedToday);
@@ -247,7 +247,7 @@ public class Animal extends Item{
 
     public Animal clone(String name){
         Animal animal = new Animal(itemType, cycleOfProduceDuring, animalProds, livingPlace).makeSellPrice(baseSellPrice);
-        animal.name = name;
+        animal.animalName = name;
         return animal;
     }
 
