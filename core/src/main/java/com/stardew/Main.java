@@ -1,6 +1,7 @@
 package com.stardew;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -9,7 +10,7 @@ import com.stardew.Models.Game.App;
 import com.stardew.Network.Client.ClientApp;
 //import com.stardew.Views.AppView;
 import com.stardew.Views.LoginRegisterMenu;
-import com.stardew.Views.NetworkMenus.NetMainMenu;
+import com.stardew.Views.Tab;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Main extends Game {
@@ -40,17 +41,17 @@ public class Main extends Game {
         ClientApp app = ClientApp.getInstance();
         app.initializeClient(serverIp, port, playerId);
 //
-//        try{
+        try{
 //            setScreen(new Tab());
-//            batch = new SpriteBatch();
-//            sprite = new Sprite(new Texture("Animals/Duck.png"),16*3, 16*3, 16, 16);
-//            sprite.setSize(sprite.getWidth()*3, sprite.getHeight()*3);
-//        }
-//        catch (Exception e){
-//            e.printStackTrace();
-//        }
+            batch = new SpriteBatch();
+            sprite = new Sprite(new Texture("Animals/Duck.png"),16*3, 16*3, 16, 16);
+            sprite.setSize(sprite.getWidth()*3, sprite.getHeight()*3);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
 
-        setScreen(new NetMainMenu(main));
+        setScreen(new LoginRegisterMenu(main));
 
     }
 

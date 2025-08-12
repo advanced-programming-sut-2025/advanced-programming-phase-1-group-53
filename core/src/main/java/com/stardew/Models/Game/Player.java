@@ -1,5 +1,6 @@
 package com.stardew.Models.Game;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
@@ -21,38 +22,100 @@ public class Player {
     private float lastTimeUpdatedSprite = 0;
 
 
-    private Sprite sprite = new Sprite(GameAssetManager.getAlexTextures()[0][0]);
+    private Sprite sprite;
     private int direction = 0;//front-right-behind-left
     private boolean isIdle = true;
     private int indexOfSprite = 0;
     private Farm farm;
     public final PersonalInfo personalInfo;
-    public final Abilities abilities = new Abilities();
-    public final Backpack backpack = new Backpack();
-    public final Energy energy = new Energy();
-    public final Activity activity = new Activity();
-    public final Position position = new Position(0, 0, 1, 1);
-    public final Position secondaryPosition = new Position(0, 0, 0, 0);
-    private boolean isInBuilding = false;
-    private MapsNames currentMap = null;
-    private MapsNames myFarm = null;
-    private final HashMap<Player, Friendship> friendship = new HashMap<>();
-    private final HashMap<Player, StringBuilder> conversation = new HashMap<>();
-    private final HashMap<Player, StringBuilder> giftHistory = new HashMap<>();
-    public final FoodBuff foodBuff = new FoodBuff();
-    public final HashMap<NPC, Integer> NPCsFriendship = new HashMap<>();
-    public final ArrayList<Item> gifts = new ArrayList<>();
-    public int level = 2;
-    private final ArrayList<Lobby> lobbies = new ArrayList<>();
+    public final Abilities abilities;
+    public final Backpack backpack = null;
+    public final Energy energy;
+    public final Activity activity;
+    public final Position position;
+    public final Position secondaryPosition;
+    private boolean isInBuilding;
+    private MapsNames currentMap;
+    private MapsNames myFarm;
+    private final HashMap<Player, Friendship> friendship;
+    private final HashMap<Player, StringBuilder> conversation ;
+    private final HashMap<Player, StringBuilder> giftHistory;
+    public final FoodBuff foodBuff;
+    public final HashMap<NPC, Integer> NPCsFriendship ;
+    public final ArrayList<Item> gifts ;
+    public int level;
+    private final ArrayList<Lobby> lobbies ;
     private Lobby currentLobby = null;
-    private final HashMap<NPC, StringBuilder> NPCDialogueHistory = new HashMap<>();
+    private final HashMap<NPC, StringBuilder> NPCDialogueHistory ;
 
     public Player(String name, String nickName, String password, String email, Gender gender, String connectionId) {
+//        System.out.println("1");
+//        sprite = new Sprite(GameAssetManager.getAlexTextures()[0][0]);
         this.personalInfo = new PersonalInfo(email, name, nickName, password, gender, connectionId);
+        this.direction = 0;//front-right-behind-left
+        this.isIdle = true;
+        this.sprite = new Sprite(GameAssetManager.getAlexTextures()[0][0]);
+        this.indexOfSprite = 0;
+//        System.out.println("1");
+        this.farm = null;
+        this.abilities = new Abilities();
+        this.energy = new Energy();
+        this.activity = new Activity();
+        this.position = new Position(0, 0, 1, 1);
+        this.secondaryPosition = new Position(0, 0, 0, 0);
+        this.isInBuilding = false;
+//        System.out.println("1");
+        this.currentMap = null;
+        this.myFarm = null;
+        this.friendship = new HashMap<>();
+        this.conversation = new HashMap<>();
+        this.giftHistory = new HashMap<>();
+        this.foodBuff = new FoodBuff();
+        this.NPCsFriendship = new HashMap<>();
+//        System.out.println("1");
+        this.gifts = new ArrayList<>();
+        this.level = 2;
+        this.lobbies = new ArrayList<>();
+        this.currentLobby = null;
+        this.NPCDialogueHistory = new HashMap<>();
+//        System.out.println("1");
     }
 
+    public void loadGraphics() {
+        if (sprite == null) {
+        }
+    }
+
+
     public Player(PersonalInfo personalInfo) {
+//        System.out.println("2");
+//        sprite = new Sprite(GameAssetManager.getAlexTextures()[0][0]);
         this.personalInfo = personalInfo;
+//        System.out.println("2");
+        this.abilities = new Abilities();
+//        System.out.println("2");
+
+        this.energy = null;
+        this.activity = new Activity();
+//        System.out.println("2");
+        this.position = new Position(0, 0, 1, 1);
+        this.secondaryPosition = new Position(0, 0, 0, 0);
+        this.isInBuilding = false;
+        this.currentMap = null;
+        this.myFarm = null;
+        this.friendship = new HashMap<>();
+        this.conversation = new HashMap<>();
+        this.giftHistory = new HashMap<>();
+//        System.out.println("2");
+        this.foodBuff = new FoodBuff();
+        this.NPCsFriendship = new HashMap<>();
+        this.gifts = new ArrayList<>();
+        this.level = 2;
+//        System.out.println("2");
+        this.lobbies = new ArrayList<>();
+        this.currentLobby = null;
+        this.NPCDialogueHistory = new HashMap<>();
+//        System.out.println("2");
     }
 
     public Player setSprite(Texture texture){
@@ -408,7 +471,7 @@ public class Player {
     }
 
     public static Result createPlayer(String name, String nickName, String password, String email, Gender gender, String connectionId) {
-        Player player = new Player(name, nickName, password, email, gender, connectionId);
+        Player player = new Player(new PersonalInfo(email, name, nickName, password,  gender, connectionId));
         App.getInstance().getPlayers().add(player);
         return new Result(true, "Player created");
     }

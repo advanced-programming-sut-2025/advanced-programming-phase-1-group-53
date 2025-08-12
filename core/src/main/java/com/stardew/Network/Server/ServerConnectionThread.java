@@ -1,5 +1,6 @@
 package com.stardew.Network.Server;
 
+import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.Player;
 import com.stardew.Models.Lobby;
 import com.stardew.Models.NPC.NPC;
@@ -47,6 +48,14 @@ public class ServerConnectionThread extends ConnectionThread {
 
     @Override
     protected boolean handlePacket(Packet packet) {
+//        for (Player player : App.getGame().getPlayers()) {
+//            System.out.println(player.personalInfo.getName());
+//        }
+        Player player = App.getInstance().findPlayerByUsername(packet.getSenderId());
+        System.out.println(packet.getSenderId());
+        if (player != null) {
+            App.setCurrentPlayer(player);
+        }
         Result result;
         System.out.println("Received packet from " + getClientId() + ": " + packet.getClass().getSimpleName());
 
@@ -56,10 +65,12 @@ public class ServerConnectionThread extends ConnectionThread {
 
         } else if (packet instanceof JoinLobbyPacket joinLobbyPacket) {
             result = Lobby.addPlayer(joinLobbyPacket.playerUsername, joinLobbyPacket.lobbyId, joinLobbyPacket.password);
+            System.out.println(result.message());
             ServerApp.getInstance().broadcast(new ServerGeneralRespondPacket(result, joinLobbyPacket));
             return true;
         } else if (packet instanceof LeaveLobbyPacket leaveLobbyPacket) {
             result = Lobby.removePlayer(leaveLobbyPacket.playerUsername, leaveLobbyPacket.lobbyId);
+            System.out.println(result.message());
             ServerApp.getInstance().broadcast(new ServerGeneralRespondPacket(result, leaveLobbyPacket));
             return true;
         } else if (packet instanceof MarrigePacket) {
@@ -75,7 +86,10 @@ public class ServerConnectionThread extends ConnectionThread {
         }  else if (packet instanceof SignUpPacket signUpPacket) {
             result = Player.createPlayer(signUpPacket.username, signUpPacket.nickname, signUpPacket.password,
                 signUpPacket.email, signUpPacket.gender, signUpPacket.getSenderId());
+            System.out.println(result.message());
             ServerApp.getInstance().broadcast(new ServerGeneralRespondPacket(result, signUpPacket));
+//            this.sendPacket(new ServerGeneralRespondPacket(result, signUpPacket));
+            System.out.println("server send response for clientId: " + clientId);
             return true;
         } else if (packet instanceof StartGamePacket) {
 
@@ -86,10 +100,12 @@ public class ServerConnectionThread extends ConnectionThread {
         } else if (packet instanceof CreateLobbyPacket createLobbyPacket) {
             result = Lobby.createLobby(createLobbyPacket.name, createLobbyPacket.password,
                 createLobbyPacket.isPublic, createLobbyPacket.isVisible, createLobbyPacket.ownerName);
+            System.out.println(result.message());
             ServerApp.getInstance().broadcast(new ServerGeneralRespondPacket(result, createLobbyPacket));
             return true;
         } else if (packet instanceof TalkToNPCPacket talkToNPCPacket) {
             result = NPC.talk(talkToNPCPacket.NPCName, talkToNPCPacket.getSenderUsername());
+            System.out.println(result.message());
             this.sendPacket(new ServerGeneralRespondPacket(result, new NPCDialoguePacket(talkToNPCPacket.getSenderId(),
                 talkToNPCPacket.getSenderUsername(), result.message())));
             return true;

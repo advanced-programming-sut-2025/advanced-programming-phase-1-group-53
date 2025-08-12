@@ -19,7 +19,8 @@ public class App {
     private static Player currentPlayer = null;
     private static Player myPlayer = null;
     private static App app = null;
-    private static Menu currentMenu = Menu.gameMenu;
+    private static Menu currentMenu = null;
+        //TODO unnull
     private static Game game;
     private final ArrayList<Player> players = new ArrayList<>();
     private final ArrayList<Game> games = new ArrayList<>();
@@ -29,11 +30,11 @@ public class App {
     public static Main main = Main.getInstance();
 
     private App(){
-        currentPlayer = new Player("ilia", "ii", "ii", "oo", Gender.MALE, "a");
-        players.add(currentPlayer);
-        players.add(new Player("ilias", "ii", "ii", "ooo", Gender.MALE, "a"));
-        players.add(new Player("iliass", "ii", "ii", "oooo", Gender.MALE, "a"));
-        players.add(new Player("iliasss", "ii", "ii", "oooooo", Gender.MALE, "a"));
+//        currentPlayer = new Player("ilia", "ii", "ii", "oo", Gender.MALE, "a");
+//        players.add(currentPlayer);
+//        players.add(new Player("ilias", "ii", "ii", "ooo", Gender.MALE, "a"));
+//        players.add(new Player("iliass", "ii", "ii", "oooo", Gender.MALE, "a"));
+//        players.add(new Player("iliasss", "ii", "ii", "oooooo", Gender.MALE, "a"));
     }
 
     public static App getInstance(){
@@ -63,12 +64,12 @@ public class App {
     public static Player getCurrentPlayer() {
         return currentPlayer;
     }
-    public static void setCurrentPlayer(Player currentPlayer) {
+    public synchronized static void setCurrentPlayer(Player currentPlayer) {
         App.currentPlayer = currentPlayer;
-        App appInstance = getInstance();
-        if (!appInstance.players.contains(currentPlayer)) {
-            appInstance.players.add(currentPlayer);
-        }
+//        App appInstance = getInstance();
+//        if (!appInstance.players.contains(currentPlayer)) {
+//            appInstance.players.add(currentPlayer);
+//        }
     }
 
     public void setPlayers(List<Player> players) {

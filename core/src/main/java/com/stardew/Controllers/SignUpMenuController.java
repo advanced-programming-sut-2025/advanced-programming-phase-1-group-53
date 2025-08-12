@@ -67,10 +67,10 @@ public class SignUpMenuController {
 
         String hashedPassword = hashPassword(password);
         // TODO fix connectionId
-        newPlayer = new Player(
-            username, nickname, hashedPassword, email, Gender.getGender(gender),
-            ClientApp.getInstance().getConnectionThread().getClientId()
-        );
+//        newPlayer = new Player(
+//            username, nickname, hashedPassword, email, Gender.getGender(gender),
+//            ClientApp.getInstance().getConnectionThread().getClientId()
+//        );
 
         return "Registered successfully!";
     }

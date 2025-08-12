@@ -66,10 +66,6 @@ public class NetSignupController {
             }
         }
         String hashedPassword = hashPassword(password);
-        newPlayer = new Player(
-            username, nickname, hashedPassword, email, Gender.getGender(gender),
-            ClientApp.getInstance().getConnectionThread().getClientId()
-        );
         SignUpPacket packet = finalizeRegistration(
                 username, nickname, hashedPassword, email, Gender.getGender(gender)
         );
@@ -82,7 +78,7 @@ public class NetSignupController {
             return "you have to register first";
         }
         App.main.setScreen(new LobbyMenu());
-        return "still not sure if the user is signed-up or not";
+        return "client signup packet sent";
     }
 
     private SignUpPacket finalizeRegistration(
@@ -91,7 +87,7 @@ public class NetSignupController {
     ) {
         SignUpPacket packet = new SignUpPacket(
             ClientApp.getInstance().getConnectionThread().getClientId(),
-            null , username,
+            username , username,
             nickname, hashedPassword, email, gender
         );
         return packet;
