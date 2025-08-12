@@ -3,13 +3,9 @@ package com.stardew.Views;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -22,6 +18,7 @@ public class Tab implements Screen, InputProcessor {
     protected float WIDTH = SCREEN_WIDTH /3;
     protected float HEIGHT = SCREEN_HEIGHT /3;
     public static Skin skin = new Skin(Gdx.files.internal("skin/comic-ui.json"));
+    public static Skin stardewSkin =  new Skin(Gdx.files.internal("skin/LibGdx-Skin-main/NzSkin.json"));
     protected boolean menuVisible = false;
     protected Stage stage;
     protected Table table = new Table();
@@ -58,6 +55,28 @@ public class Tab implements Screen, InputProcessor {
         Label label= new Label(text, skin);
         label.setSize(width, height);
         return label;
+    }
+
+    public static Dialog dialogStardewSkin(String message, String buttonMsg) {
+        Dialog dialog = new Dialog("Pop-up", stardewSkin) {
+            protected void result(Object object) {
+                this.hide();
+            }
+        };
+        dialog.text(message);
+        dialog.button(buttonMsg);
+        return dialog;
+    }
+
+    public static Dialog createDialog(String message, String buttonMsg) {
+        Dialog dialog = new Dialog("Pop-up", skin) {
+            protected void result(Object object) {
+                this.hide();
+            }
+        };
+        dialog.text(message);
+        dialog.button(buttonMsg);
+        return dialog;
     }
 
     @Override

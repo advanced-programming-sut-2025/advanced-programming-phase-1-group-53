@@ -1,29 +1,23 @@
 package com.stardew.Views.NetworkMenus;
 
-import com.badlogic.gdx.Game;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Select;
 import com.stardew.Controllers.NetworkControllers.LobbyController;
-import com.stardew.Main;
 import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.Player;
 import com.stardew.Models.Lobby;
-import com.stardew.Models.Result;
 import com.stardew.Network.Client.ClientApp;
-import com.stardew.Network.Common.Packet.ClientPacket.CreateLobbyPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.LeaveLobbyPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.StartGamePacket;
 import com.stardew.Views.AppMenu;
 import com.stardew.Views.ExitMenu;
 import com.stardew.Views.MainMenu;
+import com.stardew.Views.Tab;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.UUID;
 
 public class LobbyMenu extends AppMenu {
     private String name;
@@ -72,7 +66,7 @@ public class LobbyMenu extends AppMenu {
         lobbySelectBox.setItems(lobbyNames.toArray(new String[0]));
         table.add(lobbySelectBox).pad(20).row();
 
-        TextButton openLobbyWindowButton = new TextButton("Show Lobby Info", skin);
+        TextButton openLobbyWindowButton = new TextButton("Join lobby", skin);
         openLobbyWindowButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -84,9 +78,12 @@ public class LobbyMenu extends AppMenu {
                         break;
                     }
                 }
-                if (selectedLobby != null) {
+                if (selectedLobby != null && selectedLobby.getPlayers().size() < 4) {
                     showLobbyWindow(selectedLobby);
+                    return;
                 }
+                Dialog dialog = Tab.dialogStardewSkin("couldn't open the lobby!\nit may be full or closed.", "OK");
+                dialog.show(stage);
             }
         });
         table.add(openLobbyWindowButton).pad(20).row();
@@ -141,50 +138,16 @@ public class LobbyMenu extends AppMenu {
         SelectBox<String> visibilitySelectBox = new SelectBox<>(skin);
         visibilitySelectBox.setItems("visible", "hidden");
         contentTable.add(visibilitySelectBox).pad(10).row();
+
         TextButton createButton = new TextButton("Create", skin);
         createButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                Result creationResult;
-                CreateLobbyPacket packet;
-                String name = nameField.getText();
-                String password = passwordField.getText();
-                boolean isVisible = visibilitySelectBox.getSelected().equals("visible");
-                if (name.isEmpty()) {
-                    com.badlogic.gdx.scenes.scene2d.ui.Dialog dialog = new com.badlogic.gdx.scenes.scene2d.ui.Dialog("Error", skin) {
-                        protected void result(Object object) {
-                            this.hide();
-                        }
-                    };
-                    dialog.text("All fields must be filled!");
-                    dialog.button("OK");
-                    dialog.show(stage);
-                    return;
-                }
-                if (password.isEmpty()) {
-                    packet = new CreateLobbyPacket(
-                        App.getCurrentPlayer(), name, password,
-                        true, isVisible, App.getCurrentPlayer().getUsername()
-                    );
-                }
-                else {
-                    packet = new CreateLobbyPacket(
-                        App.getCurrentPlayer(), name, password,
-                        false, isVisible, App.getCurrentPlayer().getUsername());
-                }
-                ClientApp.getInstance().getConnectionThread().sendPacket(packet);
-
-                com.badlogic.gdx.scenes.scene2d.ui.Dialog dialog = new com.badlogic.gdx.scenes.scene2d.ui.Dialog("Pop-up", skin) {
-                    protected void result(Object object) {
-                        this.hide();
-                    }
-                };
-                dialog.text("the message is not yet fixed");
-                dialog.button("OK");
-                dialog.show(stage);
+                controller.createLobby(stage, skin, nameField, passwordField, visibilitySelectBox);
             }
         });
         contentTable.add(createButton).pad(10).row();
+
         TextButton refreshBtn = new TextButton("Refresh", skin);
         refreshBtn.addListener(new ClickListener() {
             @Override
@@ -194,6 +157,7 @@ public class LobbyMenu extends AppMenu {
             }
         });
         contentTable.add(refreshBtn).pad(10).row();
+
         TextButton backButton = new TextButton("Back", skin);
         backButton.addListener(new ClickListener() {
             @Override
@@ -227,6 +191,7 @@ public class LobbyMenu extends AppMenu {
         contentTable.add(new Label("Admin: " + admin.getPersonalInfo().getName(), skin)).pad(10).row();
         playersCountLabel = new Label("Players (" + players.size() + ")", skin);
         contentTable.add(playersCountLabel).pad(10).row();
+
         playerSelectBox = new SelectBox<>(skin);
         refreshPlayers();
         contentTable.add(playerSelectBox).pad(10).row();
@@ -234,36 +199,38 @@ public class LobbyMenu extends AppMenu {
         startButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                controller.startGame(LobbyMenu.this);
+                if (!lobby.getAdmin().equals(App.getCurrentPlayer()) || lobby.getPlayers().size() < 2) {
+                    Dialog dialog = Tab.dialogStardewSkin("couldn't start the game", "OK");
+                    dialog.show(stage);
+                    return;
+                }
+                StartGamePacket packet = controller.startGame(lobby);
+                ClientApp.getInstance().getConnectionThread().sendPacket(packet);
             }
         });
         contentTable.add(startButton).pad(10).row();
+
         TextButton leaveButton = new TextButton("Leave Lobby", skin);
         leaveButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                controller.leaveLobby(LobbyMenu.this);
+                closeLobbyWindow();
+                LeaveLobbyPacket packet = controller.leaveLobby(App.getCurrentPlayer() ,lobby);
+                ClientApp.getInstance().getConnectionThread().sendPacket(packet);
             }
         });
         contentTable.add(leaveButton).pad(10).row();
+
         if (isAdmin()) {
             TextButton deleteButton = new TextButton("Delete Lobby", skin);
             deleteButton.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    controller.deleteLobby(LobbyMenu.this);
+                    controller.deleteLobby(lobby);
                 }
             });
             contentTable.add(deleteButton).pad(10).row();
         }
-        TextButton closeButton = new TextButton("Close Lobby", skin);
-        closeButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                closeLobbyWindow();
-            }
-        });
-        contentTable.add(closeButton).pad(10).row();
 
         com.badlogic.gdx.scenes.scene2d.ui.ScrollPane scrollPane = new com.badlogic.gdx.scenes.scene2d.ui.ScrollPane(contentTable, skin);
         lobbyWindow.add(scrollPane).expand().fill();
