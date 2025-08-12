@@ -11,6 +11,7 @@ import com.stardew.Models.Game.Player;
 import com.stardew.Models.Lobby;
 import com.stardew.Network.Client.ClientApp;
 import com.stardew.Network.Common.Packet.ClientPacket.CreateLobbyPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.JoinLobbyPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.LeaveLobbyPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.StartGamePacket;
 import com.stardew.Views.NetworkMenus.LobbyMenu;
@@ -69,5 +70,19 @@ public class LobbyController {
         dialog.text("the message pop-up is not yet set");
         dialog.button("OK");
         dialog.show(stage);
+    }
+
+    public Lobby searchLobbyById(String id) {
+        for (Lobby lobby : App.getInstance().getLobbies()) {
+            if (lobby.getId().equals(id)) {
+                return lobby;
+            }
+        }
+        return null;
+    }
+
+    public JoinLobbyPacket joinLobby(Player currentPlayer, Lobby lobby, String password) {
+        JoinLobbyPacket packet = new JoinLobbyPacket(currentPlayer, currentPlayer.getUsername(), lobby.getId(), password);
+        return packet;
     }
 }
