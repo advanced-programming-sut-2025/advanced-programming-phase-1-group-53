@@ -53,6 +53,11 @@ public class NetMainMenu extends AppMenu {
         lobbyMenuBtn.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
             @Override
             public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
+                if (App.getMyPlayer() == null) {
+//                    main.setScreen(new NetMainMenu(main));
+                    STab.createDialog("You need to register first!", "Dismiss").show(stage);
+                    return;
+                }
                 main.setScreen(new LobbyMenu());
             }
         });
