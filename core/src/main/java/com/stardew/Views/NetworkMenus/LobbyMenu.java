@@ -206,7 +206,7 @@ public class LobbyMenu extends AppMenu {
             return;
         }
 
-        JoinLobbyPacket packet = controller.joinLobby(App.getCurrentPlayer(), lobby, password);
+        JoinLobbyPacket packet = controller.joinLobby(App.getMyPlayer(), lobby, password);
         ClientApp.getInstance().getConnectionThread().sendPacket(packet);
 
         lobbyWindow = new com.badlogic.gdx.scenes.scene2d.ui.Window("Lobby Info", skin);
@@ -246,7 +246,7 @@ public class LobbyMenu extends AppMenu {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 closeLobbyWindow();
-                LeaveLobbyPacket packet = controller.leaveLobby(App.getCurrentPlayer() ,lobby);
+                LeaveLobbyPacket packet = controller.leaveLobby(App.getMyPlayer() ,lobby);
                 ClientApp.getInstance().getConnectionThread().sendPacket(packet);
             }
         });

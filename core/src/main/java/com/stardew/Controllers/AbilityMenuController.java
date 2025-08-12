@@ -26,25 +26,30 @@ public class AbilityMenuController extends Controller {
     @Override
     public Result keyUp(KeyUpPacket keyUpPacket) {
 
+        return new Result(true, "");
     }
 
     @Override
     public Result keyDown(KeyDownPacket keyDownPacket) {
 
+        return new Result(true, "");
     }
 
     @Override
     public Result mouseMove(MouseMovePacket mouseMovePacket) {
 
+        return new Result(true, "");
     }
 
     @Override
     public Result touchDown(TouchDownPacket touchDownPacket) {
 
+        return new Result(true, "");
     }
 
     @Override
     public Result click(ClickPacket clickPacket) {
 
+        return new Result(true, "");
     }
 }

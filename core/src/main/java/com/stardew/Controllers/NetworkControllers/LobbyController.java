@@ -18,12 +18,12 @@ import com.stardew.Views.NetworkMenus.LobbyMenu;
 
 public class LobbyController {
     public StartGamePacket startGame(Lobby lobby) {
-        StartGamePacket packet = new StartGamePacket(App.getCurrentPlayer(), lobby.getId());
+        StartGamePacket packet = new StartGamePacket(App.getMyPlayer(), lobby.getId());
         return packet;
     }
 
     public LeaveLobbyPacket leaveLobby(Player player, Lobby lobby) {
-        LeaveLobbyPacket packet = new LeaveLobbyPacket(App.getCurrentPlayer(), player.getUsername(), lobby.getId());
+        LeaveLobbyPacket packet = new LeaveLobbyPacket(App.getMyPlayer(), player.getUsername(), lobby.getId());
         App.main.setScreen(new LobbyMenu());
         return packet;
     }
@@ -52,13 +52,13 @@ public class LobbyController {
         CreateLobbyPacket packet;
         if (password.isEmpty()) {
             packet = new CreateLobbyPacket(
-                App.getCurrentPlayer(), name, password,
-                true, isVisible, App.getCurrentPlayer().getUsername()
+                App.getMyPlayer(), name, password,
+                true, isVisible, App.getMyPlayer().getUsername()
             );
         } else {
             packet = new CreateLobbyPacket(
-                App.getCurrentPlayer(), name, password,
-                false, isVisible, App.getCurrentPlayer().getUsername()
+                App.getMyPlayer(), name, password,
+                false, isVisible, App.getMyPlayer().getUsername()
             );
         }
         ClientApp.getInstance().getConnectionThread().sendPacket(packet);
