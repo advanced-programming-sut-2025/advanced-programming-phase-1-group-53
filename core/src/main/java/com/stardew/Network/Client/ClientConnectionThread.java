@@ -4,6 +4,7 @@ import com.stardew.Controllers.InGameControllers.Controller;
 import com.stardew.Models.Election;
 import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.Player;
+import com.stardew.Models.GameMessages;
 import com.stardew.Models.Lobby;
 import com.stardew.Models.NPC.NPC;
 import com.stardew.Models.Result;
@@ -12,6 +13,7 @@ import com.stardew.Network.Common.Packet.*;
 import com.stardew.Network.Common.Packet.ClientPacket.AudioPackets.RequestAudioPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.AudioPackets.UploadAudioPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.ReactionPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.SendPrivateMessagePacket;
 import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.SendPublicMessagePacket;
 import com.stardew.Network.Common.Packet.ClientPacket.ElectionPackets.FinalizeElectionPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.ElectionPackets.StartVotingPacket;
@@ -249,6 +251,25 @@ public class ClientConnectionThread extends ConnectionThread {
                     // TODO jabar
                 }
                 Election.applyElectionResult(finalizeElectionPacket, result);
+                System.out.println(result.message());
+                // TODO jabbar
+                return true;
+            } else if (innerPacket instanceof SendPublicMessagePacket sendPublicMessagePacket) {
+                if (!result.success()) {
+                    System.out.println(result.message());
+                    //TODO jabar
+                    return true;
+                }
+                GameMessages.sendPublicChatMessage(sendPublicMessagePacket);
+                System.out.println(result.message());
+                return true;
+            } else if (innerPacket instanceof SendPrivateMessagePacket sendPrivateMessagePacket) {
+                if (!result.success()) {
+                    System.out.println(result.message());
+                    // TODO jabar
+                    return true;
+                }
+                GameMessages.sendPrivateChatMessage(sendPrivateMessagePacket);
                 System.out.println(result.message());
                 // TODO jabbar
                 return true;
