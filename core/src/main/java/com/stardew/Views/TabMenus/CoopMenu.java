@@ -19,6 +19,10 @@ import com.stardew.Models.Items.AnimalProduct;
 import com.stardew.Models.Items.CoopAndBarn;
 import com.stardew.Models.Items.ShippingBin;
 import com.stardew.Models.Product;
+import com.stardew.Network.Client.ClientApp;
+import com.stardew.Network.Common.Packet.ClientPacket.ClickPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.KeyDownPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.TextButtonType;
 import com.stardew.Views.GameMenu;
 import com.stardew.Views.Tab;
 
@@ -65,6 +69,8 @@ public class CoopMenu extends Tab {
         purchase.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                ClientApp.getInstance().getConnectionThread().sendPacket(new ClickPacket(App.getMyPlayer(), TextButtonType.move_out, CheatMenu.class));
+
                 for(CoopAndBarn coopAndBarn : App.getCurrentPlayer().backpack.getCoopsAndBarns()){
                     if(coopAndBarn.getAnimals().contains(animal)){
                         if(animal.isOut()){
@@ -91,6 +97,8 @@ public class CoopMenu extends Tab {
         collect.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                ClientApp.getInstance().getConnectionThread().sendPacket(new ClickPacket(App.getMyPlayer(), TextButtonType.collect, CheatMenu.class));
+
                 for(AnimalProduct animalProduct : animal.getProducedProducts()){
                     App.getCurrentPlayer().backpack.addItem(animalProduct);
                 }
@@ -105,6 +113,8 @@ public class CoopMenu extends Tab {
         sell.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                ClientApp.getInstance().getConnectionThread().sendPacket(new ClickPacket(App.getMyPlayer(), TextButtonType.sell, CoopMenu.class));
+
                 ShippingBin.ShippingBin.getItems().put(animal, App.getCurrentPlayer());
                 mustRemove.add(animal);
                 isChanged = true;
@@ -166,6 +176,7 @@ public class CoopMenu extends Tab {
             back.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
+
                     Main.main.setScreen(GameMenu.getInstance());
                 }
             });
@@ -186,6 +197,8 @@ public class CoopMenu extends Tab {
             nextPage.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
+                    ClientApp.getInstance().getConnectionThread().sendPacket(new ClickPacket(App.getMyPlayer(), TextButtonType.next_page, CoopMenu.class));
+
                     if((currentPage+1)*NUM_OF_ITEMS_IN_A_PAGE < animals.size()) {
                         currentPage++;
                         isChanged = true;
@@ -196,6 +209,9 @@ public class CoopMenu extends Tab {
             previousPage.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
+
+                    ClientApp.getInstance().getConnectionThread().sendPacket(new ClickPacket(App.getMyPlayer(), TextButtonType.previous_page, CoopMenu.class));
+
                     if(currentPage > 0) {
                         currentPage--;
                         isChanged = true;

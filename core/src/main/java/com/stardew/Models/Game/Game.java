@@ -20,37 +20,39 @@ public class Game {
     public final Weather weather = new Weather();
     private final GameMap gameMap;
     private Tile[][] currentMap;
+    private Election election = null;
 
     // Helper to initialize player relationship HashMaps
 
     public Game(List<Player> players){
-        this.players.addAll(players);
-        numOfTurn = 0;
-        numOfPlayers = players.size();
-        allItemsInTheGame.addAll(Artisan.allArtisan);
-        allItemsInTheGame.addAll(ArtisanGood.allArtisanGoods);
-        allItemsInTheGame.addAll(CraftAble.allCraftables);
-        allItemsInTheGame.addAll(ForagingCrop.foragingCrops);
-        allItemsInTheGame.addAll(ForagingMineral.minerals);
-        allItemsInTheGame.addAll(ForagingSeed.foragingSeeds);
-        allItemsInTheGame.addAll(ForagingTree.allItems);
-        allItemsInTheGame.addAll(Fruit.allFruits);
-        allItemsInTheGame.addAll(PlantAbleCrop.allPlantAbleCrops);
-        allItemsInTheGame.addAll(Tree.allTrees);
-        allItemsInTheGame.addAll(Animal.allAnimals);
-        allItemsInTheGame.addAll(AnimalProduct.allAnimalProducts);
-        allItemsInTheGame.addAll(CoopAndBarn.COOP_AND_BARN);
-        allItemsInTheGame.addAll(CraftingRecipe.craftingRecipes);
-        allItemsInTheGame.addAll(Fish.fishes);
-        allItemsInTheGame.addAll(Recipe.allRecipes);
-        allItemsInTheGame.addAll(Food.allFoods);
-        allItemsInTheGame.addAll(Item.allItems);
-        allItemsInTheGame.addAll(Tool.allTools);
-        allItemsInTheGame.add(TrashCan.normalTrashCan);
-        allItemsInTheGame.add(ShippingBin.ShippingBin);
-        allItemsInTheGame.add(WateringCan.normalWateringCan);
+//        this.players.addAll(players);
+//        numOfTurn = 0;
+//        numOfPlayers = players.size();
+//        allItemsInTheGame.addAll(Artisan.allArtisan);
+//        allItemsInTheGame.addAll(ArtisanGood.allArtisanGoods);
+//        allItemsInTheGame.addAll(CraftAble.allCraftables);
+//        allItemsInTheGame.addAll(ForagingCrop.foragingCrops);
+//        allItemsInTheGame.addAll(ForagingMineral.minerals);
+//        allItemsInTheGame.addAll(ForagingSeed.foragingSeeds);
+//        allItemsInTheGame.addAll(ForagingTree.allItems);
+//        allItemsInTheGame.addAll(Fruit.allFruits);
+//        allItemsInTheGame.addAll(PlantAbleCrop.allPlantAbleCrops);
+//        allItemsInTheGame.addAll(Tree.allTrees);
+//        allItemsInTheGame.addAll(Animal.allAnimals);
+//        allItemsInTheGame.addAll(AnimalProduct.allAnimalProducts);
+//        allItemsInTheGame.addAll(CoopAndBarn.COOP_AND_BARN);
+//        allItemsInTheGame.addAll(CraftingRecipe.craftingRecipes);
+//        allItemsInTheGame.addAll(Fish.fishes);
+//        allItemsInTheGame.addAll(Recipe.allRecipes);
+//        allItemsInTheGame.addAll(Food.allFoods);
+//        allItemsInTheGame.addAll(Item.allItems);
+//        allItemsInTheGame.addAll(Tool.allTools);
+//        allItemsInTheGame.add(TrashCan.normalTrashCan);
+//        allItemsInTheGame.add(ShippingBin.ShippingBin);
+//        allItemsInTheGame.add(WateringCan.normalWateringCan);
         this.gameMap = new GameMap(players);
         this.currentMap = gameMap.getTiles();
+        //TODO uncomment
     }
 
     public ArrayList<Player> getPlayers() {
@@ -153,6 +155,10 @@ public class Game {
             }
         }
         return null; // Player not found
+    }
+
+    public Election getElection() {
+        return election;
     }
 
     public void printMap() {

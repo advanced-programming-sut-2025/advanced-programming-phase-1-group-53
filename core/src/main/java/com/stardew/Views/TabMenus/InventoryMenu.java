@@ -12,6 +12,9 @@ import com.stardew.Main;
 import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.GameAssetManager;
 import com.stardew.Models.Items.Item;
+import com.stardew.Network.Client.ClientApp;
+import com.stardew.Network.Common.Packet.ClientPacket.KeyDownPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.TouchDownPacket;
 import com.stardew.Views.GameMenu;
 import com.stardew.Views.Tab;
 
@@ -122,6 +125,7 @@ public class InventoryMenu extends Tab {
 
     @Override
     public boolean keyDown(int keycode) {
+
         System.out.println(keycode);
         if(keycode == Input.Keys.ESCAPE){
             Main.main.setScreen(GameMenu.getInstance());
@@ -132,6 +136,8 @@ public class InventoryMenu extends Tab {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        ClientApp.getInstance().getConnectionThread().sendPacket(new TouchDownPacket(App.getMyPlayer(), screenX, screenY, pointer, button, InventoryMenu.class));
+
         if (button == Input.Buttons.LEFT) {
             boolean b1 = GameMenuController.coordinateCollision(screenX, 0,START_X + 350 + 100, WIDGET_WIDTH);
             boolean b2 = GameMenuController.coordinateCollision(SCREEN_HEIGHT-screenY, 0,

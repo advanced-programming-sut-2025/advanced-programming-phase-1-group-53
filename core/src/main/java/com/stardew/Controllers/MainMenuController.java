@@ -1,13 +1,12 @@
 package com.stardew.Controllers;
 
 
-import com.stardew.Enums.Menu;
+import com.badlogic.gdx.Game;
 import com.stardew.Models.Game.App;
+import com.stardew.Views.ProfileMenu;
 
 public class MainMenuController {
-    public void logout() {
-        System.out.println("you rafti\nredirecting to loginMenu");
-        App.setCurrentPlayer(null);
-        App.setCurrentMenu(Menu.loginRegisterMenu);
+    public void openPersonalInfoScreen(Game main) {
+        main.setScreen(new ProfileMenu(main, App.getCurrentPlayer().getPersonalInfo().getName()));
     }
 }

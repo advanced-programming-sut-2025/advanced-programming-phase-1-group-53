@@ -15,7 +15,7 @@ import java.util.Map;
 
 public class ShippingBin extends Item{
     private final Map<Item, Player> items = new HashMap<>();
-    private SellingMenu sellingMenu = new SellingMenu();
+//    private SellingMenu sellingMenu = new SellingMenu();
 
     private ShippingBin(ItemType itemType){
         super(itemType);
@@ -45,9 +45,10 @@ public class ShippingBin extends Item{
         }
     }
 
-    public void setUpSellingMenu(){
-        Main.main.setScreen(sellingMenu);
-    }
+//    public void setUpSellingMenu(){
+//        Main.main.setScreen(sellingMenu);
+//    }
+    //TODO uncomment
 
 
     @Override

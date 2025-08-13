@@ -1,49 +1,71 @@
 package com.stardew.Network.Common.Packet;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.GsonBuilder;
+import com.stardew.Network.Common.Packet.ClientPacket.*;
+import com.stardew.Network.Common.Packet.ServerPacket.NPCDialoguePacket;
+import com.stardew.Network.Common.Packet.ServerPacket.ServerGeneralRespondPacket;
+import com.stardew.Network.Common.Packet.ServerPacket.UpdateMapPacket;
+import com.stardew.Network.Common.Packet.ServerPacket.WelcomePacket;
+import com.stardew.Network.Common.RuntimeTypeAdapterFactory;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 public class PacketParser {
-    private static final Gson gson = new Gson();
 
-    private static final Map<PacketType, Class<? extends Packet>> packetClassMap = new HashMap<>();
+    private static final Gson gson;
 
     static {
-        packetClassMap.put(PacketType.LOGIN, LoginPacket.class);
-        packetClassMap.put(PacketType.WELCOME, WelcomePacket.class);
+        // ایجاد Adapter برای پشتیبانی از همه انواع Packet
+        RuntimeTypeAdapterFactory<Packet> packetAdapter =
+            RuntimeTypeAdapterFactory.of(Packet.class, "type")
+                .registerSubtype(LoginPacket.class, PacketType.LOGIN_PACKET.name())
+                .registerSubtype(WelcomePacket.class, PacketType.WELCOME_PACKET.name())
+                .registerSubtype(GiveFlowerPacket.class, PacketType.GIVE_FLOWER_PACKET.name())
+                .registerSubtype(HuggingPacket.class, PacketType.HUGGING_PACKET.name())
+                .registerSubtype(JoinLobbyPacket.class, PacketType.JOIN_LOBBY_PACKET.name())
+                .registerSubtype(LeaveLobbyPacket.class, PacketType.LEAVE_LOBBY_PACKET.name())
+                .registerSubtype(MarrigePacket.class, PacketType.MARRIAGE_PACKET.name())
+                .registerSubtype(ReactionPacket.class, PacketType.REACTION_PACKET.name())
+                .registerSubtype(RestartGamePacket.class, PacketType.RESTART_GAME_PACKET.name())
+                .registerSubtype(SaveGamePacket.class, PacketType.SAVE_GAME_PACKET.name())
+                .registerSubtype(SendPublicMessagePacket.class, PacketType.SEND_PUBLIC_MESSAGE_PACKET.name())
+                .registerSubtype(SendPrivateMessagePacket.class, PacketType.SEND_PRIVATE_MESSAGE_PACKET.name())
+                .registerSubtype(SignUpPacket.class, PacketType.SIGN_UP_PACKET.name())
+                .registerSubtype(StartGamePacket.class, PacketType.START_GAME_PACKET.name())
+                .registerSubtype(StartVotingPacket.class, PacketType.START_VOTING_PACKET.name())
+                .registerSubtype(CreateLobbyPacket.class, PacketType.CREATE_LOBBY_PACKET.name())
+                .registerSubtype(ServerGeneralRespondPacket.class, PacketType.SERVER_GENERAL_RESPOND_PACKET.name())
+                .registerSubtype(UpdateMapPacket.class, PacketType.UPDATE_MAP_PACKET.name())
+                .registerSubtype(ClickPacket.class, PacketType.CLICK_PACKET.name())
+                .registerSubtype(KeyDownPacket.class, PacketType.KEY_DOWN_PACKET.name())
+                .registerSubtype(KeyUpPacket.class, PacketType.KEY_UP_PACKET.name())
+                .registerSubtype(MouseMovePacket.class, PacketType.MOUSE_MOVE_PACKET.name())
+                .registerSubtype(TalkToNPCPacket.class, PacketType.TALK_TO_NPC_PACKET.name())
+                .registerSubtype(TouchDownPacket.class, PacketType.TOUCH_DOWN_PACKET.name())
+                .registerSubtype(GiftingPacket.class, PacketType.GIFTING_PACKET.name())
+                .registerSubtype(NPCDialoguePacket.class, PacketType.NPC_DIALOGUE_PACKET.name());
+
+        gson = new GsonBuilder()
+            .registerTypeAdapterFactory(packetAdapter)
+            .create();
     }
 
-    private static Packet parse(String json) {
+
+    public static Packet parse(String json) {
         try {
-            JsonObject jsonObject = JsonParser.parseString(json).getAsJsonObject();
-            String typeStr = jsonObject.get("type").getAsString();
-            PacketType type = PacketType.valueOf(typeStr);
-
-            Class<? extends Packet> clazz = packetClassMap.get(type);
-            if (clazz == null) {
-                System.err.println("Unknown packet type: " + type);
-                return null;
-            }
-
-            return gson.fromJson(jsonObject, clazz);
+            return gson.fromJson(json, Packet.class);
         } catch (Exception e) {
             System.err.println("Failed to parse packet: " + e.getMessage());
             return null;
         }
     }
 
-    private static String toJson(Packet packet) {
+    public static String toJson(Packet packet) {
         try {
-            JsonObject jsonObject = gson.toJsonTree(packet).getAsJsonObject();
-            jsonObject.addProperty("type", packet.getType().name());
-            return gson.toJson(jsonObject);
+            return gson.toJson(packet);
         } catch (Exception e) {
             System.err.println("Failed to serialize packet: " + e.getMessage());
             return null;
@@ -54,22 +76,16 @@ public class PacketParser {
         StringBuilder sb = new StringBuilder();
         int ch;
         while ((ch = inputStream.read()) != -1) {
-            if (ch == '\n') break; // پایان پکت
+            if (ch == '\n') break;
             sb.append((char) ch);
         }
-        System.out.println("Read packet: " + sb.toString());
-        if (sb.length() == 0) return null; // اتصال بسته یا داده‌ای نیست
-        System.out.println("packet after parsing: " + PacketParser.parse(sb.toString()));
-        return PacketParser.parse(sb.toString());
+        if (sb.length() == 0) return null;
+        return parse(sb.toString());
     }
 
     public static void writePacket(BufferedOutputStream outputStream, Packet packet) throws IOException {
-        System.out.println("packet before json: " + packet.toString());
-        String json = PacketParser.toJson(packet) + "\n";
-        System.out.println("packet after json: " + json);
+        String json = toJson(packet) + "\n";
         outputStream.write(json.getBytes());
-        outputStream.flush(); // حتما flush بشه تا داده ارسال بشه
-        System.out.println("packet after flush: " + json);
+        outputStream.flush();
     }
-
 }

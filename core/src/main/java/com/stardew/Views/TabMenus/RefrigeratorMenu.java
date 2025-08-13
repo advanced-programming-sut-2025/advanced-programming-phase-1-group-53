@@ -8,6 +8,8 @@ import com.stardew.Main;
 import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.GameAssetManager;
 import com.stardew.Models.Items.Item;
+import com.stardew.Network.Client.ClientApp;
+import com.stardew.Network.Common.Packet.ClientPacket.TouchDownPacket;
 import com.stardew.Views.GameMenu;
 import com.stardew.Views.Tab;
 
@@ -150,7 +152,7 @@ public class RefrigeratorMenu extends Tab {
 
     @Override
     public boolean keyDown(int keycode) {
-        System.out.println(keycode);
+
         if(keycode == Input.Keys.ESCAPE){
             Main.main.setScreen(GameMenu.getInstance());
             return true;
@@ -160,6 +162,8 @@ public class RefrigeratorMenu extends Tab {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        ClientApp.getInstance().getConnectionThread().sendPacket(new TouchDownPacket(App.getMyPlayer(), screenX, screenY, pointer, button, RefrigeratorMenu.class));
+
         if (button == Input.Buttons.LEFT) {
             for(int i = 1; i< sprites.size(); i++){
                 Item item = inventoryItems.get(i-1);

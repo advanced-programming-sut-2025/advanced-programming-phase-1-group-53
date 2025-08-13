@@ -1,16 +1,17 @@
 package com.stardew.Network.Common.Packet;
 
-// for in game press key like w a s d
 public class PressKeyPacket extends Packet {
-    public final int keyCode;
-    public PressKeyPacket(String senderId, String senderUsername, int keyCode) {
+    protected PressKeyPacket(String senderId, String senderUsername) {
         super(senderId, senderUsername);
-        this.keyCode = keyCode;
     }
 
     @Override
-    public PacketSender getSender() { return PacketSender.CLIENT; }
+    public PacketType getTypeEnum() {
+        return null;
+    }
 
     @Override
-    public PacketType getType() { return PacketType.PRESSKEYPACKET; }
+    public PacketSender getSender() {
+        return null;
+    }
 }
