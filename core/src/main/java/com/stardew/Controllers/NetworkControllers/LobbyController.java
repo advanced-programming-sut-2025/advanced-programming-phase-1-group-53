@@ -17,16 +17,17 @@ import com.stardew.Network.Common.Packet.ClientPacket.GamePackets.StartGamePacke
 import com.stardew.Views.NetworkMenus.LobbyMenu;
 
 public class LobbyController {
-    public StartGamePacket startGame(Lobby lobby) {
-        StartGamePacket packet = new StartGamePacket(App.getMyPlayer(), lobby.getId());
-        return packet;
-    }
-
+//    public StartGamePacket startGame(Lobby lobby) {
+//        StartGamePacket packet = new StartGamePacket(App.getMyPlayer(), lobby.getId());
+//        return packet;
+//    }
+//
     public LeaveLobbyPacket leaveLobby(Player player, Lobby lobby) {
         LeaveLobbyPacket packet = new LeaveLobbyPacket(App.getMyPlayer(), player.getUsername(), lobby.getId());
         App.main.setScreen(new LobbyMenu());
         return packet;
     }
+    // TODO uncommit
 
     public void deleteLobby(Lobby lobby) {
         for (Player player : lobby.getPlayers()) {
