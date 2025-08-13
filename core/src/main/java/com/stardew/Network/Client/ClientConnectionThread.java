@@ -280,7 +280,7 @@ public class ClientConnectionThread extends ConnectionThread {
         } else if (packet instanceof WelcomePacket) {
 
         } else if (packet instanceof RequestAudioPacket requestAudioPacket) {
-            UploadAudioPacket audioPacket = //TODO jabar
+            UploadAudioPacket audioPacket = null;//TODO jabar
             if (audioPacket == null) {
                 System.out.println("did not send audio packet");
                 return true;
