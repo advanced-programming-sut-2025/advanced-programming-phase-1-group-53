@@ -1,6 +1,6 @@
 package com.stardew.Network.Server;
 
-import com.stardew.Controllers.Controller;
+import com.stardew.Controllers.InGameControllers.Controller;
 import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.Player;
 import com.stardew.Models.Lobby;

@@ -1,4 +1,4 @@
-package com.stardew.Controllers;
+package com.stardew.Controllers.InGameControllers;
 
 import com.stardew.Models.Result;
 import com.stardew.Network.Common.Packet.ClientPacket.*;
