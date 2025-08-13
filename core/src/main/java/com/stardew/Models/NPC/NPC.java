@@ -1,7 +1,6 @@
 package com.stardew.Models.NPC;
 
 import com.stardew.Enums.ItemType;
-import com.stardew.Enums.Season;
 import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.Player;
 import com.stardew.Models.Items.Item;
@@ -13,7 +12,6 @@ import com.stardew.Network.Server.ServerApp;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 
 public class NPC {
     private final String name;
@@ -21,7 +19,7 @@ public class NPC {
     private final ArrayList<Request> requests;
     private final String personality;
     private final Position position;
-    private int duration;
+    private int direction;
 
 
     // Example village tile locations (must be asphalt tiles inside the village area)
@@ -38,7 +36,7 @@ public class NPC {
         this.requests = requests;
         this.personality = personality;
         this.position = position;
-        this.duration = duration;
+        this.direction = duration;
     }
 
     public static final NPC Sebastian = new NPC(
@@ -233,13 +231,13 @@ public class NPC {
         if (!App.getMyPlayer().personalInfo.getName().equalsIgnoreCase("SERVER")) {
             return;
         }
-        NPC.Sebastian.duration = generateNewDuration();
-        NPC.Abigail.duration = generateNewDuration();
-        NPC.Harvey.duration = generateNewDuration();
-        NPC.Lia.duration = generateNewDuration();
-        NPC.Robin.duration = generateNewDuration();
+        NPC.Sebastian.direction = generateNewDuration();
+        NPC.Abigail.direction = generateNewDuration();
+        NPC.Harvey.direction = generateNewDuration();
+        NPC.Lia.direction = generateNewDuration();
+        NPC.Robin.direction = generateNewDuration();
         ServerApp.getInstance().broadcastInGame(new ChangeDurationPacket("SERVER", "SERVER",
-            Sebastian.duration, Abigail.duration, Harvey.duration, Lia.duration, Robin.duration));
+            Sebastian.direction, Abigail.direction, Harvey.direction, Lia.direction, Robin.direction));
     }
 
     private static int generateNewDuration() {
@@ -247,10 +245,10 @@ public class NPC {
     }
 
     public static void changeDuration(ChangeDurationPacket packet) {
-        Sebastian.duration = packet.SebastianDuration;
-        Abigail.duration = packet.AbigailDuration;
-        Harvey.duration = packet.HarveyDuration;
-        Lia.duration = packet.LiaDuration;
-        Robin.duration = packet.RobinDuration;
+        Sebastian.direction = packet.SebastianDuration;
+        Abigail.direction = packet.AbigailDuration;
+        Harvey.direction = packet.HarveyDuration;
+        Lia.direction = packet.LiaDuration;
+        Robin.direction = packet.RobinDuration;
     }
 }
