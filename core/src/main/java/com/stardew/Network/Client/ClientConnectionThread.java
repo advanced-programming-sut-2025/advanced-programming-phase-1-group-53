@@ -1,5 +1,6 @@
 package com.stardew.Network.Client;
 
+import com.stardew.Controllers.GameMenuController;
 import com.stardew.Controllers.InGameControllers.Controller;
 import com.stardew.Models.Election;
 import com.stardew.Models.Game.App;
@@ -148,8 +149,10 @@ public class ClientConnectionThread extends ConnectionThread {
                     App.setMyPlayer(player1);
                 }
                 return true;
-            } else if (innerPacket instanceof StartGamePacket) {
-
+            } else if (innerPacket instanceof StartGamePacket startGamePacket) {
+                GameMenuController.newGame(startGamePacket.username1, startGamePacket.username2, startGamePacket.username3);
+                System.out.println("Game started");
+                return true;
             } else if (innerPacket instanceof StartVotingPacket) {
 
             } else if (innerPacket instanceof VotePacket) {

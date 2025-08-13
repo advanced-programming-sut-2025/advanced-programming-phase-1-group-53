@@ -230,13 +230,18 @@ public class LobbyMenu extends AppMenu {
         startButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (!lobby.getAdmin().equals(App.getCurrentPlayer()) || lobby.getPlayers().size() < 2) {
+                if (!lobby.getAdmin().equals(App.getMyPlayer()) || lobby.getPlayers().size() < 2) {
                     Dialog dialog = STab.createDialog("couldn't start the game", "OK");
                     dialog.show(stage);
                     return;
                 }
-                StartGamePacket packet = controller.startGame(lobby);
-                ClientApp.getInstance().getConnectionThread().sendPacket(packet);
+                String username1 = lobby.getPlayers().get(0).getUsername();
+                String username2 = lobby.getPlayers().get(1).getUsername();
+                String username3 = lobby.getPlayers().get(2).getUsername();
+                String username4 = lobby.getPlayers().get(3).getUsername();
+                StartGamePacket packet1 = new StartGamePacket(App.getMyPlayer(), lobby.getId(), username1, username2, username3, username4);
+//                StartGamePacket packet = controller.startGame(lobby);
+                ClientApp.getInstance().getConnectionThread().sendPacket(packet1);
             }
         });
         contentTable.add(startButton).pad(10).row();

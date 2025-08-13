@@ -1,5 +1,6 @@
 package com.stardew.Network.Server;
 
+import com.stardew.Controllers.GameMenuController;
 import com.stardew.Controllers.InGameControllers.Controller;
 import com.stardew.Models.Election;
 import com.stardew.Models.Game.App;
@@ -115,8 +116,13 @@ public class ServerConnectionThread extends ConnectionThread {
             System.out.println(result.message());
             ServerApp.getInstance().broadcast(new ServerGeneralRespondPacket(result, signUpPacket));
             return true;
-        } else if (packet instanceof StartGamePacket) {
-
+        } else if (packet instanceof StartGamePacket startGamePacket) {
+            GameMenuController.newGame(startGamePacket.username1, startGamePacket.username2, startGamePacket.username3);
+            ServerGeneralRespondPacket pk = new ServerGeneralRespondPacket(new Result(true, "game started"), startGamePacket);
+            ServerApp.getInstance().getConnections().get(startGamePacket.username1).sendPacket(pk);
+            ServerApp.getInstance().getConnections().get(startGamePacket.username2).sendPacket(pk);
+            ServerApp.getInstance().getConnections().get(startGamePacket.username3).sendPacket(pk);
+            return true;
         } else if (packet instanceof StartVotingPacket) {
 
         } else if (packet instanceof VotePacket) {
