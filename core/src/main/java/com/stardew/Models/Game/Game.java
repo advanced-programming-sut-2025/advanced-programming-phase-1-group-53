@@ -161,6 +161,10 @@ public class Game {
         return election;
     }
 
+    public void setElection(Election election) {
+        this.election = election;
+    }
+
     public void printMap() {
         Tile[][] map = getCurrentMap();
         Player player = getCurrentPlayer();

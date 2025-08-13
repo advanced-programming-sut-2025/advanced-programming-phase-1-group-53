@@ -1,6 +1,7 @@
 package com.stardew.Network.Client;
 
 import com.stardew.Controllers.InGameControllers.Controller;
+import com.stardew.Models.Election;
 import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.Player;
 import com.stardew.Models.Lobby;
@@ -12,6 +13,7 @@ import com.stardew.Network.Common.Packet.ClientPacket.AudioPackets.RequestAudioP
 import com.stardew.Network.Common.Packet.ClientPacket.AudioPackets.UploadAudioPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.ReactionPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.SendPublicMessagePacket;
+import com.stardew.Network.Common.Packet.ClientPacket.ElectionPackets.FinalizeElectionPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.ElectionPackets.StartVotingPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.ElectionPackets.VotePacket;
 import com.stardew.Network.Common.Packet.ClientPacket.GamePackets.RestartGamePacket;
@@ -222,6 +224,33 @@ public class ClientConnectionThread extends ConnectionThread {
                 }
                 controller.click(clickPacket);
                 System.out.println(result.message());
+                return true;
+            } else if (innerPacket instanceof StartVotingPacket startVotingPacket) {
+                if (!result.success()) {
+                    System.out.println(result.message());
+                    // TODO jabar
+                }
+                Election.startElection(startVotingPacket);
+                System.out.println(result.message());
+                //TODO jabar
+                return true;
+            } else if (innerPacket instanceof VotePacket votePacket) {
+                if (!result.success()) {
+                    System.out.println(result.message());
+                    //TODO jabbar
+                }
+                Election.vote(votePacket);
+                System.out.println(result.message());
+                //TODO jabar
+                return true;
+            } else if (innerPacket instanceof FinalizeElectionPacket finalizeElectionPacket) {
+                if (!result.success()) {
+                    System.out.println(result.message());
+                    // TODO jabar
+                }
+                Election.applyElectionResult(finalizeElectionPacket, result);
+                System.out.println(result.message());
+                // TODO jabbar
                 return true;
             }
             return false;

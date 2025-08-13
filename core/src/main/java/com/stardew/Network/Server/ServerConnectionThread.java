@@ -1,6 +1,7 @@
 package com.stardew.Network.Server;
 
 import com.stardew.Controllers.InGameControllers.Controller;
+import com.stardew.Models.Election;
 import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.Player;
 import com.stardew.Models.Lobby;
@@ -12,6 +13,7 @@ import com.stardew.Network.Common.Packet.ClientPacket.AudioPackets.RequestAudioP
 import com.stardew.Network.Common.Packet.ClientPacket.AudioPackets.UploadAudioPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.ReactionPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.SendPublicMessagePacket;
+import com.stardew.Network.Common.Packet.ClientPacket.ElectionPackets.FinalizeElectionPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.ElectionPackets.StartVotingPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.ElectionPackets.VotePacket;
 import com.stardew.Network.Common.Packet.ClientPacket.GamePackets.RestartGamePacket;
@@ -214,6 +216,21 @@ public class ServerConnectionThread extends ConnectionThread {
             }
             connectionThread.sendPacket(uploadAudioPacket);
             System.out.println("upload audio has been transferred");
+            return true;
+        } else if (packet instanceof StartVotingPacket startVotingPacket) {
+            ServerGeneralRespondPacket respondPacket = Election.createElection(startVotingPacket);
+            System.out.println(respondPacket.result.message());
+            ServerApp.getInstance().broadcastInGame(respondPacket);
+            return true;
+        } else if (packet instanceof VotePacket votePacket) {
+            result = Election.voteRequest(votePacket);
+            System.out.println(result.message());
+            sendPacket(new ServerGeneralRespondPacket(result, votePacket));
+            return true;
+        } else if (packet instanceof FinalizeElectionPacket finalizeElectionPacket) {
+            result = Election.finishElection(finalizeElectionPacket);
+            System.out.println(result.message());
+            ServerApp.getInstance().broadcastInGame(new ServerGeneralRespondPacket(result, finalizeElectionPacket));
             return true;
         }
         return false;
