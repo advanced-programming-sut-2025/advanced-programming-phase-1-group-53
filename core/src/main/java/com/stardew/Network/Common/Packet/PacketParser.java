@@ -74,7 +74,6 @@ public class PacketParser {
                 .registerSubtype(NPCDialoguePacket.class, PacketType.NPC_DIALOGUE_PACKET.name())
                 .registerSubtype(UploadAudioPacket.class, PacketType.UPLOAD_AUDIO_PACKET.name())
                 .registerSubtype(RequestAudioPacket.class, PacketType.REQUEST_AUDIO_PACKET.name())
-                .registerSubtype(StartVotingPacket.class, PacketType.START_VOTING_PACKET.name())
                 .registerSubtype(VotePacket.class, PacketType.VOTE_PACKET.name())
                 .registerSubtype(FinalizeElectionPacket.class, PacketType.FINALIZE_ELECTION_PACKET.name())
                 .registerSubtype(ChangeDurationPacket.class, PacketType.CHANGE_DURATION_PACKET.name());
