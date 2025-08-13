@@ -15,7 +15,8 @@ public class Lwjgl3Launcher {
         config.setTitle("My Game");
         config.setWindowedMode(2048, 1152);
         config.useVsync(true);
-        return new Lwjgl3Application(new Main(), getDefaultConfiguration());
+
+        return new Lwjgl3Application(new Main(), config);
     }
 
     private static Lwjgl3ApplicationConfiguration getDefaultConfiguration() {
