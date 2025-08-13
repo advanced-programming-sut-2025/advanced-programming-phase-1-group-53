@@ -70,6 +70,11 @@ public class LobbyController {
         dialog.text("the message pop-up is not yet set");
         dialog.button("OK");
         dialog.show(stage);
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public Lobby searchLobbyById(String id) {

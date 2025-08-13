@@ -152,7 +152,7 @@ public class NetSignUpMenu extends AppMenu {
         }
         if (!answerCorrect) {
             messageLabel.setText("Incorrect answer to the security question.");
-            return;
+//            return;
         }
 
         // Pass values to controller
