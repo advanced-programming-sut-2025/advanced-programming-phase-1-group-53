@@ -1,4 +1,4 @@
-package com.stardew.Network.Common.Packet.ClientPacket.IntractionPackets;
+package com.stardew.Network.Common.Packet.ClientPacket.NPCPackets;
 
 import com.stardew.Models.Game.Player;
 import com.stardew.Network.Common.Packet.Packet;

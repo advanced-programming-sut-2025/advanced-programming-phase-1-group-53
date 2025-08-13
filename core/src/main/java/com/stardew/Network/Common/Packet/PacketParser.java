@@ -18,6 +18,8 @@ import com.stardew.Network.Common.Packet.ClientPacket.KeyboardPackets.*;
 import com.stardew.Network.Common.Packet.ClientPacket.LobbyPackets.CreateLobbyPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.LobbyPackets.JoinLobbyPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.LobbyPackets.LeaveLobbyPacket;
+import com.stardew.Network.Server.ChangeDurationPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.NPCPackets.TalkToNPCPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.RegisterPackets.LoginPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.RegisterPackets.SignUpPacket;
 import com.stardew.Network.Common.Packet.ServerPacket.NPCDialoguePacket;
@@ -69,7 +71,8 @@ public class PacketParser {
                 .registerSubtype(GiftingPacket.class, PacketType.GIFTING_PACKET.name())
                 .registerSubtype(NPCDialoguePacket.class, PacketType.NPC_DIALOGUE_PACKET.name())
                 .registerSubtype(UploadAudioPacket.class, PacketType.UPLOAD_AUDIO_PACKET.name())
-                .registerSubtype(RequestAudioPacket.class, PacketType.REQUEST_AUDIO_PACKET.name());
+                .registerSubtype(RequestAudioPacket.class, PacketType.REQUEST_AUDIO_PACKET.name())
+                .registerSubtype(ChangeDurationPacket.class, PacketType.CHANGE_DURATION_PACKET.name());
 
         gson = new GsonBuilder()
             .registerTypeAdapterFactory(packetAdapter)

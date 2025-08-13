@@ -8,6 +8,8 @@ import com.stardew.Models.Items.Item;
 import com.stardew.Models.Position;
 import com.stardew.Models.Request;
 import com.stardew.Models.Result;
+import com.stardew.Network.Server.ChangeDurationPacket;
+import com.stardew.Network.Server.ServerApp;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,6 +21,8 @@ public class NPC {
     private final ArrayList<Request> requests;
     private final String personality;
     private final Position position;
+    private int duration;
+
 
     // Example village tile locations (must be asphalt tiles inside the village area)
     // Adjust these coordinates as needed to fit your village layout
@@ -28,12 +32,13 @@ public class NPC {
     public static final Position LIA_POSITION       = new Position(28, 36, 1, 1);
     public static final Position ROBIN_POSITION     = new Position(30, 37, 1, 1);
 
-    public NPC(String name, ArrayList<Item> favoriteItems, ArrayList<Request> requests, String personality, Position position) {
+    public NPC(String name, ArrayList<Item> favoriteItems, ArrayList<Request> requests, String personality, Position position, int duration) {
         this.name = name;
         this.favoriteItems = favoriteItems;
         this.requests = requests;
         this.personality = personality;
         this.position = position;
+        this.duration = duration;
     }
 
     public static final NPC Sebastian = new NPC(
@@ -49,7 +54,7 @@ public class NPC {
             new Request(150, App.getGame().getItemByItemType(ItemType.Stone), 50, App.getGame().getItemByItemType(ItemType.Quartz), 0)
         )),
         "Sebastian is a quiet, introspective young man who spends most of his time in his room, tinkering with computers or riding his motorcycle. He enjoys sarcastic humor, rainy days, and dislikes large crowds.",
-        SEBASTIAN_POSITION
+        SEBASTIAN_POSITION, 0
     );
 
     public static final NPC Abigail = new NPC(
@@ -66,7 +71,7 @@ public class NPC {
             new Request(1, App.getGame().getItemByItemType(ItemType.Coffee), 0, null, 5000)
         )),
         "Abigail is adventurous, bold, and a little rebellious. She loves exploring mines, playing the flute, and eating anything unusual. She has a mischievous side and enjoys teasing her friends.",
-        ABIGAIL_POSITION
+        ABIGAIL_POSITION, 1
     );
 
     public static final NPC Harvey = new NPC(
@@ -81,7 +86,7 @@ public class NPC {
             new Request(5, App.getGame().getItemByItemType(ItemType.Parsnip), 0, null, 1000)
         )),
         "Harvey is a gentle, slightly anxious town doctor who cares deeply for everyone's health. He’s polite, well-mannered, and enjoys calm conversations over a cup of coffee.",
-        HARVEY_POSITION
+        HARVEY_POSITION, 2
     );
 
     public static final NPC Lia = new NPC(
@@ -96,7 +101,7 @@ public class NPC {
             new Request(1, App.getGame().getItemByItemType(ItemType.Salad), 0, null, 1000)
         )),
         "Lia is a warm, creative artist who loves sculpting and painting. She’s kind-hearted, enjoys quiet walks in nature, and often finds inspiration in the simplest things.",
-        LIA_POSITION
+        LIA_POSITION, 1
     );
 
     public static final NPC Robin = new NPC(
@@ -112,7 +117,7 @@ public class NPC {
             new Request(10, App.getGame().getItemByItemType(ItemType.Wine), 0, null, 3000)
         )),
         "Robin is an energetic, friendly carpenter who loves building and improving homes. She’s practical, resourceful, and always ready to share a laugh.",
-        ROBIN_POSITION
+        ROBIN_POSITION, 0
     );
 
 
@@ -222,5 +227,30 @@ public class NPC {
         for (Request request : npc.getRequests()) {
             System.out.println(request.toString());
         }
+    }
+
+    public static void changeDuration() {
+        if (!App.getMyPlayer().personalInfo.getName().equalsIgnoreCase("SERVER")) {
+            return;
+        }
+        NPC.Sebastian.duration = generateNewDuration();
+        NPC.Abigail.duration = generateNewDuration();
+        NPC.Harvey.duration = generateNewDuration();
+        NPC.Lia.duration = generateNewDuration();
+        NPC.Robin.duration = generateNewDuration();
+        ServerApp.getInstance().broadcastInGame(new ChangeDurationPacket("SERVER", "SERVER",
+            Sebastian.duration, Abigail.duration, Harvey.duration, Lia.duration, Robin.duration));
+    }
+
+    private static int generateNewDuration() {
+        return (int)(Math.random() * 4);
+    }
+
+    public static void changeDuration(ChangeDurationPacket packet) {
+        Sebastian.duration = packet.SebastianDuration;
+        Abigail.duration = packet.AbigailDuration;
+        Harvey.duration = packet.HarveyDuration;
+        Lia.duration = packet.LiaDuration;
+        Robin.duration = packet.RobinDuration;
     }
 }

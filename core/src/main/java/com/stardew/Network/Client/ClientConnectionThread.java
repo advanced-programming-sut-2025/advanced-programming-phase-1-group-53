@@ -4,6 +4,7 @@ import com.stardew.Controllers.InGameControllers.Controller;
 import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.Player;
 import com.stardew.Models.Lobby;
+import com.stardew.Models.NPC.NPC;
 import com.stardew.Models.Result;
 import com.stardew.Network.Common.ConnectionThread;
 import com.stardew.Network.Common.Packet.*;
@@ -30,6 +31,7 @@ import com.stardew.Network.Common.Packet.ServerPacket.NPCDialoguePacket;
 import com.stardew.Network.Common.Packet.ServerPacket.ServerGeneralRespondPacket;
 import com.stardew.Network.Common.Packet.ServerPacket.UpdateMapPacket;
 import com.stardew.Network.Common.Packet.ServerPacket.WelcomePacket;
+import com.stardew.Network.Server.ChangeDurationPacket;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -240,6 +242,8 @@ public class ClientConnectionThread extends ConnectionThread {
             Result result = PacketParser.saveAudio(uploadAudioPacket);
             System.out.println(result.message());
             return true;
+        } else if (packet instanceof ChangeDurationPacket changeDurationPacket) {
+            NPC.changeDuration(changeDurationPacket);
         }
 
         return false;

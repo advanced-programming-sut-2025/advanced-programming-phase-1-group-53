@@ -22,6 +22,7 @@ import com.stardew.Network.Common.Packet.ClientPacket.KeyboardPackets.*;
 import com.stardew.Network.Common.Packet.ClientPacket.LobbyPackets.CreateLobbyPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.LobbyPackets.JoinLobbyPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.LobbyPackets.LeaveLobbyPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.NPCPackets.TalkToNPCPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.RegisterPackets.LoginPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.RegisterPackets.SignUpPacket;
 import com.stardew.Network.Common.Packet.ServerPacket.NPCDialoguePacket;
