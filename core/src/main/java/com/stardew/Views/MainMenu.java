@@ -5,6 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.stardew.Controllers.MainMenuController;
 import com.stardew.Controllers.ShareController;
+import com.stardew.Models.Game.App;
 
 public class MainMenu extends AppMenu {
     private final MainMenuController controller = new MainMenuController();
@@ -47,6 +48,10 @@ public class MainMenu extends AppMenu {
         LobbyMenuBtn.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
             @Override
             public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
+                if (App.getMyPlayer() == null) {
+                    STab.createDialog("You need to register first!", "Dismiss").show(stage);
+                    return;
+                }
                 main.setScreen(new com.stardew.Views.NetworkMenus.LobbyMenu());
             }
         });
