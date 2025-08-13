@@ -10,7 +10,10 @@ public class CheatMenuController extends Controller {
     public Result keyUp(KeyUpPacket keyUpPacket) { return new Result(true, ""); }
 
     @Override
-    public Result keyDown(KeyDownPacket keyDownPacket) { return new Result(true, ""); }
+    public Result keyDown(KeyDownPacket keyDownPacket) {
+
+        return new Result(true, "");
+    }
 
     @Override
     public Result mouseMove(MouseMovePacket mouseMovePacket) { return new Result(true, ""); }

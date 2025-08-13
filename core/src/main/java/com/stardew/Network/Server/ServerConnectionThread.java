@@ -102,15 +102,11 @@ public class ServerConnectionThread extends ConnectionThread {
             //TODO
         } else if (packet instanceof GiftingPacket giftingPacket) {
             //TODO
-        } else if (packet instanceof ReactionPacket) {
-
         } else if (packet instanceof RestartGamePacket) {
-
+            //TODO
         } else if (packet instanceof SaveGamePacket) {
-
-        } else if (packet instanceof SendPublicMessagePacket) {
-
-        }  else if (packet instanceof SignUpPacket signUpPacket) {
+            //TODO
+        } else if (packet instanceof SignUpPacket signUpPacket) {
             result = Player.createPlayer(signUpPacket.username, signUpPacket.nickname, signUpPacket.password,
                 signUpPacket.email, signUpPacket.gender, signUpPacket.getSenderId());
             System.out.println(result.message());
@@ -123,10 +119,6 @@ public class ServerConnectionThread extends ConnectionThread {
             ServerApp.getInstance().getConnections().get(startGamePacket.username2).sendPacket(pk);
             ServerApp.getInstance().getConnections().get(startGamePacket.username3).sendPacket(pk);
             return true;
-        } else if (packet instanceof StartVotingPacket) {
-
-        } else if (packet instanceof VotePacket) {
-
         } else if (packet instanceof CreateLobbyPacket createLobbyPacket) {
             result = Lobby.createLobby(createLobbyPacket.name, createLobbyPacket.password,
                 createLobbyPacket.isPublic, createLobbyPacket.isVisible, createLobbyPacket.ownerName);

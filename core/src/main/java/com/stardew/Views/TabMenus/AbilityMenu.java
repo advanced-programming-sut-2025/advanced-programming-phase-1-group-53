@@ -1,8 +1,10 @@
 package com.stardew.Views.TabMenus;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.stardew.Controllers.InGameControllers.AbilityMenuController;
+import com.stardew.Main;
 import com.stardew.Models.Game.GameAssetManager;
 import com.stardew.Views.GameMenu;
 import com.stardew.Views.Tab;
@@ -99,8 +101,15 @@ public class AbilityMenu extends Tab {
     @Override
     public boolean keyDown(int keycode) {
 
-        // TODO
-//        return controller.keyDown(keycode).success();
-        return true;
+        System.out.println(keycode);
+        if(keycode == Input.Keys.ESCAPE){
+            Main.main.setScreen(GameMenu.getInstance());
+            return true;
+        }
+        if(keycode == Input.Keys.M){
+            Main.main.setScreen(MapMenu.getInstance());
+            return true;
+        }
+        return false;
     }
 }

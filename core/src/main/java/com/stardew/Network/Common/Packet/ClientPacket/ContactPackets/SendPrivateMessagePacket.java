@@ -21,6 +21,6 @@ public class SendPrivateMessagePacket extends Packet {
 
     @Override
     public PacketType getTypeEnum() {
-        return PacketType.SEND_PUBLIC_MESSAGE_PACKET;
+        return PacketType.SEND_PRIVATE_MESSAGE_PACKET;
     }
 }

@@ -23,6 +23,6 @@ public class MouseMovePacket extends Packet {
 
     @Override
     public PacketType getTypeEnum() {
-        return PacketType.GIVE_FLOWER_PACKET;
+        return PacketType.MOUSE_MOVE_PACKET;
     }
 }
