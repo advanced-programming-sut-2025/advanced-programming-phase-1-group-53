@@ -12,6 +12,7 @@ import com.stardew.Network.Common.ConnectionThread;
 import com.stardew.Network.Common.Packet.*;
 import com.stardew.Network.Common.Packet.ClientPacket.AudioPackets.RequestAudioPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.AudioPackets.UploadAudioPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.Reaction;
 import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.ReactionPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.SendPrivateMessagePacket;
 import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.SendPublicMessagePacket;
@@ -272,6 +273,14 @@ public class ClientConnectionThread extends ConnectionThread {
                 GameMessages.sendPrivateChatMessage(sendPrivateMessagePacket);
                 System.out.println(result.message());
                 // TODO jabbar
+                return true;
+            } else if (innerPacket instanceof ReactionPacket reactionPacket) {
+                if (!result.success()) {
+                    System.out.println(result.message());
+                    return true;
+                }
+                Reaction.sendReaction(reactionPacket);
+                System.out.println(result.message());
                 return true;
             }
             return false;

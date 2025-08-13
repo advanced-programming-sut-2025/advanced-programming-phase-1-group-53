@@ -6,8 +6,15 @@ import com.stardew.Network.Common.Packet.PacketSender;
 import com.stardew.Network.Common.Packet.PacketType;
 
 public class ReactionPacket extends Packet {
-    public ReactionPacket(Player sender) {
+    public final Reaction reaction;
+    public final String receiverUsername;
+    public final boolean isEmoji;
+
+    public ReactionPacket(Player sender, Reaction reaction, String receiverUsername, boolean isEmoji) {
         super(sender.personalInfo.getConnectionId(), sender.personalInfo.getName());
+        this.reaction = reaction;
+        this.receiverUsername = receiverUsername;
+        this.isEmoji = isEmoji;
     }
 
     @Override

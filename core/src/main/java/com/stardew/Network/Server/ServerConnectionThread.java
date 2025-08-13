@@ -12,6 +12,7 @@ import com.stardew.Network.Common.ConnectionThread;
 import com.stardew.Network.Common.Packet.*;
 import com.stardew.Network.Common.Packet.ClientPacket.AudioPackets.RequestAudioPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.AudioPackets.UploadAudioPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.Reaction;
 import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.ReactionPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.SendPrivateMessagePacket;
 import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.SendPublicMessagePacket;
@@ -243,6 +244,11 @@ public class ServerConnectionThread extends ConnectionThread {
             result = GameMessages.newPrivateChatMessage(sendPrivateMessagePacket);
             System.out.println(result.message());
             ServerApp.getInstance().broadcastInGame(new ServerGeneralRespondPacket(result, sendPrivateMessagePacket));
+            return true;
+        } else if (packet instanceof ReactionPacket reactionPacket) {
+            result = Reaction.sendReaction(reactionPacket);
+            System.out.println(result.message());
+            ServerApp.getInstance().broadcastInGame(new ServerGeneralRespondPacket(result, reactionPacket));
             return true;
         }
         return false;
