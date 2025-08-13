@@ -157,7 +157,13 @@ public class LobbyMenu extends AppMenu {
                     STab.createDialog("couldn't create the lobby", "dismiss");
                     return;
                 }
-                App.main.setScreen(new LobbyMenu().joinLobby(passwordField.getText(), nameField.getText()));
+                JoinLobbyPacket adminJoinPacket = new JoinLobbyPacket(
+                    App.getMyPlayer(),
+                    App.getMyPlayer().getUsername(),
+                    lastAppLobby.getId(),
+                    passwordField.getText()
+                );
+                ClientApp.getInstance().getConnectionThread().sendPacket(adminJoinPacket);
             }
         });
         contentTable.add(createButton).pad(10).row();
@@ -213,7 +219,7 @@ public class LobbyMenu extends AppMenu {
         com.badlogic.gdx.scenes.scene2d.ui.Table contentTable = new com.badlogic.gdx.scenes.scene2d.ui.Table();
         contentTable.add(new Label("Lobby ID: " + id, skin)).pad(10).row();
         contentTable.add(new Label("Admin: " + admin.getPersonalInfo().getName(), skin)).pad(10).row();
-        playersCountLabel = new Label("Players (" + (players.size() +1) + ")", skin);
+        playersCountLabel = new Label("Players (" + (players.size()) + ")", skin);
         contentTable.add(playersCountLabel).pad(10).row();
 
         playerSelectBox = new SelectBox<>(skin);
@@ -225,7 +231,7 @@ public class LobbyMenu extends AppMenu {
         startButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (!lobby.getAdmin().equals(App.getCurrentPlayer()) || lobby.getPlayers().size() < 1) {
+                if (!lobby.getAdmin().equals(App.getMyPlayer()) || lobby.getPlayers().size() < 2) {
                     Dialog dialog = STab.createDialog("couldn't start the game", "OK");
                     dialog.show(stage);
                     return;

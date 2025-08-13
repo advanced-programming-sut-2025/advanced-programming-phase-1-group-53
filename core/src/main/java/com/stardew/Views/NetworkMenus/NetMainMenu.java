@@ -36,14 +36,14 @@ public class NetMainMenu extends AppMenu {
 //        });
 //        table.add(personalInfoButton).pad(10).row();
 
-        TextButton gameMenuButton = new TextButton("Signup", skin);
-        gameMenuButton.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
+        TextButton signupMenuBtn = new TextButton("Signup", skin);
+        signupMenuBtn.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
             @Override
             public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
                 main.setScreen(new NetSignUpMenu(main));
             }
         });
-        table.add(gameMenuButton).pad(10).row();
+        table.add(signupMenuBtn).pad(10).row();
 
         TextButton lobbyMenuBtn = new TextButton("", skin);
         lobbyMenuBtn.setText("Lobby Menu");
