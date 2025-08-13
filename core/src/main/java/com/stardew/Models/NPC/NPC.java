@@ -227,20 +227,20 @@ public class NPC {
         }
     }
 
-    public static void changeDuration() {
+    public static void changeDirection() {
         if (!App.getMyPlayer().personalInfo.getName().equalsIgnoreCase("SERVER")) {
             return;
         }
-        NPC.Sebastian.direction = generateNewDuration();
-        NPC.Abigail.direction = generateNewDuration();
-        NPC.Harvey.direction = generateNewDuration();
-        NPC.Lia.direction = generateNewDuration();
-        NPC.Robin.direction = generateNewDuration();
+        NPC.Sebastian.direction = generateNewDirection();
+        NPC.Abigail.direction = generateNewDirection();
+        NPC.Harvey.direction = generateNewDirection();
+        NPC.Lia.direction = generateNewDirection();
+        NPC.Robin.direction = generateNewDirection();
         ServerApp.getInstance().broadcastInGame(new ChangeDurationPacket("SERVER", "SERVER",
             Sebastian.direction, Abigail.direction, Harvey.direction, Lia.direction, Robin.direction));
     }
 
-    private static int generateNewDuration() {
+    private static int generateNewDirection() {
         return (int)(Math.random() * 4);
     }
 
