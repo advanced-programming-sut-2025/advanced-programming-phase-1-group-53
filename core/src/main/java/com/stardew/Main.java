@@ -22,7 +22,11 @@ public class Main extends Game {
 
     private final String serverIp = "127.0.1.1";
     private final int port = 12345;
-    private final String playerId = "Player1";
+    private String playerId;
+
+    public void setPlayerId(String playerId) {
+        this.playerId = playerId;
+    }
 
     public static Main getInstance(){
         if(main == null){

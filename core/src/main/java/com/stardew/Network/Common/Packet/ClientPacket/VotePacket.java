@@ -6,8 +6,10 @@ import com.stardew.Network.Common.Packet.PacketSender;
 import com.stardew.Network.Common.Packet.PacketType;
 
 public class VotePacket extends Packet {
-    public VotePacket(Player sender) {
+    public boolean vote;
+    public VotePacket(Player sender, boolean vote) {
         super(sender.personalInfo.getConnectionId(), sender.personalInfo.getName());
+        this.vote = vote;
     }
 
     @Override

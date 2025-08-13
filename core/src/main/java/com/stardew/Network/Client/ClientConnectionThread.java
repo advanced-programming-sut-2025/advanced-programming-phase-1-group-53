@@ -4,7 +4,6 @@ import com.stardew.Controllers.Controller;
 import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.Player;
 import com.stardew.Models.Lobby;
-import com.stardew.Models.NPC.NPC;
 import com.stardew.Models.Result;
 import com.stardew.Network.Common.ConnectionThread;
 import com.stardew.Network.Common.Packet.*;
@@ -13,7 +12,6 @@ import com.stardew.Network.Common.Packet.ServerPacket.NPCDialoguePacket;
 import com.stardew.Network.Common.Packet.ServerPacket.ServerGeneralRespondPacket;
 import com.stardew.Network.Common.Packet.ServerPacket.UpdateMapPacket;
 import com.stardew.Network.Common.Packet.ServerPacket.WelcomePacket;
-import com.stardew.Network.Server.ServerApp;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -103,7 +101,7 @@ public class ClientConnectionThread extends ConnectionThread {
 
             } else if (innerPacket instanceof SaveGamePacket) {
 
-            } else if (innerPacket instanceof SendMessagePacket) {
+            } else if (innerPacket instanceof SendPublicMessagePacket) {
 
             }  else if (innerPacket instanceof SignUpPacket signUpPacket) {
                 if (!result.success()) {

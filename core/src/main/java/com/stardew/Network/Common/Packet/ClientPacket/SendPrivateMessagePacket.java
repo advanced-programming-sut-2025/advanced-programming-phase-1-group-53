@@ -5,9 +5,13 @@ import com.stardew.Network.Common.Packet.Packet;
 import com.stardew.Network.Common.Packet.PacketSender;
 import com.stardew.Network.Common.Packet.PacketType;
 
-public class SendMessagePacket extends Packet {
-    public SendMessagePacket(Player sender) {
+public class SendPrivateMessagePacket extends Packet {
+    public String message;
+    public String receiverUsername;
+    public SendPrivateMessagePacket(Player sender, String message, String receiverUsername) {
         super(sender.personalInfo.getConnectionId(), sender.personalInfo.getName());
+        this.message = message;
+        this.receiverUsername = receiverUsername;
     }
 
     @Override
@@ -17,6 +21,6 @@ public class SendMessagePacket extends Packet {
 
     @Override
     public PacketType getTypeEnum() {
-        return PacketType.SEND_MESSAGE_PACKET;
+        return PacketType.SEND_PUBLIC_MESSAGE_PACKET;
     }
 }
