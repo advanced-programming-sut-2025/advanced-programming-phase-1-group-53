@@ -218,7 +218,7 @@ public class LobbyMenu extends AppMenu {
         com.badlogic.gdx.scenes.scene2d.ui.Table contentTable = new com.badlogic.gdx.scenes.scene2d.ui.Table();
         contentTable.add(new Label("Lobby ID: " + id, skin)).pad(10).row();
         contentTable.add(new Label("Admin: " + admin.getPersonalInfo().getName(), skin)).pad(10).row();
-        playersCountLabel = new Label("Players (" + players.size() + ")", skin);
+        playersCountLabel = new Label("Players (" + (players.size() +1) + ")", skin);
         contentTable.add(playersCountLabel).pad(10).row();
 
         playerSelectBox = new SelectBox<>(skin);
@@ -282,7 +282,7 @@ public class LobbyMenu extends AppMenu {
 
     public void onPlayerListChanged() {
         refreshPlayers();
-        playersCountLabel.setText("Players (" + players.size() + "/4):");
+        playersCountLabel.setText("Players (" + players.size() + "):");
     }
 
     private boolean isAdmin() {
