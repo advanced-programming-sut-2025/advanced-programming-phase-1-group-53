@@ -1,13 +1,17 @@
-package com.stardew.Network.Common.Packet.ClientPacket;
+package com.stardew.Network.Common.Packet.ClientPacket.IntractionPackets;
 
 import com.stardew.Models.Game.Player;
 import com.stardew.Network.Common.Packet.Packet;
 import com.stardew.Network.Common.Packet.PacketSender;
 import com.stardew.Network.Common.Packet.PacketType;
 
-public class RestartGamePacket extends Packet {
-    public RestartGamePacket(Player sender) {
+public class HuggingPacket extends Packet {
+    public String doerUsername;
+    public String receiverUsername;
+    public HuggingPacket(Player sender, String doerUsername, String receiverUsername) {
         super(sender.personalInfo.getConnectionId(), sender.personalInfo.getName());
+        this.doerUsername = doerUsername;
+        this.receiverUsername = receiverUsername;
     }
 
     @Override
@@ -17,6 +21,6 @@ public class RestartGamePacket extends Packet {
 
     @Override
     public PacketType getTypeEnum() {
-        return PacketType.RESTART_GAME_PACKET;
+        return PacketType.HUGGING_PACKET;
     }
 }

@@ -8,7 +8,22 @@ import com.stardew.Models.NPC.NPC;
 import com.stardew.Models.Result;
 import com.stardew.Network.Common.ConnectionThread;
 import com.stardew.Network.Common.Packet.*;
-import com.stardew.Network.Common.Packet.ClientPacket.*;
+import com.stardew.Network.Common.Packet.ClientPacket.AudioPackets.RequestAudioPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.AudioPackets.UploadAudioPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.ReactionPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.SendPublicMessagePacket;
+import com.stardew.Network.Common.Packet.ClientPacket.ElectionPackets.StartVotingPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.ElectionPackets.VotePacket;
+import com.stardew.Network.Common.Packet.ClientPacket.GamePackets.RestartGamePacket;
+import com.stardew.Network.Common.Packet.ClientPacket.GamePackets.SaveGamePacket;
+import com.stardew.Network.Common.Packet.ClientPacket.GamePackets.StartGamePacket;
+import com.stardew.Network.Common.Packet.ClientPacket.IntractionPackets.*;
+import com.stardew.Network.Common.Packet.ClientPacket.KeyboardPackets.*;
+import com.stardew.Network.Common.Packet.ClientPacket.LobbyPackets.CreateLobbyPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.LobbyPackets.JoinLobbyPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.LobbyPackets.LeaveLobbyPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.RegisterPackets.LoginPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.RegisterPackets.SignUpPacket;
 import com.stardew.Network.Common.Packet.ServerPacket.NPCDialoguePacket;
 import com.stardew.Network.Common.Packet.ServerPacket.ServerGeneralRespondPacket;
 import com.stardew.Network.Common.Packet.ServerPacket.WelcomePacket;
@@ -166,6 +181,38 @@ public class ServerConnectionThread extends ConnectionThread {
             result = controller.click(clickPacket);
             System.out.println(result.message());
             ServerApp.getInstance().broadcastInGame(new ServerGeneralRespondPacket(result, clickPacket));
+            return true;
+        } else if (packet instanceof RequestAudioPacket requestAudioPacket) {
+            Player player1 = App.getInstance().findPlayerByUsername(requestAudioPacket.targetPlayerUsername);
+            if (player1 == null) {
+                sendPacket(new ServerGeneralRespondPacket(new Result(false, "player not found"), requestAudioPacket));
+                System.out.println("player not found");
+                return true;
+            }
+            ServerConnectionThread connectionThread = ServerApp.getInstance().getConnection(player1.personalInfo.getConnectionId());
+            if (connectionThread == null) {
+                sendPacket(new ServerGeneralRespondPacket(new Result(false, "connection not found"), requestAudioPacket));
+                System.out.println("connection not found");
+                return true;
+            }
+            connectionThread.sendPacket(requestAudioPacket);
+            System.out.println("request has been transferred");
+            return true;
+        } else if (packet instanceof UploadAudioPacket uploadAudioPacket) {
+            Player player1 = App.getInstance().findPlayerByUsername(uploadAudioPacket.targetUsername);
+            if (player1 == null) {
+                sendPacket(new ServerGeneralRespondPacket(new Result(false, "player not found"), uploadAudioPacket));
+                System.out.println("player not found");
+                return true;
+            }
+            ServerConnectionThread connectionThread = ServerApp.getInstance().getConnection(player1.personalInfo.getConnectionId());
+            if (connectionThread == null) {
+                sendPacket(new ServerGeneralRespondPacket(new Result(false, "connection not found"), uploadAudioPacket));
+                System.out.println("connection not found");
+                return true;
+            }
+            connectionThread.sendPacket(uploadAudioPacket);
+            System.out.println("upload audio has been transferred");
             return true;
         }
         return false;

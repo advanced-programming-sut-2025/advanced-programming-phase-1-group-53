@@ -1,15 +1,13 @@
-package com.stardew.Network.Common.Packet.ClientPacket;
+package com.stardew.Network.Common.Packet.ClientPacket.ContactPackets;
 
 import com.stardew.Models.Game.Player;
 import com.stardew.Network.Common.Packet.Packet;
 import com.stardew.Network.Common.Packet.PacketSender;
 import com.stardew.Network.Common.Packet.PacketType;
 
-public class StartVotingPacket extends Packet {
-    public ElectionType type;
-    public StartVotingPacket(Player sender, ElectionType type) {
+public class ReactionPacket extends Packet {
+    public ReactionPacket(Player sender) {
         super(sender.personalInfo.getConnectionId(), sender.personalInfo.getName());
-        this.type = type;
     }
 
     @Override
@@ -19,6 +17,6 @@ public class StartVotingPacket extends Packet {
 
     @Override
     public PacketType getTypeEnum() {
-        return PacketType.START_VOTING_PACKET;
+        return PacketType.REACTION_PACKET;
     }
 }

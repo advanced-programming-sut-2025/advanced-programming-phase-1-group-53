@@ -1,18 +1,17 @@
-package com.stardew.Network.Common.Packet.ClientPacket;
+package com.stardew.Network.Common.Packet.ClientPacket.LobbyPackets;
 
-import com.stardew.Enums.ItemType;
 import com.stardew.Models.Game.Player;
 import com.stardew.Network.Common.Packet.Packet;
 import com.stardew.Network.Common.Packet.PacketSender;
 import com.stardew.Network.Common.Packet.PacketType;
 
-public class GiveFlowerPacket extends Packet {
-    public String doerUsername;
-    public String receiverUsername;
-    public GiveFlowerPacket(Player sender, String doerUsername, String receiverUsername) {
+public class LeaveLobbyPacket extends Packet {
+    public String playerUsername;
+    public String lobbyId;
+    public LeaveLobbyPacket(Player sender, String playerUsername, String lobbyId) {
         super(sender.personalInfo.getConnectionId(), sender.personalInfo.getName());
-        this.doerUsername = doerUsername;
-        this.receiverUsername = receiverUsername;
+        this.playerUsername = playerUsername;
+        this.lobbyId = lobbyId;
     }
 
     @Override
@@ -22,6 +21,6 @@ public class GiveFlowerPacket extends Packet {
 
     @Override
     public PacketType getTypeEnum() {
-        return PacketType.GIVE_FLOWER_PACKET;
+        return PacketType.LEAVE_LOBBY_PACKET;
     }
 }

@@ -1,10 +1,9 @@
 package com.stardew.Models;
 
 import com.stardew.Models.Game.App;
-import com.stardew.Network.Common.Packet.ClientPacket.ElectionType;
+import com.stardew.Network.Common.Packet.ClientPacket.ElectionPackets.ElectionType;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class Election {
     private final ElectionType type;

@@ -1,4 +1,4 @@
-package com.stardew.Network.Common.Packet.ClientPacket;
+package com.stardew.Network.Common.Packet.ClientPacket.KeyboardPackets;
 
 import com.badlogic.gdx.Screen;
 import com.stardew.Models.Game.Player;

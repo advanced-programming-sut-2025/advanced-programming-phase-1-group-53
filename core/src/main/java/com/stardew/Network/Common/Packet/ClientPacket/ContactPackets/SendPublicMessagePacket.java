@@ -1,17 +1,19 @@
-package com.stardew.Network.Common.Packet.ClientPacket;
+package com.stardew.Network.Common.Packet.ClientPacket.ContactPackets;
 
 import com.stardew.Models.Game.Player;
 import com.stardew.Network.Common.Packet.Packet;
 import com.stardew.Network.Common.Packet.PacketSender;
 import com.stardew.Network.Common.Packet.PacketType;
 
-public class SendPrivateMessagePacket extends Packet {
+public class SendPublicMessagePacket extends Packet {
     public String message;
-    public String receiverUsername;
-    public SendPrivateMessagePacket(Player sender, String message, String receiverUsername) {
+    public String tagUsername;
+    public boolean isTagged;
+    public SendPublicMessagePacket(Player sender, String message, String tagUsername, boolean isTagged) {
         super(sender.personalInfo.getConnectionId(), sender.personalInfo.getName());
         this.message = message;
-        this.receiverUsername = receiverUsername;
+        this.tagUsername = tagUsername;
+        this.isTagged = isTagged;
     }
 
     @Override

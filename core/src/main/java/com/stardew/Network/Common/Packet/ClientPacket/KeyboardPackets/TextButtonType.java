@@ -1,4 +1,4 @@
-package com.stardew.Network.Common.Packet.ClientPacket;
+package com.stardew.Network.Common.Packet.ClientPacket.KeyboardPackets;
 
 public enum TextButtonType {
     sleep,

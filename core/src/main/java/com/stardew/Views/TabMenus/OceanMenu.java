@@ -1,35 +1,25 @@
 package com.stardew.Views.TabMenus;
 
-import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.stardew.Controllers.GameMenuController;
 import com.stardew.Enums.Season;
 import com.stardew.Enums.TileKind;
 import com.stardew.Main;
 import com.stardew.Models.Game.App;
-import com.stardew.Models.Game.Game;
 import com.stardew.Models.Game.Player;
 import com.stardew.Models.GameMap;
 import com.stardew.Models.Items.Fish;
 import com.stardew.Models.Position;
 import com.stardew.Models.Tile;
 import com.stardew.Network.Client.ClientApp;
-import com.stardew.Network.Common.Packet.ClientPacket.ClickPacket;
-import com.stardew.Network.Common.Packet.ClientPacket.TextButtonType;
-import com.stardew.Network.Common.Packet.ClientPacket.TouchDownPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.KeyboardPackets.TouchDownPacket;
 import com.stardew.Views.GameMenu;
 import com.stardew.Views.Tab;
 
-import java.security.Key;
 import java.util.ArrayList;
 import java.util.Random;
 

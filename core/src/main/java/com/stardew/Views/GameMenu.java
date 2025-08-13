@@ -29,10 +29,9 @@ import com.stardew.Models.Game.App;
 import com.stardew.Models.GameMap;
 import com.stardew.Models.Items.*;
 import com.stardew.Models.Items.CraftAbleAndArtisan.Artisan;
-import com.stardew.Models.Items.Foragings.ForagingMineral;
 import com.stardew.Models.MessageManager;
 import com.stardew.Network.Client.ClientApp;
-import com.stardew.Network.Common.Packet.ClientPacket.*;
+import com.stardew.Network.Common.Packet.ClientPacket.KeyboardPackets.*;
 import com.stardew.Views.TabMenus.*;
 
 import java.util.ArrayList;

@@ -7,7 +7,25 @@ import com.stardew.Models.Lobby;
 import com.stardew.Models.Result;
 import com.stardew.Network.Common.ConnectionThread;
 import com.stardew.Network.Common.Packet.*;
-import com.stardew.Network.Common.Packet.ClientPacket.*;
+import com.stardew.Network.Common.Packet.ClientPacket.AudioPackets.RequestAudioPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.AudioPackets.UploadAudioPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.ReactionPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.SendPublicMessagePacket;
+import com.stardew.Network.Common.Packet.ClientPacket.ElectionPackets.StartVotingPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.ElectionPackets.VotePacket;
+import com.stardew.Network.Common.Packet.ClientPacket.GamePackets.RestartGamePacket;
+import com.stardew.Network.Common.Packet.ClientPacket.GamePackets.SaveGamePacket;
+import com.stardew.Network.Common.Packet.ClientPacket.GamePackets.StartGamePacket;
+import com.stardew.Network.Common.Packet.ClientPacket.IntractionPackets.GiftingPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.IntractionPackets.GiveFlowerPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.IntractionPackets.HuggingPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.IntractionPackets.MarrigePacket;
+import com.stardew.Network.Common.Packet.ClientPacket.KeyboardPackets.*;
+import com.stardew.Network.Common.Packet.ClientPacket.LobbyPackets.CreateLobbyPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.LobbyPackets.JoinLobbyPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.LobbyPackets.LeaveLobbyPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.RegisterPackets.LoginPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.RegisterPackets.SignUpPacket;
 import com.stardew.Network.Common.Packet.ServerPacket.NPCDialoguePacket;
 import com.stardew.Network.Common.Packet.ServerPacket.ServerGeneralRespondPacket;
 import com.stardew.Network.Common.Packet.ServerPacket.UpdateMapPacket;
@@ -209,6 +227,19 @@ public class ClientConnectionThread extends ConnectionThread {
 
         } else if (packet instanceof WelcomePacket) {
 
+        } else if (packet instanceof RequestAudioPacket requestAudioPacket) {
+            UploadAudioPacket audioPacket = //TODO jabar
+            if (audioPacket == null) {
+                System.out.println("did not send audio packet");
+                return true;
+            }
+            System.out.println("sending audio packet");
+            sendPacket(audioPacket);
+            return true;
+        } else if (packet instanceof UploadAudioPacket uploadAudioPacket) {
+            Result result = PacketParser.saveAudio(uploadAudioPacket);
+            System.out.println(result.message());
+            return true;
         }
 
         return false;

@@ -1,4 +1,4 @@
-package com.stardew.Network.Common.Packet.ClientPacket;
+package com.stardew.Network.Common.Packet.ClientPacket.RegisterPackets;
 
 import com.stardew.Enums.Gender;
 import com.stardew.Network.Common.Packet.Packet;

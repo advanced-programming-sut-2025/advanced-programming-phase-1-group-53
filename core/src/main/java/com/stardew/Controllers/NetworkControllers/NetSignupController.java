@@ -10,7 +10,7 @@ import com.stardew.Enums.Regex;
 import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.Player;
 import com.stardew.Network.Client.ClientApp;
-import com.stardew.Network.Common.Packet.ClientPacket.SignUpPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.RegisterPackets.SignUpPacket;
 import com.stardew.Views.NetworkMenus.LobbyMenu;
 
 import java.security.MessageDigest;

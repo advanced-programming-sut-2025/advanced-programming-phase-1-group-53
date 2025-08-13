@@ -11,8 +11,8 @@ import com.stardew.Enums.ItemType;
 import com.stardew.Models.Game.App;
 import com.stardew.Models.Items.*;
 import com.stardew.Network.Client.ClientApp;
-import com.stardew.Network.Common.Packet.ClientPacket.ClickPacket;
-import com.stardew.Network.Common.Packet.ClientPacket.TextButtonType;
+import com.stardew.Network.Common.Packet.ClientPacket.KeyboardPackets.ClickPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.KeyboardPackets.TextButtonType;
 import com.stardew.Views.Tab;
 
 import java.util.ArrayList;

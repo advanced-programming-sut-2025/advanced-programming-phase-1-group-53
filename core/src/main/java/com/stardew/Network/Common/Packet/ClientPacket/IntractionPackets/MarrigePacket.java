@@ -1,20 +1,17 @@
-package com.stardew.Network.Common.Packet.ClientPacket;
+package com.stardew.Network.Common.Packet.ClientPacket.IntractionPackets;
 
-import com.stardew.Enums.ItemType;
 import com.stardew.Models.Game.Player;
 import com.stardew.Network.Common.Packet.Packet;
 import com.stardew.Network.Common.Packet.PacketSender;
 import com.stardew.Network.Common.Packet.PacketType;
 
-public class GiftingPacket extends Packet {
+public class MarrigePacket extends Packet {
     public String doerUsername;
     public String receiverUsername;
-    public ItemType itemType;
-    public GiftingPacket(Player sender, String doerUsername, String receiverUsername, ItemType itemType) {
+    public MarrigePacket(Player sender, String doerUsername, String receiverUsername) {
         super(sender.personalInfo.getConnectionId(), sender.personalInfo.getName());
         this.doerUsername = doerUsername;
         this.receiverUsername = receiverUsername;
-        this.itemType = itemType;
     }
 
     @Override
@@ -24,6 +21,6 @@ public class GiftingPacket extends Packet {
 
     @Override
     public PacketType getTypeEnum() {
-        return PacketType.GIFTING_PACKET;
+        return PacketType.MARRIAGE_PACKET;
     }
 }
