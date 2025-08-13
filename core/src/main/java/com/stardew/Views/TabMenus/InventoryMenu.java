@@ -2,23 +2,17 @@ package com.stardew.Views.TabMenus;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.stardew.Controllers.GameMenuController;
 import com.stardew.Main;
 import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.GameAssetManager;
 import com.stardew.Models.Items.Item;
 import com.stardew.Network.Client.ClientApp;
-import com.stardew.Network.Common.Packet.ClientPacket.KeyDownPacket;
-import com.stardew.Network.Common.Packet.ClientPacket.TouchDownPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.KeyboardPackets.TouchDownPacket;
 import com.stardew.Views.GameMenu;
 import com.stardew.Views.Tab;
 
-import java.awt.*;
 import java.util.ArrayList;
 
 public class InventoryMenu extends Tab {

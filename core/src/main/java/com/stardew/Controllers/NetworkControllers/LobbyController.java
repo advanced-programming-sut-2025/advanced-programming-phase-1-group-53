@@ -10,10 +10,10 @@ import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.Player;
 import com.stardew.Models.Lobby;
 import com.stardew.Network.Client.ClientApp;
-import com.stardew.Network.Common.Packet.ClientPacket.CreateLobbyPacket;
-import com.stardew.Network.Common.Packet.ClientPacket.JoinLobbyPacket;
-import com.stardew.Network.Common.Packet.ClientPacket.LeaveLobbyPacket;
-import com.stardew.Network.Common.Packet.ClientPacket.StartGamePacket;
+import com.stardew.Network.Common.Packet.ClientPacket.LobbyPackets.CreateLobbyPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.LobbyPackets.JoinLobbyPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.LobbyPackets.LeaveLobbyPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.GamePackets.StartGamePacket;
 import com.stardew.Views.NetworkMenus.LobbyMenu;
 
 public class LobbyController {

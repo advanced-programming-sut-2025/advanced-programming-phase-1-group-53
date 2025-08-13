@@ -1,19 +1,42 @@
 package com.stardew.Network.Client;
 
-import com.stardew.Controllers.Controller;
+import com.stardew.Controllers.InGameControllers.Controller;
+import com.stardew.Models.Election;
 import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.Player;
+import com.stardew.Models.GameMessages;
 import com.stardew.Models.Lobby;
 import com.stardew.Models.NPC.NPC;
 import com.stardew.Models.Result;
 import com.stardew.Network.Common.ConnectionThread;
 import com.stardew.Network.Common.Packet.*;
-import com.stardew.Network.Common.Packet.ClientPacket.*;
+import com.stardew.Network.Common.Packet.ClientPacket.AudioPackets.RequestAudioPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.AudioPackets.UploadAudioPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.Reaction;
+import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.ReactionPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.SendPrivateMessagePacket;
+import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.SendPublicMessagePacket;
+import com.stardew.Network.Common.Packet.ClientPacket.ElectionPackets.FinalizeElectionPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.ElectionPackets.StartVotingPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.ElectionPackets.VotePacket;
+import com.stardew.Network.Common.Packet.ClientPacket.GamePackets.RestartGamePacket;
+import com.stardew.Network.Common.Packet.ClientPacket.GamePackets.SaveGamePacket;
+import com.stardew.Network.Common.Packet.ClientPacket.GamePackets.StartGamePacket;
+import com.stardew.Network.Common.Packet.ClientPacket.IntractionPackets.GiftingPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.IntractionPackets.GiveFlowerPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.IntractionPackets.HuggingPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.IntractionPackets.MarrigePacket;
+import com.stardew.Network.Common.Packet.ClientPacket.KeyboardPackets.*;
+import com.stardew.Network.Common.Packet.ClientPacket.LobbyPackets.CreateLobbyPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.LobbyPackets.JoinLobbyPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.LobbyPackets.LeaveLobbyPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.RegisterPackets.LoginPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.RegisterPackets.SignUpPacket;
 import com.stardew.Network.Common.Packet.ServerPacket.NPCDialoguePacket;
 import com.stardew.Network.Common.Packet.ServerPacket.ServerGeneralRespondPacket;
 import com.stardew.Network.Common.Packet.ServerPacket.UpdateMapPacket;
 import com.stardew.Network.Common.Packet.ServerPacket.WelcomePacket;
-import com.stardew.Network.Server.ServerApp;
+import com.stardew.Network.Server.ChangeDurationPacket;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -103,7 +126,7 @@ public class ClientConnectionThread extends ConnectionThread {
 
             } else if (innerPacket instanceof SaveGamePacket) {
 
-            } else if (innerPacket instanceof SendMessagePacket) {
+            } else if (innerPacket instanceof SendPublicMessagePacket) {
 
             }  else if (innerPacket instanceof SignUpPacket signUpPacket) {
                 if (!result.success()) {
@@ -205,12 +228,81 @@ public class ClientConnectionThread extends ConnectionThread {
                 controller.click(clickPacket);
                 System.out.println(result.message());
                 return true;
+            } else if (innerPacket instanceof StartVotingPacket startVotingPacket) {
+                if (!result.success()) {
+                    System.out.println(result.message());
+                    // TODO jabar
+                }
+                Election.startElection(startVotingPacket);
+                System.out.println(result.message());
+                //TODO jabar
+                return true;
+            } else if (innerPacket instanceof VotePacket votePacket) {
+                if (!result.success()) {
+                    System.out.println(result.message());
+                    //TODO jabbar
+                }
+                Election.vote(votePacket);
+                System.out.println(result.message());
+                //TODO jabar
+                return true;
+            } else if (innerPacket instanceof FinalizeElectionPacket finalizeElectionPacket) {
+                if (!result.success()) {
+                    System.out.println(result.message());
+                    // TODO jabar
+                }
+                Election.applyElectionResult(finalizeElectionPacket, result);
+                System.out.println(result.message());
+                // TODO jabbar
+                return true;
+            } else if (innerPacket instanceof SendPublicMessagePacket sendPublicMessagePacket) {
+                if (!result.success()) {
+                    System.out.println(result.message());
+                    //TODO jabar
+                    return true;
+                }
+                GameMessages.sendPublicChatMessage(sendPublicMessagePacket);
+                System.out.println(result.message());
+                return true;
+            } else if (innerPacket instanceof SendPrivateMessagePacket sendPrivateMessagePacket) {
+                if (!result.success()) {
+                    System.out.println(result.message());
+                    // TODO jabar
+                    return true;
+                }
+                GameMessages.sendPrivateChatMessage(sendPrivateMessagePacket);
+                System.out.println(result.message());
+                // TODO jabbar
+                return true;
+            } else if (innerPacket instanceof ReactionPacket reactionPacket) {
+                if (!result.success()) {
+                    System.out.println(result.message());
+                    return true;
+                }
+                Reaction.sendReaction(reactionPacket);
+                System.out.println(result.message());
+                return true;
             }
             return false;
         } else if (packet instanceof UpdateMapPacket) {
 
         } else if (packet instanceof WelcomePacket) {
 
+        } else if (packet instanceof RequestAudioPacket requestAudioPacket) {
+            UploadAudioPacket audioPacket = null;//TODO jabar
+            if (audioPacket == null) {
+                System.out.println("did not send audio packet");
+                return true;
+            }
+            System.out.println("sending audio packet");
+            sendPacket(audioPacket);
+            return true;
+        } else if (packet instanceof UploadAudioPacket uploadAudioPacket) {
+            Result result = PacketParser.saveAudio(uploadAudioPacket);
+            System.out.println(result.message());
+            return true;
+        } else if (packet instanceof ChangeDurationPacket changeDurationPacket) {
+            NPC.changeDuration(changeDurationPacket);
         }
 
         return false;

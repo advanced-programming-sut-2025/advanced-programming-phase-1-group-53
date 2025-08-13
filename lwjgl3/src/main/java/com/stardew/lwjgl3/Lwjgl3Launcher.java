@@ -3,7 +3,6 @@ package com.stardew.lwjgl3;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.stardew.Main;
-import com.stardew.Models.Game.App;
 
 /** Launches the desktop (LWJGL3) application. */
 public class Lwjgl3Launcher {
@@ -16,7 +15,7 @@ public class Lwjgl3Launcher {
         config.setTitle("My Game");
         config.setWindowedMode(2048, 1152);
         config.useVsync(true);
-        return new Lwjgl3Application(App.main, getDefaultConfiguration());
+        return new Lwjgl3Application(new Main(), getDefaultConfiguration());
     }
 
     private static Lwjgl3ApplicationConfiguration getDefaultConfiguration() {

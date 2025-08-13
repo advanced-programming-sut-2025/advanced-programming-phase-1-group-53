@@ -1,12 +1,8 @@
 package com.stardew.Views.TabMenus;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.stardew.Controllers.AbilityMenuController;
-import com.stardew.Controllers.GameMenuController;
-import com.stardew.Main;
-import com.stardew.Models.Abilities.Abilities;
+import com.stardew.Controllers.InGameControllers.AbilityMenuController;
 import com.stardew.Models.Game.GameAssetManager;
 import com.stardew.Views.GameMenu;
 import com.stardew.Views.Tab;

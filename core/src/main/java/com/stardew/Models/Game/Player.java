@@ -13,6 +13,7 @@ import com.stardew.Models.Abilities.Abilities;
 import com.stardew.Models.Abilities.Activity;
 import com.stardew.Models.Items.Item;
 import com.stardew.Models.NPC.NPC;
+import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.Reaction;
 import com.stardew.Views.GameMenu;
 
 import java.util.*;
@@ -47,6 +48,7 @@ public class Player {
     private final ArrayList<Lobby> lobbies ;
     private Lobby currentLobby = null;
     private final HashMap<NPC, StringBuilder> NPCDialogueHistory ;
+    private final HashMap<Reaction, Float> reactions = new HashMap<>();
 
     public Player(String name, String nickName, String password, String email, Gender gender, String connectionId) {
 //        System.out.println("1");
@@ -124,6 +126,16 @@ public class Player {
     }
 
     public void update(float delta){
+        ArrayList<Reaction> mustRemove = new ArrayList<>();
+        for(Reaction reaction : reactions.keySet()){
+            reactions.compute(reaction, (k, v) -> ( v- delta));
+            if(reactions.get(reaction) <= 0)
+                mustRemove.add(reaction);
+        }
+        for(Reaction reaction : mustRemove){
+            reactions.remove(reaction);
+        }
+
         backpack.update(delta);
         if(!isIdle){
             if(indexOfSprite == 0) {
@@ -240,6 +252,10 @@ public class Player {
 
     public PersonalInfo getPersonalInfo() {
         return personalInfo;
+    }
+
+    public HashMap<Reaction, Float> getReactions() {
+        return reactions;
     }
 
     /**

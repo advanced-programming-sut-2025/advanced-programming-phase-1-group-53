@@ -1,21 +1,40 @@
 package com.stardew.Network.Server;
 
-import com.badlogic.gdx.Screen;
-import com.stardew.Controllers.Controller;
+import com.stardew.Controllers.InGameControllers.Controller;
+import com.stardew.Models.Election;
 import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.Player;
+import com.stardew.Models.GameMessages;
 import com.stardew.Models.Lobby;
 import com.stardew.Models.NPC.NPC;
 import com.stardew.Models.Result;
 import com.stardew.Network.Common.ConnectionThread;
 import com.stardew.Network.Common.Packet.*;
-import com.stardew.Network.Common.Packet.ClientPacket.*;
+import com.stardew.Network.Common.Packet.ClientPacket.AudioPackets.RequestAudioPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.AudioPackets.UploadAudioPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.Reaction;
+import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.ReactionPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.SendPrivateMessagePacket;
+import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.SendPublicMessagePacket;
+import com.stardew.Network.Common.Packet.ClientPacket.ElectionPackets.FinalizeElectionPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.ElectionPackets.StartVotingPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.ElectionPackets.VotePacket;
+import com.stardew.Network.Common.Packet.ClientPacket.GamePackets.RestartGamePacket;
+import com.stardew.Network.Common.Packet.ClientPacket.GamePackets.SaveGamePacket;
+import com.stardew.Network.Common.Packet.ClientPacket.GamePackets.StartGamePacket;
+import com.stardew.Network.Common.Packet.ClientPacket.IntractionPackets.*;
+import com.stardew.Network.Common.Packet.ClientPacket.KeyboardPackets.*;
+import com.stardew.Network.Common.Packet.ClientPacket.LobbyPackets.CreateLobbyPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.LobbyPackets.JoinLobbyPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.LobbyPackets.LeaveLobbyPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.NPCPackets.TalkToNPCPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.RegisterPackets.LoginPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.RegisterPackets.SignUpPacket;
 import com.stardew.Network.Common.Packet.ServerPacket.NPCDialoguePacket;
 import com.stardew.Network.Common.Packet.ServerPacket.ServerGeneralRespondPacket;
 import com.stardew.Network.Common.Packet.ServerPacket.WelcomePacket;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.net.Socket;
 
 public class ServerConnectionThread extends ConnectionThread {
@@ -35,6 +54,11 @@ public class ServerConnectionThread extends ConnectionThread {
                 return false;
             }
             this.clientId = login.getSenderId();
+            ServerConnectionThread conn = ServerApp.getInstance().getConnection(clientId);
+            if (conn != null) {
+                System.out.println("Duplicate client id " + clientId);
+                return false;
+            }
             System.out.println("Login packet received for clientId: " + clientId);
 
             ServerApp.getInstance().registerConnection(clientId, this);
@@ -51,9 +75,6 @@ public class ServerConnectionThread extends ConnectionThread {
 
     @Override
     protected boolean handlePacket(Packet packet) {
-//        for (Player player : App.getGame().getPlayers()) {
-//            System.out.println(player.personalInfo.getName());
-//        }
         Player player = App.getInstance().findPlayerByUsername(packet.getSenderId());
         System.out.println(packet.getSenderId());
         if (player != null) {
@@ -86,7 +107,7 @@ public class ServerConnectionThread extends ConnectionThread {
 
         } else if (packet instanceof SaveGamePacket) {
 
-        } else if (packet instanceof SendMessagePacket) {
+        } else if (packet instanceof SendPublicMessagePacket) {
 
         }  else if (packet instanceof SignUpPacket signUpPacket) {
             result = Player.createPlayer(signUpPacket.username, signUpPacket.nickname, signUpPacket.password,
@@ -115,57 +136,119 @@ public class ServerConnectionThread extends ConnectionThread {
         } else if (packet instanceof KeyUpPacket keyUpPacket) {
             Controller controller = App.getInstance().getController(keyUpPacket.className);
             if (controller == null) {
-                ServerApp.getInstance().broadcast(new ServerGeneralRespondPacket(new Result(false, "controller not found"), keyUpPacket));
+                ServerApp.getInstance().broadcastInGame(new ServerGeneralRespondPacket(new Result(false, "controller not found"), keyUpPacket));
                 System.out.println("controller not found");
                 return true;
             }
             result = controller.keyUp(keyUpPacket);
             System.out.println(result.message());
-            ServerApp.getInstance().broadcast(new ServerGeneralRespondPacket(result, keyUpPacket));
+            ServerApp.getInstance().broadcastInGame(new ServerGeneralRespondPacket(result, keyUpPacket));
             return true;
         } else if (packet instanceof KeyDownPacket keyDownPacket) {
             Controller controller = App.getInstance().getController(keyDownPacket.className);
             if (controller == null) {
-                ServerApp.getInstance().broadcast(new ServerGeneralRespondPacket(new Result(false, "controller not found"), keyDownPacket));
+                ServerApp.getInstance().broadcastInGame(new ServerGeneralRespondPacket(new Result(false, "controller not found"), keyDownPacket));
                 System.out.println("controller not found");
                 return true;
             }
             result = controller.keyDown(keyDownPacket);
             System.out.println(result.message());
-            ServerApp.getInstance().broadcast(new ServerGeneralRespondPacket(result, keyDownPacket));
+            ServerApp.getInstance().broadcastInGame(new ServerGeneralRespondPacket(result, keyDownPacket));
             return true;
         } else if (packet instanceof TouchDownPacket touchDownPacket) {
             Controller controller = App.getInstance().getController(touchDownPacket.className);
             if (controller == null) {
-                ServerApp.getInstance().broadcast(new ServerGeneralRespondPacket(new Result(false, "controller not found"), touchDownPacket));
+                ServerApp.getInstance().broadcastInGame(new ServerGeneralRespondPacket(new Result(false, "controller not found"), touchDownPacket));
                 System.out.println("controller not found");
                 return true;
             }
             result = controller.touchDown(touchDownPacket);
             System.out.println(result.message());
-            ServerApp.getInstance().broadcast(new ServerGeneralRespondPacket(result, touchDownPacket));
+            ServerApp.getInstance().broadcastInGame(new ServerGeneralRespondPacket(result, touchDownPacket));
             return true;
         } else if (packet instanceof MouseMovePacket mouseMovePacket) {
             Controller controller = App.getInstance().getController(mouseMovePacket.className);
             if (controller == null) {
-                ServerApp.getInstance().broadcast(new ServerGeneralRespondPacket(new Result(false, "controller not found"), mouseMovePacket));
+                ServerApp.getInstance().broadcastInGame(new ServerGeneralRespondPacket(new Result(false, "controller not found"), mouseMovePacket));
                 System.out.println("controller not found");
                 return true;
             }
             result = controller.mouseMove(mouseMovePacket);
             System.out.println(result.message());
-            ServerApp.getInstance().broadcast(new ServerGeneralRespondPacket(result, mouseMovePacket));
+            ServerApp.getInstance().broadcastInGame(new ServerGeneralRespondPacket(result, mouseMovePacket));
             return true;
         } else if (packet instanceof ClickPacket clickPacket) {
             Controller controller = App.getInstance().getController(clickPacket.className);
             if (controller == null) {
-                ServerApp.getInstance().broadcast(new ServerGeneralRespondPacket(new Result(false, "controller not found"), clickPacket));
+                ServerApp.getInstance().broadcastInGame(new ServerGeneralRespondPacket(new Result(false, "controller not found"), clickPacket));
                 System.out.println("controller not found");
                 return true;
             }
             result = controller.click(clickPacket);
             System.out.println(result.message());
-            ServerApp.getInstance().broadcast(new ServerGeneralRespondPacket(result, clickPacket));
+            ServerApp.getInstance().broadcastInGame(new ServerGeneralRespondPacket(result, clickPacket));
+            return true;
+        } else if (packet instanceof RequestAudioPacket requestAudioPacket) {
+            Player player1 = App.getInstance().findPlayerByUsername(requestAudioPacket.targetPlayerUsername);
+            if (player1 == null) {
+                sendPacket(new ServerGeneralRespondPacket(new Result(false, "player not found"), requestAudioPacket));
+                System.out.println("player not found");
+                return true;
+            }
+            ServerConnectionThread connectionThread = ServerApp.getInstance().getConnection(player1.personalInfo.getConnectionId());
+            if (connectionThread == null) {
+                sendPacket(new ServerGeneralRespondPacket(new Result(false, "connection not found"), requestAudioPacket));
+                System.out.println("connection not found");
+                return true;
+            }
+            connectionThread.sendPacket(requestAudioPacket);
+            System.out.println("request has been transferred");
+            return true;
+        } else if (packet instanceof UploadAudioPacket uploadAudioPacket) {
+            Player player1 = App.getInstance().findPlayerByUsername(uploadAudioPacket.targetUsername);
+            if (player1 == null) {
+                sendPacket(new ServerGeneralRespondPacket(new Result(false, "player not found"), uploadAudioPacket));
+                System.out.println("player not found");
+                return true;
+            }
+            ServerConnectionThread connectionThread = ServerApp.getInstance().getConnection(player1.personalInfo.getConnectionId());
+            if (connectionThread == null) {
+                sendPacket(new ServerGeneralRespondPacket(new Result(false, "connection not found"), uploadAudioPacket));
+                System.out.println("connection not found");
+                return true;
+            }
+            connectionThread.sendPacket(uploadAudioPacket);
+            System.out.println("upload audio has been transferred");
+            return true;
+        } else if (packet instanceof StartVotingPacket startVotingPacket) {
+            ServerGeneralRespondPacket respondPacket = Election.createElection(startVotingPacket);
+            System.out.println(respondPacket.result.message());
+            ServerApp.getInstance().broadcastInGame(respondPacket);
+            return true;
+        } else if (packet instanceof VotePacket votePacket) {
+            result = Election.voteRequest(votePacket);
+            System.out.println(result.message());
+            sendPacket(new ServerGeneralRespondPacket(result, votePacket));
+            return true;
+        } else if (packet instanceof FinalizeElectionPacket finalizeElectionPacket) {
+            result = Election.finishElection(finalizeElectionPacket);
+            System.out.println(result.message());
+            ServerApp.getInstance().broadcastInGame(new ServerGeneralRespondPacket(result, finalizeElectionPacket));
+            return true;
+        } else if (packet instanceof SendPublicMessagePacket sendPublicMessagePacket) {
+            result = GameMessages.newPublicChatMessage(sendPublicMessagePacket);
+            System.out.println(result.message());
+            ServerApp.getInstance().broadcastInGame(new ServerGeneralRespondPacket(result, sendPublicMessagePacket));
+            return true;
+        } else if (packet instanceof SendPrivateMessagePacket sendPrivateMessagePacket) {
+            result = GameMessages.newPrivateChatMessage(sendPrivateMessagePacket);
+            System.out.println(result.message());
+            ServerApp.getInstance().broadcastInGame(new ServerGeneralRespondPacket(result, sendPrivateMessagePacket));
+            return true;
+        } else if (packet instanceof ReactionPacket reactionPacket) {
+            result = Reaction.sendReaction(reactionPacket);
+            System.out.println(result.message());
+            ServerApp.getInstance().broadcastInGame(new ServerGeneralRespondPacket(result, reactionPacket));
             return true;
         }
         return false;

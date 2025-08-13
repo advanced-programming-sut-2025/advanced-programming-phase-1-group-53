@@ -9,11 +9,10 @@ import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.GameAssetManager;
 import com.stardew.Models.Items.Item;
 import com.stardew.Network.Client.ClientApp;
-import com.stardew.Network.Common.Packet.ClientPacket.TouchDownPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.KeyboardPackets.TouchDownPacket;
 import com.stardew.Views.GameMenu;
 import com.stardew.Views.Tab;
 
-import java.sql.Ref;
 import java.util.ArrayList;
 
 public class RefrigeratorMenu extends Tab {
