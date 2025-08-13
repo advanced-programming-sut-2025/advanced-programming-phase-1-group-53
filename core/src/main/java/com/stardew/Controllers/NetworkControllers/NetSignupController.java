@@ -70,7 +70,14 @@ public class NetSignupController {
                 username, nickname, hashedPassword, email, Gender.getGender(gender)
         );
         ClientApp.getInstance().getConnectionThread().sendPacket(packet);
-        //TODO add these two lines when made sure the client responded properly
+        try {
+            Thread.sleep(50);
+        } catch (InterruptedException e) {
+            // ignore
+        }
+        if (App.getMyPlayer() == null) {
+            return "you have to register first";
+        }
         App.main.setScreen(new LobbyMenu());
         return "client signup packet sent";
     }

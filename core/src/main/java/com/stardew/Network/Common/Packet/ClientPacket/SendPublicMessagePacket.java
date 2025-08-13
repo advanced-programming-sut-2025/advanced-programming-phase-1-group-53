@@ -5,11 +5,15 @@ import com.stardew.Network.Common.Packet.Packet;
 import com.stardew.Network.Common.Packet.PacketSender;
 import com.stardew.Network.Common.Packet.PacketType;
 
-public class StartVotingPacket extends Packet {
-    public ElectionType type;
-    public StartVotingPacket(Player sender, ElectionType type) {
+public class SendPublicMessagePacket extends Packet {
+    public String message;
+    public String tagUsername;
+    public boolean isTagged;
+    public SendPublicMessagePacket(Player sender, String message, String tagUsername, boolean isTagged) {
         super(sender.personalInfo.getConnectionId(), sender.personalInfo.getName());
-        this.type = type;
+        this.message = message;
+        this.tagUsername = tagUsername;
+        this.isTagged = isTagged;
     }
 
     @Override
@@ -19,6 +23,6 @@ public class StartVotingPacket extends Packet {
 
     @Override
     public PacketType getTypeEnum() {
-        return PacketType.START_VOTING_PACKET;
+        return PacketType.SEND_PUBLIC_MESSAGE_PACKET;
     }
 }

@@ -1,11 +1,16 @@
 package com.stardew.Network.Server;
 
+import com.stardew.Models.Game.App;
+import com.stardew.Models.Game.Player;
 import com.stardew.Network.Common.Packet.Packet;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.*;
+
+import static com.stardew.Models.Game.App.getGame;
 
 public class ServerApp {
     private String serverIP;
@@ -48,6 +53,18 @@ public class ServerApp {
     public void broadcast(Packet packet) {
         for (ServerConnectionThread conn : connections.values()) {
             conn.sendPacket(packet);
+        }
+    }
+
+    public void broadcastInGame(Packet packet) {
+        ArrayList<String> inGameClientIds = new ArrayList<>();
+        for (Player player : getGame().getPlayers()) {
+            inGameClientIds.add(player.personalInfo.getConnectionId());
+        }
+        for (ServerConnectionThread conn : connections.values()) {
+            if (inGameClientIds.contains(conn.getClientId())) {
+                conn.sendPacket(packet);
+            }
         }
     }
 

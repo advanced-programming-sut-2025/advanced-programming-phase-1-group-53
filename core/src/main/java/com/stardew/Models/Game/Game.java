@@ -20,6 +20,7 @@ public class Game {
     public final Weather weather = new Weather();
     private final GameMap gameMap;
     private Tile[][] currentMap;
+    private Election election = null;
 
     // Helper to initialize player relationship HashMaps
 
@@ -154,6 +155,10 @@ public class Game {
             }
         }
         return null; // Player not found
+    }
+
+    public Election getElection() {
+        return election;
     }
 
     public void printMap() {

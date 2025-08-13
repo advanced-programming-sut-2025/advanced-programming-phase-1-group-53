@@ -6,6 +6,7 @@ import com.stardew.Main;
 
 public class DesktopLauncher {
     public static void main (String[] arg) {
+        Main.getInstance().setPlayerId(arg[0]);
 
         Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
         config.setTitle("My Game");

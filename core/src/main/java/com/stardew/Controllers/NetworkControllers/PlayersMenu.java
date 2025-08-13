@@ -9,6 +9,8 @@ import com.badlogic.gdx.utils.TimeUtils;
 import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.Player;
 import com.stardew.Views.AppMenu;
+import com.stardew.Views.NetworkMenus.NetMainMenu;
+import com.stardew.Views.STab;
 
 public class PlayersMenu extends AppMenu {
     public PlayersMenu() {
@@ -34,6 +36,15 @@ public class PlayersMenu extends AppMenu {
         for (Player player : App.getInstance().getPlayers()) {
             playersTable.add(new TextButton(player.getUsername(), skin)).pad(20, 40, 20, 40).row();
         }
+        TextButton backBtn = STab.createTextButton("back");
+        backBtn.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
+            @Override
+            public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
+                App.main.setScreen(new NetMainMenu(App.main));
+            }
+        });
+        playersTable.add(backBtn).pad(60).row();
+
         ScrollPane scrollPane = new ScrollPane(playersTable, skin);
         Window window = new Window("Players", skin);
         window.setSize(800, 600);

@@ -10,6 +10,7 @@ import com.stardew.Models.Game.App;
 import com.stardew.Network.Client.ClientApp;
 //import com.stardew.Views.AppView;
 import com.stardew.Views.LoginRegisterMenu;
+import com.stardew.Views.NetworkMenus.NetMainMenu;
 import com.stardew.Views.Tab;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
@@ -21,7 +22,11 @@ public class Main extends Game {
 
     private final String serverIp = "127.0.1.1";
     private final int port = 12345;
-    private final String playerId = "Player1";
+    private String playerId;
+
+    public void setPlayerId(String playerId) {
+        this.playerId = playerId;
+    }
 
     public static Main getInstance(){
         if(main == null){
@@ -51,7 +56,7 @@ public class Main extends Game {
             e.printStackTrace();
         }
 
-        setScreen(new LoginRegisterMenu(main));
+        setScreen(new NetMainMenu(main));
 
     }
 

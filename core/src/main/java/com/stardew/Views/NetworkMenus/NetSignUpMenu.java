@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.stardew.Controllers.NetworkControllers.NetSignupController;
 import com.stardew.Controllers.SignUpMenuController;
+import com.stardew.Models.Game.App;
 import com.stardew.Views.AppMenu;
 import com.stardew.Views.LoginRegisterMenu;
 
@@ -48,12 +49,12 @@ public class NetSignUpMenu extends AppMenu {
         float buttonHeight = 60f;
         float pad = 20f;
 
-        usernameField = new TextField("", skin);
-        nicknameField = new TextField("", skin);
-        emailField = new TextField("", skin);
-        genderField = new TextField("", skin);
-        passwordField = new TextField("", skin);
-        confirmPasswordField = new TextField("", skin);
+        usernameField = com.stardew.Views.STab.createTextField("");
+        nicknameField = com.stardew.Views.STab.createTextField("");
+        emailField = com.stardew.Views.STab.createTextField("");
+        genderField = com.stardew.Views.STab.createTextField("");
+        passwordField = com.stardew.Views.STab.createTextField("");
+        confirmPasswordField = com.stardew.Views.STab.createTextField("");
 
         usernameField.setMessageText("Username");
         nicknameField.setMessageText("Nickname");
@@ -75,15 +76,15 @@ public class NetSignUpMenu extends AppMenu {
         confirmPasswordField.setPasswordMode(true);
         confirmPasswordField.setPasswordCharacter('*');
 
-        TextButton signupBtn = new TextButton("Sign Up", skin);
-        TextButton backBtn = new TextButton("Back", skin);
+        TextButton signupBtn = com.stardew.Views.STab.createTextButton("Sign Up", (int)buttonWidth, (int)buttonHeight);
+        TextButton backBtn = com.stardew.Views.STab.createTextButton("Back", (int)buttonWidth, (int)buttonHeight);
 
 
         // Get a random question and its index from the controller
         SignUpMenuController.SecurityQuestion securityQuestion = controller.getRandomQuestionWithIndex();
         securityQuestionIndex = securityQuestion.index;
         securityQuestionLabel = new Label(securityQuestion.question, skin);
-        securityAnswerField = new TextField("", skin);
+        securityAnswerField = com.stardew.Views.STab.createTextField("");
         securityAnswerField.setMessageText("Answer");
 
 
