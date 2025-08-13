@@ -157,8 +157,7 @@ public class NPC {
         }
         player.changeNPCsFriendship(20, npc);
         LanguageModelAsync npcModel = new HttpLanguageModel(
-            "http://localhost:11434/api/generate",
-            "llama3"
+            "http://localhost:11434/api/generate", "gemma:2b"
         );
         DialogueGenerator generator = new DialogueGenerator(npcModel);
 
