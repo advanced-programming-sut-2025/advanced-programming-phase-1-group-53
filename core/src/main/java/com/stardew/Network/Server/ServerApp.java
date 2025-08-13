@@ -17,13 +17,9 @@ public class ServerApp {
     private int serverPort;
     private ServerListenerThread listenerThread;
     private volatile boolean exitFlag = false;
-    // store active connections by client ID
     private final Map<String, ServerConnectionThread> connections = new ConcurrentHashMap<>();
-    // thread pool for both initial packet handlers and persistent connection threads
     private final ExecutorService connectionThreadPool = Executors.newCachedThreadPool();
-    /**
-     * Add a new persistent connection thread to the pool.
-     */
+
     public void addConnection(ServerConnectionThread conn) {
         connections.put(conn.getClientId(), conn);
         System.out.println("adding connection");
@@ -31,25 +27,16 @@ public class ServerApp {
         System.out.println("submitted connection");
     }
 
-    /**
-     * Remove and terminate an existing connection thread.
-     */
     public void removeConnection(ServerConnectionThread conn) {
         if (connections.remove(conn.getClientId(), conn)) {
             conn.end();
         }
     }
 
-    /**
-     * Lookup an active connection thread by client ID.
-     */
     public ServerConnectionThread getConnection(String clientId) {
         return connections.get(clientId);
     }
 
-    /**
-     * Broadcast a packet to all connected clients.
-     */
     public void broadcast(Packet packet) {
         for (ServerConnectionThread conn : connections.values()) {
             conn.sendPacket(packet);
@@ -68,9 +55,6 @@ public class ServerApp {
         }
     }
 
-    /**
-     * Broadcast a packet to all except the sender.
-     */
     public void broadcastExcept(ServerConnectionThread sender, Packet packet) {
         for (ServerConnectionThread conn : connections.values()) {
             if (conn != sender) {

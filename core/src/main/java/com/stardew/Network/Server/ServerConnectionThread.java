@@ -19,7 +19,6 @@ import java.net.Socket;
 public class ServerConnectionThread extends ConnectionThread {
     private final ServerApp serverApp = ServerApp.getInstance();
 
-    // حذف clientId از کانستراکتور، چون بعد از لاگین تنظیم می‌شود
     public ServerConnectionThread(Socket socket) throws IOException {
         super(socket, "");
     }
@@ -54,14 +53,13 @@ public class ServerConnectionThread extends ConnectionThread {
 
     @Override
     protected boolean handlePacket(Packet packet) {
+        System.out.println("Received packet from " + getClientId() + ": " + packet.getClass().getSimpleName());
+
         Player player = App.getInstance().findPlayerByUsername(packet.getSenderId());
-        System.out.println(packet.getSenderId());
         if (player != null) {
             App.setCurrentPlayer(player);
         }
         Result result;
-        System.out.println("Received packet from " + getClientId() + ": " + packet.getClass().getSimpleName());
-
         if (packet instanceof GiveFlowerPacket giveFlowerPacket) {
             //TODO
         } else if (packet instanceof HuggingPacket huggingPacket) {

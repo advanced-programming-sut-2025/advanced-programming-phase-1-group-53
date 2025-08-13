@@ -11,9 +11,6 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-/**
- * Represents a persistent bi-directional connection running in its own thread.
- */
 public abstract class ConnectionThread implements Runnable {
     protected final BufferedOutputStream outputStream;
     protected final BufferedInputStream inputStream;
@@ -54,7 +51,6 @@ public abstract class ConnectionThread implements Runnable {
 
     @Override
     public void run() {
-        // perform handshake if needed
         if (!initialHandshake()) {
             System.err.println("Initial handshake failed for " + clientId);
             end();
@@ -63,7 +59,6 @@ public abstract class ConnectionThread implements Runnable {
         initialized = true;
         System.out.println("initial handshake for " + clientId);
 
-        // main loop: process incoming packets
         while (!endFlag.get()) {
             try {
                 Packet packet = receivedMessagesQueue.poll();
@@ -74,7 +69,7 @@ public abstract class ConnectionThread implements Runnable {
 
                 boolean handled = handlePacket(packet);
                 if (!handled) {
-                    // other processing...
+                    System.out.println("packet did not handled");
                 }
             } catch (Exception e) {
                 e.printStackTrace();

@@ -16,10 +16,6 @@ import com.stardew.Network.Common.Packet.ServerPacket.WelcomePacket;
 import java.io.IOException;
 import java.net.Socket;
 
-/**
- * نخ دائمی کلاینت برای ارسال/دریافت پکت به/از سرور.
- * initialHandshake() اینجا پکت لاگین را می‌فرستد و منتظر WelcomePacket می‌ماند.
- */
 public class ClientConnectionThread extends ConnectionThread {
 
     public ClientConnectionThread(Socket socket, String clientId) throws IOException {
@@ -39,7 +35,6 @@ public class ClientConnectionThread extends ConnectionThread {
                     System.out.println("Server says: " + welcome.getMessage());
                     return true;
                 }
-                // اگر پکت دیگری آمد می‌توانید enqueuePacket کنید یا نادیده بگیرید
             }
         } catch (IOException e) {
             System.err.println("Handshake error: " + e.getMessage());
@@ -49,9 +44,6 @@ public class ClientConnectionThread extends ConnectionThread {
 
     @Override
     protected boolean handlePacket(Packet packet) {
-//        for (Player player : App.getGame().getPlayers()) {
-//            System.out.println(player.personalInfo.getName());
-//        }
         System.out.println("Received from server: " + packet.getClass().getSimpleName());
 
         if (packet instanceof ServerGeneralRespondPacket serverGeneralRespondPacket) {
@@ -110,11 +102,6 @@ public class ClientConnectionThread extends ConnectionThread {
                 }
                 Player.createPlayer(signUpPacket.username, signUpPacket.nickname, signUpPacket.password,
                     signUpPacket.email, signUpPacket.gender, signUpPacket.getSenderId());
-//                System.out.println(result.message());
-//                System.out.println(App.getInstance().getPlayers().get(0).personalInfo.getName());
-//                System.out.println(signUpPacket.getSenderId());
-//                System.out.println(signUpPacket.username);
-//                System.out.println(signUpPacket.getSenderUsername());
                 Player player1 = App.getInstance().findPlayerByUsername(signUpPacket.getSenderUsername());
                 if (player1 == null) {
                     System.out.println("what the fuck");
