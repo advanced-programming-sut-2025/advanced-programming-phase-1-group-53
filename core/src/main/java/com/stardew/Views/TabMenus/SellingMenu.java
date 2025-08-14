@@ -12,8 +12,7 @@ import com.stardew.Models.Items.ShippingBin;
 import com.stardew.Models.MessageManager;
 import com.stardew.Models.Result;
 import com.stardew.Network.Client.ClientApp;
-import com.stardew.Network.Common.Packet.ClientPacket.KeyDownPacket;
-import com.stardew.Network.Common.Packet.ClientPacket.TouchDownPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.KeyboardPackets.TouchDownPacket;
 import com.stardew.Views.GameMenu;
 import com.stardew.Views.Tab;
 

@@ -246,7 +246,7 @@ public class GameMenuController {
 //        App.setCurrentMenu(Menu.mainMenu);
     }
 
-    public void newGame(String username1, String username2, String username3) {
+    public static void newGame(String username1, String username2, String username3) {
         Player me = App.getCurrentPlayer();
         Player player1 = App.getInstance().findPlayerByUsername(username1);
         Player player2 = App.getInstance().findPlayerByUsername(username2);

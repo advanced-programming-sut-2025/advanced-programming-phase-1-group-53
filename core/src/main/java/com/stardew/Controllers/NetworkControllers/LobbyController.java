@@ -10,18 +10,18 @@ import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.Player;
 import com.stardew.Models.Lobby;
 import com.stardew.Network.Client.ClientApp;
-import com.stardew.Network.Common.Packet.ClientPacket.CreateLobbyPacket;
-import com.stardew.Network.Common.Packet.ClientPacket.JoinLobbyPacket;
-import com.stardew.Network.Common.Packet.ClientPacket.LeaveLobbyPacket;
-import com.stardew.Network.Common.Packet.ClientPacket.StartGamePacket;
+import com.stardew.Network.Common.Packet.ClientPacket.LobbyPackets.CreateLobbyPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.LobbyPackets.JoinLobbyPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.LobbyPackets.LeaveLobbyPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.GamePackets.StartGamePacket;
 import com.stardew.Views.NetworkMenus.LobbyMenu;
 
 public class LobbyController {
-    public StartGamePacket startGame(Lobby lobby) {
-        StartGamePacket packet = new StartGamePacket(App.getMyPlayer(), lobby.getId());
-        return packet;
-    }
-
+//    public StartGamePacket startGame(Lobby lobby) {
+//        StartGamePacket packet = new StartGamePacket(App.getMyPlayer(), lobby.getId());
+//        return packet;
+//    }
+//
     public LeaveLobbyPacket leaveLobby(Player player, Lobby lobby) {
         LeaveLobbyPacket packet = new LeaveLobbyPacket(App.getMyPlayer(), player.getUsername(), lobby.getId());
         App.main.setScreen(new LobbyMenu());
@@ -62,14 +62,11 @@ public class LobbyController {
             );
         }
         ClientApp.getInstance().getConnectionThread().sendPacket(packet);
-        Dialog dialog = new Dialog("Pop-up", skin) {
-            protected void result(Object object) {
-                this.hide();
-            }
-        };
-        dialog.text("the message pop-up is not yet set");
-        dialog.button("OK");
-        dialog.show(stage);
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public Lobby searchLobbyById(String id) {

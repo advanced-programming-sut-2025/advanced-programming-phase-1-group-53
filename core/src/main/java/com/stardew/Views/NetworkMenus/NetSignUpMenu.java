@@ -87,6 +87,8 @@ public class NetSignUpMenu extends AppMenu {
         securityAnswerField = com.stardew.Views.STab.createTextField("");
         securityAnswerField.setMessageText("Answer");
 
+        securityAnswerField.setText("6");
+
 
         messageLabel = new Label("", skin);
         messageLabel.setAlignment(Align.center);
@@ -152,7 +154,7 @@ public class NetSignUpMenu extends AppMenu {
         }
         if (!answerCorrect) {
             messageLabel.setText("Incorrect answer to the security question.");
-            return;
+//            return;
         }
 
         // Pass values to controller

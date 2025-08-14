@@ -1,13 +1,16 @@
 package com.stardew.Controllers;
 
 import com.stardew.Models.Game.App;
+import com.stardew.Network.Client.ClientApp;
 
 import java.util.Scanner;
 
 public class ShareController {
     public static void exit(Scanner scanner) {
-        scanner.close();
-//        App.setCurrentMenu(Menu.exitMenu);
+        if (scanner != null) {
+            scanner.close();
+        }
+        ClientApp.getInstance().getConnectionThread().end();
     }
 
     public static void showCurrentMenu() {

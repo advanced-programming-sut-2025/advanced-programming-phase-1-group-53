@@ -3,11 +3,8 @@ package com.stardew.Views.NetworkMenus;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.stardew.Controllers.MainMenuController;
 import com.stardew.Controllers.NetworkControllers.NetMainMenuController;
-import com.stardew.Controllers.NetworkControllers.PlayersMenu;
-import com.stardew.Controllers.ShareController;
+import com.stardew.Messengers.MessageMenus.AudioMessageScreen;
 import com.stardew.Models.Game.App;
 import com.stardew.Views.*;
 
@@ -39,14 +36,14 @@ public class NetMainMenu extends AppMenu {
 //        });
 //        table.add(personalInfoButton).pad(10).row();
 
-        TextButton gameMenuButton = new TextButton("Signup", skin);
-        gameMenuButton.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
+        TextButton signupMenuBtn = new TextButton("Signup", skin);
+        signupMenuBtn.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
             @Override
             public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
                 main.setScreen(new NetSignUpMenu(main));
             }
         });
-        table.add(gameMenuButton).pad(10).row();
+        table.add(signupMenuBtn).pad(10).row();
 
         TextButton lobbyMenuBtn = new TextButton("", skin);
         lobbyMenuBtn.setText("Lobby Menu");
@@ -70,13 +67,39 @@ public class NetMainMenu extends AppMenu {
                 App.main.setScreen(new PlayersMenu());
             }
         });
+
         table.add(onlinePlayersBtn).pad(10).row();
+        TextButton RadioScreenBtn = STab.createTextButton("Radio Screen");
+        RadioScreenBtn.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
+            @Override
+            public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
+                App.main.setScreen(new AudioMessageScreen());
+            }
+        });
+        table.add(RadioScreenBtn).pad(10).row();
+
+        TextButton textMessageBtn = STab.createTextButton("Text Message Screen");
+        textMessageBtn.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
+            @Override
+            public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
+                App.main.setScreen(new com.stardew.Messengers.MessageMenus.TextMessageScreen());
+            }
+        });
+        table.add(textMessageBtn).pad(10).row();
+        TextButton ContinueBtn = STab.createTextButton("Continue");
+        ContinueBtn.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
+            @Override
+            public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
+                //TODO: Fatemeh
+            }
+        });
+        table.add(ContinueBtn).pad(10).row();
 
         TextButton exitButton = new TextButton("Exit", skin);
         exitButton.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
             @Override
             public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
-                ShareController.exit(null); // No Scanner needed for graphical exit
+                App.main.setScreen(new NetExitMenu(main));
             }
         });
         table.add(exitButton).pad(10).row();

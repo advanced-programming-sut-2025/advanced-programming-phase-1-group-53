@@ -9,6 +9,7 @@ import com.stardew.Models.Items.CraftAbleAndArtisan.Artisan;
 import com.stardew.Models.Items.CraftAbleAndArtisan.*;
 import com.stardew.Models.Items.Foragings.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Game {
@@ -21,6 +22,7 @@ public class Game {
     private final GameMap gameMap;
     private Tile[][] currentMap;
     private Election election = null;
+    private final GameMessages messages;
 
     // Helper to initialize player relationship HashMaps
 
@@ -53,6 +55,11 @@ public class Game {
         this.gameMap = new GameMap(players);
         this.currentMap = gameMap.getTiles();
         //TODO uncomment
+        this.messages = new GameMessages();
+    }
+
+    public GameMessages getMessages() {
+        return messages;
     }
 
     public ArrayList<Player> getPlayers() {
@@ -159,6 +166,10 @@ public class Game {
 
     public Election getElection() {
         return election;
+    }
+
+    public void setElection(Election election) {
+        this.election = election;
     }
 
     public void printMap() {
