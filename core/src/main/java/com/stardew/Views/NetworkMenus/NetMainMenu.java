@@ -4,7 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.stardew.Controllers.NetworkControllers.NetMainMenuController;
-import com.stardew.Controllers.ShareController;
+import com.stardew.Messengers.MessageMenus.AudioMessageScreen;
 import com.stardew.Models.Game.App;
 import com.stardew.Views.*;
 
@@ -67,7 +67,33 @@ public class NetMainMenu extends AppMenu {
                 App.main.setScreen(new PlayersMenu());
             }
         });
+
         table.add(onlinePlayersBtn).pad(10).row();
+        TextButton RadioScreenBtn = STab.createTextButton("Radio Screen");
+        RadioScreenBtn.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
+            @Override
+            public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
+                App.main.setScreen(new AudioMessageScreen());
+            }
+        });
+        table.add(RadioScreenBtn).pad(10).row();
+
+        TextButton textMessageBtn = STab.createTextButton("Text Message Screen");
+        textMessageBtn.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
+            @Override
+            public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
+                App.main.setScreen(new com.stardew.Messengers.MessageMenus.TextMessageScreen());
+            }
+        });
+        table.add(textMessageBtn).pad(10).row();
+        TextButton ContinueBtn = STab.createTextButton("Continue");
+        ContinueBtn.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
+            @Override
+            public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
+                //TODO: Fatemeh
+            }
+        });
+        table.add(ContinueBtn).pad(10).row();
 
         TextButton exitButton = new TextButton("Exit", skin);
         exitButton.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
