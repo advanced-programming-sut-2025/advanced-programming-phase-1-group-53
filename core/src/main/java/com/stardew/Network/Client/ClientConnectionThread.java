@@ -8,6 +8,7 @@ import com.stardew.Models.Election;
 import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.Player;
 import com.stardew.Models.GameMessages;
+import com.stardew.Models.Items.Animal;
 import com.stardew.Models.Lobby;
 import com.stardew.Models.NPC.NPC;
 import com.stardew.Models.Result;
@@ -15,6 +16,7 @@ import com.stardew.Network.Common.ConnectionThread;
 import com.stardew.Network.Common.Packet.*;
 import com.stardew.Network.Common.Packet.ClientPacket.AudioPackets.RequestAudioPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.AudioPackets.UploadAudioPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.BuyItemPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.Reaction;
 import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.ReactionPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.SendPrivateMessagePacket;
@@ -41,6 +43,7 @@ import com.stardew.Network.Common.Packet.ServerPacket.ServerGeneralRespondPacket
 import com.stardew.Network.Common.Packet.ServerPacket.UpdateMapPacket;
 import com.stardew.Network.Common.Packet.ServerPacket.WelcomePacket;
 import com.stardew.Network.Server.ChangeDurationPacket;
+import com.stardew.Network.Server.ServerApp;
 import com.stardew.Views.GameMenu;
 
 import java.io.IOException;
@@ -284,6 +287,18 @@ public class ClientConnectionThread extends ConnectionThread {
                 }
                 InventoryMenuController.pickItem(pickItemPacket);
                 System.out.println(result.message());
+                return true;
+            } else if (innerPacket instanceof BuyItemPacket buyItemPacket) {
+                if(App.getGame().getItemByItemType(buyItemPacket.itemType) instanceof Animal)
+                    GameMenu.getInstance().getController().abilities.shopping.purchase(buyItemPacket.itemType, buyItemPacket.field);
+                else{
+                    try{
+                        GameMenu.getInstance().getController().abilities.shopping.purchase(buyItemPacket.itemType, Integer.parseInt(buyItemPacket.field));
+                    }
+                    catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
                 return true;
             }
             return false;

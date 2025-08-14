@@ -162,8 +162,6 @@ public class ShopMenu extends Tab {
             nextPage.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    ClientApp.getInstance().getConnectionThread().sendPacket(new ClickPacket(App.getMyPlayer(), TextButtonType.next_page, ShopMenu.class));
-
                     if((currentPage+1)*NUM_OF_ITEMS_IN_A_PAGE < products.size()) {
                         currentPage++;
                         isChanged = true;
@@ -174,8 +172,6 @@ public class ShopMenu extends Tab {
             previousPage.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    ClientApp.getInstance().getConnectionThread().sendPacket(new ClickPacket(App.getMyPlayer(), TextButtonType.previous_page, ShopMenu.class));
-
                     if(currentPage > 0) {
                         currentPage--;
                         isChanged = true;

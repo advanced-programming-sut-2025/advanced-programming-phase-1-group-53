@@ -7,6 +7,7 @@ import com.stardew.Models.Election;
 import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.Player;
 import com.stardew.Models.GameMessages;
+import com.stardew.Models.Items.Animal;
 import com.stardew.Models.Lobby;
 import com.stardew.Models.NPC.NPC;
 import com.stardew.Models.Result;
@@ -14,6 +15,7 @@ import com.stardew.Network.Common.ConnectionThread;
 import com.stardew.Network.Common.Packet.*;
 import com.stardew.Network.Common.Packet.ClientPacket.AudioPackets.RequestAudioPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.AudioPackets.UploadAudioPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.BuyItemPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.Reaction;
 import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.ReactionPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.SendPrivateMessagePacket;
@@ -36,6 +38,7 @@ import com.stardew.Network.Common.Packet.ClientPacket.RegisterPackets.SignUpPack
 import com.stardew.Network.Common.Packet.ServerPacket.NPCDialoguePacket;
 import com.stardew.Network.Common.Packet.ServerPacket.ServerGeneralRespondPacket;
 import com.stardew.Network.Common.Packet.ServerPacket.WelcomePacket;
+import com.stardew.Views.GameMenu;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -266,6 +269,19 @@ public class ServerConnectionThread extends ConnectionThread {
             result = InventoryMenuController.pickItem(pickItemPacket);
             System.out.println(result.message());
             ServerApp.getInstance().broadcastInGame(new ServerGeneralRespondPacket(result, pickItemPacket));
+            return true;
+        } else if (packet instanceof BuyItemPacket buyItemPacket) {
+            if(App.getGame().getItemByItemType(buyItemPacket.itemType) instanceof Animal)
+                GameMenu.getInstance().getController().abilities.shopping.purchase(buyItemPacket.itemType, buyItemPacket.field);
+            else{
+                try{
+                    GameMenu.getInstance().getController().abilities.shopping.purchase(buyItemPacket.itemType, Integer.parseInt(buyItemPacket.field));
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+            ServerApp.getInstance().broadcastInGame(new ServerGeneralRespondPacket(new Result(true, "item purchased"), buyItemPacket));
             return true;
         }
         return false;

@@ -6,6 +6,7 @@ import com.stardew.Models.Game.App;
 import com.stardew.Models.Result;
 import com.stardew.Network.Common.Packet.ClientPacket.AudioPackets.RequestAudioPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.AudioPackets.UploadAudioPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.BuyItemPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.ReactionPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.SendPrivateMessagePacket;
 import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.SendPublicMessagePacket;
@@ -78,7 +79,8 @@ public class PacketParser {
                 .registerSubtype(VotePacket.class, PacketType.VOTE_PACKET.name())
                 .registerSubtype(FinalizeElectionPacket.class, PacketType.FINALIZE_ELECTION_PACKET.name())
                 .registerSubtype(ChangeDurationPacket.class, PacketType.CHANGE_DURATION_PACKET.name())
-                .registerSubtype(PickItemPacket.class, PacketType.PICK_ITEM_PACKET.name());
+                .registerSubtype(PickItemPacket.class, PacketType.PICK_ITEM_PACKET.name())
+                .registerSubtype(BuyItemPacket.class, PacketType.BUY_ITEM_PACKET.name());
 
         gson = new GsonBuilder()
             .registerTypeAdapterFactory(packetAdapter)
