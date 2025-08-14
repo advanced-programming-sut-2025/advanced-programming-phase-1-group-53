@@ -2,6 +2,7 @@ package com.stardew.Network.Client;
 
 import com.stardew.Controllers.GameMenuController;
 import com.stardew.Controllers.InGameControllers.Controller;
+import com.stardew.Controllers.InGameControllers.InventoryMenuController;
 import com.stardew.Main;
 import com.stardew.Models.Election;
 import com.stardew.Models.Game.App;
@@ -32,6 +33,7 @@ import com.stardew.Network.Common.Packet.ClientPacket.KeyboardPackets.*;
 import com.stardew.Network.Common.Packet.ClientPacket.LobbyPackets.CreateLobbyPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.LobbyPackets.JoinLobbyPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.LobbyPackets.LeaveLobbyPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.PickItemPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.RegisterPackets.LoginPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.RegisterPackets.SignUpPacket;
 import com.stardew.Network.Common.Packet.ServerPacket.NPCDialoguePacket;
@@ -273,6 +275,14 @@ public class ClientConnectionThread extends ConnectionThread {
                     return true;
                 }
                 Reaction.sendReaction(reactionPacket);
+                System.out.println(result.message());
+                return true;
+            } else if (innerPacket instanceof PickItemPacket pickItemPacket) {
+                if (!result.success()) {
+                    System.out.println(result.message());
+                    return true;
+                }
+                InventoryMenuController.pickItem(pickItemPacket);
                 System.out.println(result.message());
                 return true;
             }

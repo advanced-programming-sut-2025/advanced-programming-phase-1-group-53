@@ -20,6 +20,7 @@ import com.stardew.Network.Common.Packet.ClientPacket.KeyboardPackets.*;
 import com.stardew.Network.Common.Packet.ClientPacket.LobbyPackets.CreateLobbyPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.LobbyPackets.JoinLobbyPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.LobbyPackets.LeaveLobbyPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.PickItemPacket;
 import com.stardew.Network.Server.ChangeDurationPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.NPCPackets.TalkToNPCPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.RegisterPackets.LoginPacket;
@@ -76,7 +77,8 @@ public class PacketParser {
                 .registerSubtype(RequestAudioPacket.class, PacketType.REQUEST_AUDIO_PACKET.name())
                 .registerSubtype(VotePacket.class, PacketType.VOTE_PACKET.name())
                 .registerSubtype(FinalizeElectionPacket.class, PacketType.FINALIZE_ELECTION_PACKET.name())
-                .registerSubtype(ChangeDurationPacket.class, PacketType.CHANGE_DURATION_PACKET.name());
+                .registerSubtype(ChangeDurationPacket.class, PacketType.CHANGE_DURATION_PACKET.name())
+                .registerSubtype(PickItemPacket.class, PacketType.PICK_ITEM_PACKET.name());
 
         gson = new GsonBuilder()
             .registerTypeAdapterFactory(packetAdapter)

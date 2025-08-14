@@ -2,6 +2,7 @@ package com.stardew.Network.Server;
 
 import com.stardew.Controllers.GameMenuController;
 import com.stardew.Controllers.InGameControllers.Controller;
+import com.stardew.Controllers.InGameControllers.InventoryMenuController;
 import com.stardew.Models.Election;
 import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.Player;
@@ -29,6 +30,7 @@ import com.stardew.Network.Common.Packet.ClientPacket.LobbyPackets.CreateLobbyPa
 import com.stardew.Network.Common.Packet.ClientPacket.LobbyPackets.JoinLobbyPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.LobbyPackets.LeaveLobbyPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.NPCPackets.TalkToNPCPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.PickItemPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.RegisterPackets.LoginPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.RegisterPackets.SignUpPacket;
 import com.stardew.Network.Common.Packet.ServerPacket.NPCDialoguePacket;
@@ -259,6 +261,11 @@ public class ServerConnectionThread extends ConnectionThread {
             result = Reaction.sendReaction(reactionPacket);
             System.out.println(result.message());
             ServerApp.getInstance().broadcastInGame(new ServerGeneralRespondPacket(result, reactionPacket));
+            return true;
+        } else if (packet instanceof PickItemPacket pickItemPacket) {
+            result = InventoryMenuController.pickItem(pickItemPacket);
+            System.out.println(result.message());
+            ServerApp.getInstance().broadcastInGame(new ServerGeneralRespondPacket(result, pickItemPacket));
             return true;
         }
         return false;

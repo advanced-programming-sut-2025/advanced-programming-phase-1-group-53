@@ -1,7 +1,11 @@
 package com.stardew.Controllers.InGameControllers;
 
+import com.stardew.Models.Game.App;
+import com.stardew.Models.Game.Player;
+import com.stardew.Models.Items.Item;
 import com.stardew.Models.Result;
 import com.stardew.Network.Common.Packet.ClientPacket.KeyboardPackets.*;
+import com.stardew.Network.Common.Packet.ClientPacket.PickItemPacket;
 
 public class InventoryMenuController extends Controller {
     public static final String MENU_NAME = "InventoryMenu";
@@ -18,5 +22,18 @@ public class InventoryMenuController extends Controller {
             case next_page: break; case previous_page: break; default: break;
         }
         return new Result(true, "");
+    }
+
+    public static Result pickItem(PickItemPacket pickItemPacket) {
+        Item item = App.getGame().getItemByItemType(pickItemPacket.itemType);
+        if (item == null) {
+            return new Result(false, "Item not found");
+        }
+        Player player = App.getInstance().findPlayerByUsername(pickItemPacket.getSenderUsername());
+        if (player == null) {
+            return new Result(false, "Player not found");
+        }
+        player.backpack.setItemInHand(item.clone());
+        return new Result(true, "Item picked");
     }
 }
