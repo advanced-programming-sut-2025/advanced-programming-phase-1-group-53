@@ -30,36 +30,36 @@ public class Backpack {
 
     public Backpack() {
         //items.put(ForagingSeed.PomegranateSapling, 1);
-        for(Tool tool : Tool.allTools){
-            if(tool.getItemType().equals(ItemType.FishingPole))
-                continue;
-            items.put(tool, 1);
-        }
-        items.put(Recipe.FriedEggRecipe, 1);
-        items.put(Recipe.BakedFishRecipe, 1);
-        items.put(Recipe.SaladRecipe, 1);
-        items.put(Recipe.SalmonDinnerRecipe, 1);
-        items.put(Recipe.VegetableMedelyRecipe, 1);
-        items.put(Recipe.FarmerLunchRecipe, 1);
-        items.put(Recipe.SurvivalBurgerRecipe, 1);
-        items.put(Recipe.DishOtheSeaRecipe, 1);
-        items.put(Recipe.MinersTreatRecipe, 1);
-        items.put(Recipe.SeaFormPuddingRecipe, 1);
+//        for(Tool tool : Tool.allTools){
+//            if(tool.getItemType().equals(ItemType.FishingPole))
+//                continue;
+//            items.put(tool, 1);
+//        }
+//        items.put(Recipe.FriedEggRecipe, 1);
+//        items.put(Recipe.BakedFishRecipe, 1);
+//        items.put(Recipe.SaladRecipe, 1);
+//        items.put(Recipe.SalmonDinnerRecipe, 1);
+//        items.put(Recipe.VegetableMedelyRecipe, 1);
+//        items.put(Recipe.FarmerLunchRecipe, 1);
+//        items.put(Recipe.SurvivalBurgerRecipe, 1);
+//        items.put(Recipe.DishOtheSeaRecipe, 1);
+//        items.put(Recipe.MinersTreatRecipe, 1);
+//        items.put(Recipe.SeaFormPuddingRecipe, 1);
         items.put(Item.DeluxeSoil, 1);
         items.put(ForagingMineral.Fiber, 1);
-        items.put(Food.Pancakes, 1);
+//        items.put(Food.Pancakes, 1);
         items.put(CoopAndBarn.Barn, 1);
         items.put(Item.Hay, 4);
-        items.put(Tool.normalFishingPole, 1);
-        items.put(Artisan.BeeHouse, 1);
+//        items.put(Tool.normalFishingPole, 1);
+//        items.put(Artisan.BeeHouse, 1);
 
 
 
-        for(CraftingRecipe recipe : CraftingRecipe.craftingRecipes){
-            if(!(recipe.getItemType().equals(ItemType.DehydratorCR) || recipe.getItemType().equals(ItemType.FishSmokerCR)
-                    || recipe.getItemType().equals(ItemType.GrassStarterCR)))
-                items.put(recipe, 1);
-        }
+//        for(CraftingRecipe recipe : CraftingRecipe.craftingRecipes){
+//            if(!(recipe.getItemType().equals(ItemType.DehydratorCR) || recipe.getItemType().equals(ItemType.FishSmokerCR)
+//                    || recipe.getItemType().equals(ItemType.GrassStarterCR)))
+//                items.put(recipe, 1);
+//        }
         this.level = BackpackLevel.small;
     }
 

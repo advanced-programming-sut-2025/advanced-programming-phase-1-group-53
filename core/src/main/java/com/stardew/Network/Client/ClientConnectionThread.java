@@ -144,7 +144,7 @@ public class ClientConnectionThread extends ConnectionThread {
                 System.out.println("aaas");
                 App.getGame().setMessages(new GameMessages());
                 App.getGame().initializeGame();
-                Main.main.setScreen(GameMenu.getInstance());
+                Main.getInstance().setGameStarted(true);
                 System.out.println("Game started");
                 return true;
             } else if (innerPacket instanceof NPCDialoguePacket npcDialoguePacket) {

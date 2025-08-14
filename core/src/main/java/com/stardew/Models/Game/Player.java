@@ -30,7 +30,7 @@ public class Player {
     private Farm farm;
     public final PersonalInfo personalInfo;
     public final Abilities abilities;
-    public Backpack backpack = null;
+    public final Backpack backpack = new Backpack();
     public final Energy energy;
     public final Activity activity;
     public final Position position;
@@ -83,10 +83,6 @@ public class Player {
 //        System.out.println("1");
     }
 
-    public void initializeBackPack() {
-        backpack = new Backpack();
-    }
-
     public void loadGraphics() {
         if (sprite == null) {
         }
@@ -101,7 +97,7 @@ public class Player {
         this.abilities = new Abilities();
 //        System.out.println("2");
 
-        this.energy = null;
+        this.energy = new Energy();
         this.activity = new Activity();
 //        System.out.println("2");
         this.position = new Position(0, 0, 1, 1);

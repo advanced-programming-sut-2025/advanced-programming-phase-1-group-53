@@ -10,6 +10,7 @@ import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.GameAssetManager;
 import com.stardew.Network.Client.ClientApp;
 //import com.stardew.Views.AppView;
+import com.stardew.Views.GameMenu;
 import com.stardew.Views.LoginRegisterMenu;
 import com.stardew.Views.NetworkMenus.NetMainMenu;
 import com.stardew.Views.Tab;
@@ -35,6 +36,8 @@ public class Main extends Game {
         }
         return main;
     }
+
+    private boolean isGameStarted = false;
 
     @Override
     public void create() {
@@ -65,6 +68,10 @@ public class Main extends Game {
 
     @Override
     public void render() {
+        if(isGameStarted){
+            main.setScreen(GameMenu.getInstance());
+            isGameStarted = false;
+        }
 //        ScreenUtils.clear(1, 1, 1, 1);
 //        stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
 //        stage.draw();
@@ -84,5 +91,13 @@ public class Main extends Game {
     public void dispose() {
         batch.dispose();
         sprite.getTexture().dispose();
+    }
+
+    public boolean isGameStarted() {
+        return isGameStarted;
+    }
+
+    public void setGameStarted(boolean gameStarted) {
+        isGameStarted = gameStarted;
     }
 }
