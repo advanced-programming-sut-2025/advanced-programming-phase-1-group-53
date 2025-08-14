@@ -151,18 +151,13 @@ public class LobbyMenu extends AppMenu {
             public void clicked(InputEvent event, float x, float y) {
                 controller.createLobby(stage, skin, nameField, passwordField, visibilitySelectBox);
 
-//                Lobby lastAppLobby = App.getInstance().getLobbies().get(App.getInstance().getLobbies().size() -1);
-//                if (!lastAppLobby.getName().equals(nameField.getText())) {
-//                    STab.createDialog("couldn't create the lobby", "dismiss");
-//                    return;
-//                }
-//                JoinLobbyPacket adminJoinPacket = new JoinLobbyPacket(
-//                    App.getMyPlayer(),
-//                    App.getMyPlayer().getUsername(),
-//                    lastAppLobby.getId(),
-//                    passwordField.getText()
-//                );
-//                ClientApp.getInstance().getConnectionThread().sendPacket(adminJoinPacket);
+                Lobby lastAppLobby = App.getInstance().getLobbies().get(App.getInstance().getLobbies().size() -1);
+                if (!lastAppLobby.getName().equals(nameField.getText())) {
+                    STab.createDialog("couldn't create the lobby", "dismiss").show(stage);
+                    return;
+                }
+                STab.createDialog("ID: " + lastAppLobby.getId(), "OK").show(stage);
+
             }
         });
         contentTable.add(createButton).pad(10).row();
@@ -193,6 +188,7 @@ public class LobbyMenu extends AppMenu {
 
     private void showLobbyWindow(Lobby lobby, String password) {
         this.id = lobby.getId();
+        this.name = lobby.getName();
         this.admin = lobby.getAdmin();
         this.players = lobby.getPlayers();
         this.isPrivate = !lobby.isPublic();
@@ -217,6 +213,7 @@ public class LobbyMenu extends AppMenu {
 
         com.badlogic.gdx.scenes.scene2d.ui.Table contentTable = new com.badlogic.gdx.scenes.scene2d.ui.Table();
         contentTable.add(new Label("Lobby ID: " + id, skin)).pad(10).row();
+        contentTable.add(new Label("Lobby Name: " + name, skin)).pad(10).row();
         contentTable.add(new Label("Admin: " + admin.getPersonalInfo().getName(), skin)).pad(10).row();
         try {
             Thread.sleep(100);
@@ -272,6 +269,16 @@ public class LobbyMenu extends AppMenu {
             });
             contentTable.add(deleteButton).pad(10).row();
         }
+
+
+        TextButton refreshBtn = new TextButton("Refresh", skin);
+        refreshBtn.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                refreshLobby(App.getMyPlayer(), lobby);
+            }
+        });
+        contentTable.add(refreshBtn).pad(10).row();
 
         com.badlogic.gdx.scenes.scene2d.ui.ScrollPane scrollPane = new com.badlogic.gdx.scenes.scene2d.ui.ScrollPane(contentTable, skin);
         lobbyWindow.add(scrollPane).expand().fill();
@@ -396,5 +403,23 @@ public class LobbyMenu extends AppMenu {
         ScrollPane scrollPane = new ScrollPane(contentTable, skin);
         searchWindow.add(scrollPane).expand().fill();
         stage.addActor(searchWindow);
+    }
+
+    private void refreshLobby(Player myPlayer, Lobby lobby) {
+        if (lobbyWindow == null) {
+            return;
+        }
+
+        lobbyWindow.remove();
+        lobbyWindow = null;
+        showLobbyWindow(lobby, lobby.getPassword());
+
+        for (Player player : lobby.getPlayers()) {
+            if (player.equals(myPlayer)) {
+                return;
+            }
+        }
+        lobbyWindow.remove();
+        lobbyWindow = null;
     }
 }
