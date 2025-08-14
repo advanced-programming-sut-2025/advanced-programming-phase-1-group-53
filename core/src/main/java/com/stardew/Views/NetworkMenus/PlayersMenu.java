@@ -1,15 +1,13 @@
-package com.stardew.Controllers.NetworkControllers;
+package com.stardew.Views.NetworkMenus;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
-import com.badlogic.gdx.utils.TimeUtils;
 import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.Player;
 import com.stardew.Views.AppMenu;
-import com.stardew.Views.NetworkMenus.NetMainMenu;
 import com.stardew.Views.STab;
 
 public class PlayersMenu extends AppMenu {
@@ -34,7 +32,13 @@ public class PlayersMenu extends AppMenu {
 
         Table playersTable = new Table();
         for (Player player : App.getInstance().getPlayers()) {
-            playersTable.add(new TextButton(player.getUsername(), skin)).pad(20, 40, 20, 40).row();
+            TextButton playerBtn = new TextButton(player.getUsername(), skin);
+            playersTable.add(playerBtn).pad(20, 40, 20, 40);
+            if (player.getCurrentLobby() != null) {
+                TextButton lobbyBtn = new TextButton(player.getCurrentLobby().getName(), skin);
+                playersTable.add(lobbyBtn).pad(20, 40, 20, 40);
+            }
+            playersTable.row();
         }
         TextButton backBtn = STab.createTextButton("back");
         backBtn.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {

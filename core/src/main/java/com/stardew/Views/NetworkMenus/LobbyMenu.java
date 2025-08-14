@@ -16,6 +16,7 @@ import com.stardew.Views.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.StringTokenizer;
 
 public class LobbyMenu extends AppMenu {
     private String name;
@@ -76,20 +77,7 @@ public class LobbyMenu extends AppMenu {
         openLobbyWindowButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                String selectedLobbyName = lobbySelectBox.getSelected();
-                Lobby selectedLobby = null;
-                for (Lobby lobby : App.getInstance().getLobbies()) {
-                    if (lobby.getName().equals(selectedLobbyName)) {
-                        selectedLobby = lobby;
-                        break;
-                    }
-                }
-                if (selectedLobby != null && selectedLobby.getPlayers().size() < 4) {
-                    showLobbyWindow(selectedLobby, joinPasswordField.getText());
-                    return;
-                }
-                Dialog dialog = STab.createDialog("couldn't open the lobby!\nit may be full or closed.", "OK");
-                dialog.show(stage);
+                joinLobby(joinPasswordField.getText(), lobbySelectBox.getSelected());
             }
         });
         table.add(openLobbyWindowButton).pad(20).row();
@@ -163,6 +151,19 @@ public class LobbyMenu extends AppMenu {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 controller.createLobby(stage, skin, nameField, passwordField, visibilitySelectBox);
+
+                Lobby lastAppLobby = App.getInstance().getLobbies().get(App.getInstance().getLobbies().size() -1);
+                if (!lastAppLobby.getName().equals(nameField.getText())) {
+                    STab.createDialog("couldn't create the lobby", "dismiss");
+                    return;
+                }
+                JoinLobbyPacket adminJoinPacket = new JoinLobbyPacket(
+                    App.getMyPlayer(),
+                    App.getMyPlayer().getUsername(),
+                    lastAppLobby.getId(),
+                    passwordField.getText()
+                );
+                ClientApp.getInstance().getConnectionThread().sendPacket(adminJoinPacket);
             }
         });
         contentTable.add(createButton).pad(10).row();
@@ -218,7 +219,7 @@ public class LobbyMenu extends AppMenu {
         com.badlogic.gdx.scenes.scene2d.ui.Table contentTable = new com.badlogic.gdx.scenes.scene2d.ui.Table();
         contentTable.add(new Label("Lobby ID: " + id, skin)).pad(10).row();
         contentTable.add(new Label("Admin: " + admin.getPersonalInfo().getName(), skin)).pad(10).row();
-        playersCountLabel = new Label("Players (" + players.size() + ")", skin);
+        playersCountLabel = new Label("Players (" + (players.size()) + ")", skin);
         contentTable.add(playersCountLabel).pad(10).row();
 
         playerSelectBox = new SelectBox<>(skin);
@@ -281,13 +282,18 @@ public class LobbyMenu extends AppMenu {
     }
 
     private void refreshPlayers() {
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         String[] playerNames = players.stream().map(Player::getUsername).toArray(String[]::new);
         playerSelectBox.setItems(playerNames);
     }
 
     public void onPlayerListChanged() {
         refreshPlayers();
-        playersCountLabel.setText("Players (" + players.size() + "/4):");
+        playersCountLabel.setText("Players (" + players.size() + "):");
     }
 
     private boolean isAdmin() {
@@ -297,6 +303,24 @@ public class LobbyMenu extends AppMenu {
     @Override
     public void check(String s) {
         // No command-based logic for graphical UI
+    }
+
+    private LobbyMenu joinLobby(String password, String lobbyName) {
+        String selectedLobbyName = lobbyName;
+        Lobby selectedLobby = null;
+        for (Lobby lobby : App.getInstance().getLobbies()) {
+            if (lobby.getName().equals(selectedLobbyName)) {
+                selectedLobby = lobby;
+                break;
+            }
+        }
+        if (selectedLobby != null && selectedLobby.getPlayers().size() < 4) {
+            showLobbyWindow(selectedLobby, password);
+            return this;
+        }
+        Dialog dialog = STab.createDialog("couldn't open the lobby!\nit may be full or closed.", "OK");
+        dialog.show(stage);
+        return this;
     }
 
     private void openSearchLobbyWindow() {

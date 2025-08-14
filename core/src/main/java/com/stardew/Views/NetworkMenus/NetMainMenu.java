@@ -3,10 +3,7 @@ package com.stardew.Views.NetworkMenus;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.stardew.Controllers.MainMenuController;
 import com.stardew.Controllers.NetworkControllers.NetMainMenuController;
-import com.stardew.Controllers.NetworkControllers.PlayersMenu;
 import com.stardew.Controllers.ShareController;
 import com.stardew.Models.Game.App;
 import com.stardew.Views.*;
@@ -39,14 +36,14 @@ public class NetMainMenu extends AppMenu {
 //        });
 //        table.add(personalInfoButton).pad(10).row();
 
-        TextButton gameMenuButton = new TextButton("Signup", skin);
-        gameMenuButton.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
+        TextButton signupMenuBtn = new TextButton("Signup", skin);
+        signupMenuBtn.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
             @Override
             public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
                 main.setScreen(new NetSignUpMenu(main));
             }
         });
-        table.add(gameMenuButton).pad(10).row();
+        table.add(signupMenuBtn).pad(10).row();
 
         TextButton lobbyMenuBtn = new TextButton("", skin);
         lobbyMenuBtn.setText("Lobby Menu");

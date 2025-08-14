@@ -63,14 +63,11 @@ public class LobbyController {
             );
         }
         ClientApp.getInstance().getConnectionThread().sendPacket(packet);
-        Dialog dialog = new Dialog("Pop-up", skin) {
-            protected void result(Object object) {
-                this.hide();
-            }
-        };
-        dialog.text("the message pop-up is not yet set");
-        dialog.button("OK");
-        dialog.show(stage);
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public Lobby searchLobbyById(String id) {
