@@ -3,11 +3,13 @@ package com.stardew.Models.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.math.Vector2;
 import com.stardew.Controllers.GameMenuController;
 import com.stardew.Enums.Gender;
 import com.stardew.Enums.MapsNames;
 import com.stardew.Enums.TileKind;
+import com.stardew.Messengers.MessageBox;
 import com.stardew.Models.*;
 import com.stardew.Models.Abilities.Abilities;
 import com.stardew.Models.Abilities.Activity;
@@ -49,6 +51,7 @@ public class Player {
     private Lobby currentLobby = null;
     private final HashMap<NPC, StringBuilder> NPCDialogueHistory ;
     private final HashMap<Reaction, Float> reactions = new HashMap<>();
+    private ArrayList<MessageBox> boxes = new ArrayList<>();
 
     public Player(String name, String nickName, String password, String email, Gender gender, String connectionId) {
 //        System.out.println("1");
@@ -504,6 +507,13 @@ public class Player {
             NPCDialogueHistory.put(npc, new StringBuilder());
         }
         return NPCDialogueHistory.get(npc);
+    }
+
+    public ArrayList<MessageBox> getMessageBoxes() {
+        if (boxes.isEmpty()) {
+            boxes.add(new MessageBox(new ArrayList<String>() , getUsername(), "public"));
+        }
+        return boxes;
     }
 }
 

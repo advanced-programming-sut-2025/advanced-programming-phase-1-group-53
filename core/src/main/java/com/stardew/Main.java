@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.stardew.Controllers.GameMenuController;
+import com.stardew.Messengers.Observer;
 import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.GameAssetManager;
 import com.stardew.Network.Client.ClientApp;
@@ -38,6 +39,7 @@ public class Main extends Game {
     }
 
     private boolean isGameStarted = false;
+    private Thread refreshThread;
 
     @Override
     public void create() {
@@ -62,8 +64,8 @@ public class Main extends Game {
             e.printStackTrace();
         }
 
+        Observer.startRefreshThread();
         setScreen(new NetMainMenu(main));
-
     }
 
     @Override
@@ -89,6 +91,9 @@ public class Main extends Game {
 
     @Override
     public void dispose() {
+        if (refreshThread != null && refreshThread.isAlive()) {
+            refreshThread.interrupt();
+        }
         batch.dispose();
         sprite.getTexture().dispose();
     }

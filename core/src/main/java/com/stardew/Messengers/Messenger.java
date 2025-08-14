@@ -1,10 +1,8 @@
-package com.stardew.Messengers.MessageMenus;
+package com.stardew.Messengers;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.stardew.Models.Game.App;
 import com.stardew.Views.AppMenu;
-import com.stardew.Views.STab;
 
 public abstract class Messenger extends AppMenu {
     SelectBox<String> playersIndex;
@@ -57,7 +55,11 @@ public abstract class Messenger extends AppMenu {
         });
         table.add(backBtn).pad(10).row();
     }
-
+//    sending message methods
     protected abstract void showChoosePlayerWindow();
     protected abstract void sendMessage(String contactName);
+
+    //receive message methods
+    public abstract void showInbox();
+    public abstract void receiveMessage(MessageBox box);
 }

@@ -1,4 +1,4 @@
-package com.stardew.Messengers.MessageMenus;
+package com.stardew.Messengers;
 
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -7,7 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.stardew.Views.STab;
 
-public class AudioMessageScreen extends Messenger {
+public class VoiceMessageScreen extends Messenger {
     @Override
     public void show() {
         super.show();
@@ -73,5 +73,15 @@ public class AudioMessageScreen extends Messenger {
         });
         window.add(closeBtn).pad(30);
         stage.addActor(window);
+    }
+
+    @Override
+    public void showInbox() {
+
+    }
+
+    @Override
+    public void receiveMessage(MessageBox box) {
+
     }
 }

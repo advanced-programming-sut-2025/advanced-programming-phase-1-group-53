@@ -4,7 +4,8 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.stardew.Controllers.NetworkControllers.NetMainMenuController;
-import com.stardew.Messengers.MessageMenus.AudioMessageScreen;
+import com.stardew.Messengers.VoiceMessageScreen;
+import com.stardew.Messengers.TextMessageScreen;
 import com.stardew.Models.Game.App;
 import com.stardew.Views.*;
 
@@ -73,7 +74,7 @@ public class NetMainMenu extends AppMenu {
         RadioScreenBtn.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
             @Override
             public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
-                App.main.setScreen(new AudioMessageScreen());
+                App.main.setScreen(new VoiceMessageScreen());
             }
         });
         table.add(RadioScreenBtn).pad(10).row();
@@ -82,7 +83,7 @@ public class NetMainMenu extends AppMenu {
         textMessageBtn.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
             @Override
             public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
-                App.main.setScreen(new com.stardew.Messengers.MessageMenus.TextMessageScreen());
+                App.main.setScreen(new TextMessageScreen());
             }
         });
         table.add(textMessageBtn).pad(10).row();

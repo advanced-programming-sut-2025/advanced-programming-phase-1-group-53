@@ -1,12 +1,10 @@
-package com.stardew.Messengers.MessageMenus;
+package com.stardew.Messengers;
 
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.stardew.Models.Game.App;
 import com.stardew.Network.Client.ClientApp;
 import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.SendPrivateMessagePacket;
 import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.SendPublicMessagePacket;
-import com.stardew.Views.AppMenu;
-import com.stardew.Views.NetworkMenus.PlayersMenu;
 import com.stardew.Views.STab;
 
 public class TextMessageScreen extends Messenger {
@@ -97,5 +95,15 @@ public class TextMessageScreen extends Messenger {
         });
         window.add(closeBtn).pad(30);
         stage.addActor(window);
+    }
+
+    @Override
+    public void showInbox() {
+
+    }
+
+    @Override
+    public void receiveMessage(MessageBox box) {
+
     }
 }
