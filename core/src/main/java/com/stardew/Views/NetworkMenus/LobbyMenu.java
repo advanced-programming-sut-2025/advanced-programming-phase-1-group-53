@@ -202,8 +202,26 @@ public class LobbyMenu extends AppMenu {
             return;
         }
 
+
+        if (App.getMyPlayer().getCurrentLobby() != null ) {
+            LeaveLobbyPacket leavePacket = new LeaveLobbyPacket(
+                App.getMyPlayer(), App.getMyPlayer().getUsername(),
+                App.getMyPlayer().getCurrentLobby().getId()
+            );
+            ClientApp.getInstance().getConnectionThread().sendPacket(leavePacket);
+        }
         JoinLobbyPacket packet = controller.joinLobby(App.getMyPlayer(), lobby, password);
         ClientApp.getInstance().getConnectionThread().sendPacket(packet);
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        if (App.getMyPlayer().getCurrentLobby() == null) {
+            STab.createDialog("Couldn't join the lobby!", "Dismiss").show(stage);
+            return;
+        }
 
         lobbyWindow = new com.badlogic.gdx.scenes.scene2d.ui.Window("Lobby Info", skin);
         lobbyWindow.setSize(600, 800);
