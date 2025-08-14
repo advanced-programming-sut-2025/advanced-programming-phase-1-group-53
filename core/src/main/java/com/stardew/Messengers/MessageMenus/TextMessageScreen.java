@@ -20,6 +20,7 @@ public class TextMessageScreen extends Messenger {
         java.util.List<String> playerNames = new java.util.ArrayList<>();
         for (var player : com.stardew.Models.Game.App.getInstance().getPlayers()) {
             String displayName = player.getUsername();
+            playerNames.add("public");
             if (player.getUsername().equals(com.stardew.Models.Game.App.getMyPlayer().getUsername())) {
                 displayName += " (You)";
             }
@@ -69,7 +70,7 @@ public class TextMessageScreen extends Messenger {
         messagingBtn.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
             @Override
             public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
-                //TODO Khosro
+//                if (public )
             }
         });
         window.add(messagingBtn).pad(30).row();

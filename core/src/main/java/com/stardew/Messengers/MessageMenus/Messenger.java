@@ -36,7 +36,7 @@ public abstract class Messenger extends AppMenu {
         inboxBtn.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
             @Override
             public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
-                //TODO
+
             }
         });
         table.add(inboxBtn).pad(10).row();
