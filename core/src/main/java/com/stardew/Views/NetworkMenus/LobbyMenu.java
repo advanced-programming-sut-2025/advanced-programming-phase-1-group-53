@@ -16,7 +16,6 @@ import com.stardew.Views.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.StringTokenizer;
 
 public class LobbyMenu extends AppMenu {
     private String name;
@@ -60,7 +59,7 @@ public class LobbyMenu extends AppMenu {
         lobbySelectBox = new SelectBox<>(skin);
         ArrayList<String> lobbyNames = new ArrayList<>();
         for (Lobby lobby : App.getInstance().getLobbies()) {
-            lobbyNames.add(lobby.getName());
+            lobbyNames.add(lobby.getId());
         }
         lobbySelectBox.setItems(lobbyNames.toArray(new String[0]));
         table.add(lobbySelectBox).width(300).height(60).pad(20).row();
@@ -152,18 +151,18 @@ public class LobbyMenu extends AppMenu {
             public void clicked(InputEvent event, float x, float y) {
                 controller.createLobby(stage, skin, nameField, passwordField, visibilitySelectBox);
 
-                Lobby lastAppLobby = App.getInstance().getLobbies().get(App.getInstance().getLobbies().size() -1);
-                if (!lastAppLobby.getName().equals(nameField.getText())) {
-                    STab.createDialog("couldn't create the lobby", "dismiss");
-                    return;
-                }
-                JoinLobbyPacket adminJoinPacket = new JoinLobbyPacket(
-                    App.getMyPlayer(),
-                    App.getMyPlayer().getUsername(),
-                    lastAppLobby.getId(),
-                    passwordField.getText()
-                );
-                ClientApp.getInstance().getConnectionThread().sendPacket(adminJoinPacket);
+//                Lobby lastAppLobby = App.getInstance().getLobbies().get(App.getInstance().getLobbies().size() -1);
+//                if (!lastAppLobby.getName().equals(nameField.getText())) {
+//                    STab.createDialog("couldn't create the lobby", "dismiss");
+//                    return;
+//                }
+//                JoinLobbyPacket adminJoinPacket = new JoinLobbyPacket(
+//                    App.getMyPlayer(),
+//                    App.getMyPlayer().getUsername(),
+//                    lastAppLobby.getId(),
+//                    passwordField.getText()
+//                );
+//                ClientApp.getInstance().getConnectionThread().sendPacket(adminJoinPacket);
             }
         });
         contentTable.add(createButton).pad(10).row();
@@ -219,6 +218,11 @@ public class LobbyMenu extends AppMenu {
         com.badlogic.gdx.scenes.scene2d.ui.Table contentTable = new com.badlogic.gdx.scenes.scene2d.ui.Table();
         contentTable.add(new Label("Lobby ID: " + id, skin)).pad(10).row();
         contentTable.add(new Label("Admin: " + admin.getPersonalInfo().getName(), skin)).pad(10).row();
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         playersCountLabel = new Label("Players (" + (players.size()) + ")", skin);
         contentTable.add(playersCountLabel).pad(10).row();
 
@@ -305,22 +309,20 @@ public class LobbyMenu extends AppMenu {
         // No command-based logic for graphical UI
     }
 
-    private LobbyMenu joinLobby(String password, String lobbyName) {
-        String selectedLobbyName = lobbyName;
+    private void joinLobby(String password, String lobbyName) {
         Lobby selectedLobby = null;
         for (Lobby lobby : App.getInstance().getLobbies()) {
-            if (lobby.getName().equals(selectedLobbyName)) {
+            if (lobby.getId().equals(lobbyName)) {
                 selectedLobby = lobby;
                 break;
             }
         }
         if (selectedLobby != null && selectedLobby.getPlayers().size() < 4) {
             showLobbyWindow(selectedLobby, password);
-            return this;
+            return;
         }
         Dialog dialog = STab.createDialog("couldn't open the lobby!\nit may be full or closed.", "OK");
         dialog.show(stage);
-        return this;
     }
 
     private void openSearchLobbyWindow() {

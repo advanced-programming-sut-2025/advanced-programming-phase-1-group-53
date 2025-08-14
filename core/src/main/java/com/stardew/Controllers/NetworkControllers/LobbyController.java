@@ -27,7 +27,6 @@ public class LobbyController {
         App.main.setScreen(new LobbyMenu());
         return packet;
     }
-    // TODO uncommit
 
     public void deleteLobby(Lobby lobby) {
         for (Player player : lobby.getPlayers()) {
