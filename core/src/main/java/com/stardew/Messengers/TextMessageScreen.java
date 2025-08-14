@@ -25,7 +25,7 @@ public class TextMessageScreen extends Messenger {
             String displayName = player.getUsername();
             playerNames.add("public");
             if (player.getUsername().equals(com.stardew.Models.Game.App.getMyPlayer().getUsername())) {
-                displayName += " (You)";
+                continue;
             }
             playerNames.add(displayName);
         }
@@ -136,7 +136,6 @@ public class TextMessageScreen extends Messenger {
         stage.addActor(window);
     }
 
-    @Override
     public void receiveMessage(String senderName) {
         MessageBox box = App.getMyPlayer().findMessageBoxBySender(senderName);
 

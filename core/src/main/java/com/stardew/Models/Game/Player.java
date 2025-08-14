@@ -52,6 +52,8 @@ public class Player {
     private final HashMap<NPC, StringBuilder> NPCDialogueHistory ;
     private final HashMap<Reaction, Float> reactions = new HashMap<>();
     private ArrayList<MessageBox> boxes = new ArrayList<>();
+    private ArrayList<String> audioRequests = new ArrayList<>();
+    private ArrayList<MessageBox> audioBoxes = new ArrayList<>();
 
     public Player(String name, String nickName, String password, String email, Gender gender, String connectionId) {
 //        System.out.println("1");
@@ -518,6 +520,26 @@ public class Player {
 
     public MessageBox findMessageBoxBySender(String sender) {
         for (MessageBox box : getMessageBoxes()) {
+            if (box.getSender().equalsIgnoreCase(sender)) {
+                return box;
+            }
+        }
+        return null;
+    }
+
+    public ArrayList<String> getAudioRequests() {
+        return audioRequests;
+    }
+
+    public ArrayList<MessageBox> getAudioBoxes() {
+        if (audioBoxes.isEmpty()) {
+            audioBoxes.add(new MessageBox(new ArrayList<String>() , getUsername(), "public"));
+        }
+        return audioBoxes;
+    }
+
+    public MessageBox findAudioBoxBySender(String sender) {
+        for (MessageBox box : getAudioBoxes()) {
             if (box.getSender().equalsIgnoreCase(sender)) {
                 return box;
             }
