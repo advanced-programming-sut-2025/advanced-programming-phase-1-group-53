@@ -37,6 +37,7 @@ import com.stardew.Network.Common.Packet.ServerPacket.WelcomePacket;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class ServerConnectionThread extends ConnectionThread {
     private final ServerApp serverApp = ServerApp.getInstance();
@@ -113,11 +114,19 @@ public class ServerConnectionThread extends ConnectionThread {
             ServerApp.getInstance().broadcast(new ServerGeneralRespondPacket(result, signUpPacket));
             return true;
         } else if (packet instanceof StartGamePacket startGamePacket) {
-            GameMenuController.newGame(startGamePacket.username1, startGamePacket.username2, startGamePacket.username3);
+            System.out.println("start game packet received for clientId: " + clientId);
+            GameMenuController.newGame( startGamePacket.username1, startGamePacket.username2, startGamePacket.username3,startGamePacket.username4);
             ServerGeneralRespondPacket pk = new ServerGeneralRespondPacket(new Result(true, "game started"), startGamePacket);
-            ServerApp.getInstance().getConnections().get(startGamePacket.username1).sendPacket(pk);
-            ServerApp.getInstance().getConnections().get(startGamePacket.username2).sendPacket(pk);
-            ServerApp.getInstance().getConnections().get(startGamePacket.username3).sendPacket(pk);
+            ArrayList<String> usernames = new ArrayList<>();
+            usernames.add(startGamePacket.username1);
+            usernames.add(startGamePacket.username2);
+            usernames.add(startGamePacket.username3);
+            usernames.add(startGamePacket.username4);
+            for(String str : usernames) {
+                if(str != null) {
+                    ServerApp.getInstance().getConnections().get(str).sendPacket(pk);
+                }
+            }
             return true;
         } else if (packet instanceof CreateLobbyPacket createLobbyPacket) {
             result = Lobby.createLobby(createLobbyPacket.name, createLobbyPacket.password,

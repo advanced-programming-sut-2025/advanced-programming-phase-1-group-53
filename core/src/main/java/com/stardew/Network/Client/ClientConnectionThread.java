@@ -2,6 +2,7 @@ package com.stardew.Network.Client;
 
 import com.stardew.Controllers.GameMenuController;
 import com.stardew.Controllers.InGameControllers.Controller;
+import com.stardew.Main;
 import com.stardew.Models.Election;
 import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.Player;
@@ -38,6 +39,7 @@ import com.stardew.Network.Common.Packet.ServerPacket.ServerGeneralRespondPacket
 import com.stardew.Network.Common.Packet.ServerPacket.UpdateMapPacket;
 import com.stardew.Network.Common.Packet.ServerPacket.WelcomePacket;
 import com.stardew.Network.Server.ChangeDurationPacket;
+import com.stardew.Views.GameMenu;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -79,6 +81,7 @@ public class ClientConnectionThread extends ConnectionThread {
 
         if (packet instanceof ServerGeneralRespondPacket serverGeneralRespondPacket) {
             Packet innerPacket = serverGeneralRespondPacket.getReceivedPacket();
+            System.out.println("Received from server: " + innerPacket.getClass().getSimpleName());
             Result result = serverGeneralRespondPacket.result;
             Player player = App.getInstance().findPlayerByUsername(innerPacket.getSenderId());
             System.out.println(innerPacket.getSenderId());
@@ -136,7 +139,10 @@ public class ClientConnectionThread extends ConnectionThread {
                 }
                 return true;
             } else if (innerPacket instanceof StartGamePacket startGamePacket) {
-                GameMenuController.newGame(startGamePacket.username1, startGamePacket.username2, startGamePacket.username3);
+                GameMenuController.newGame(startGamePacket.username1, startGamePacket.username2, startGamePacket.username3,
+                    startGamePacket.username4);
+                System.out.println("aaas");
+                Main.main.setScreen(GameMenu.getInstance());
                 System.out.println("Game started");
                 return true;
             } else if (innerPacket instanceof NPCDialoguePacket npcDialoguePacket) {

@@ -43,7 +43,7 @@ public class App {
         if(app == null){
             app = new App();
             setControllers();
-            new GameMenuController().newGame("ilias", "iliass", "iliasss");
+            new GameMenuController().newGame("ilia", "ilias", "iliass", "iliasss");
         }
         return app;
     }

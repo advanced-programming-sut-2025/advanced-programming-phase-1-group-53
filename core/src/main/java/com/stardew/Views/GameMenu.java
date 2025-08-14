@@ -125,8 +125,6 @@ public class GameMenu extends AppMenu implements InputProcessor {
             ShareController.enterMenu(matcher.group("menu"));
         } else if ((matcher = GameMenuCommand.exitGame.getMatcher(input)) != null) {
             controller.exitGame();
-        } else if ((matcher = GameMenuCommand.newGame.getMatcher(input)) != null) {
-            controller.newGame(matcher.group("username1"), matcher.group("username2"), matcher.group("username3"));
         } else if ((matcher = GameMenuCommand.loadGame.getMatcher(input)) != null) {
             controller.loadGame(matcher.group("index"));
         } else if ((matcher = GameMenuCommand.selectMap.getMatcher(input)) != null) {

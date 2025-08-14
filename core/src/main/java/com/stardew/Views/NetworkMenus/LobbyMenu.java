@@ -240,13 +240,24 @@ public class LobbyMenu extends AppMenu {
                     dialog.show(stage);
                     return;
                 }
-                String username1 = lobby.getPlayers().get(0).getUsername();
-                String username2 = lobby.getPlayers().get(1).getUsername();
-                String username3 = lobby.getPlayers().get(2).getUsername();
-//                String username4 = lobby.getPlayers().get(3).getUsername();
-                StartGamePacket packet1 = new StartGamePacket(App.getMyPlayer(), lobby.getId(), username1, username2, username3, null);
-//                StartGamePacket packet = controller.startGame(lobby);
+                String username1=null;
+                String username2=null;
+                String username3 = null;
+                String username4 = null;
+                try{
+
+                    username1 = lobby.getPlayers().get(0).getUsername();
+                   username2 = lobby.getPlayers().get(1).getUsername();
+                    username3 = lobby.getPlayers().get(2).getUsername();
+                    username4 = lobby.getPlayers().get(3).getUsername();
+
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+                StartGamePacket packet1 = new StartGamePacket(App.getMyPlayer(), lobby.getId(), username1, username2, username3, username4);
                 ClientApp.getInstance().getConnectionThread().sendPacket(packet1);
+//                StartGamePacket packet = controller.startGame(lobby);
             }
         });
         contentTable.add(startButton).pad(10).row();

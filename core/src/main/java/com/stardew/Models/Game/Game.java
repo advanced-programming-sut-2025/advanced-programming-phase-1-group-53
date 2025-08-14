@@ -52,8 +52,13 @@ public class Game {
 //        allItemsInTheGame.add(TrashCan.normalTrashCan);
 //        allItemsInTheGame.add(ShippingBin.ShippingBin);
 //        allItemsInTheGame.add(WateringCan.normalWateringCan);
+        System.out.println("hh");
         this.gameMap = new GameMap(players);
+        System.out.println("hk");
+
         this.currentMap = gameMap.getTiles();
+        System.out.println("hhA");
+
         //TODO uncomment
         this.messages = new GameMessages();
     }

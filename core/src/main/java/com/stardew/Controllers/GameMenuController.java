@@ -246,21 +246,40 @@ public class GameMenuController {
 //        App.setCurrentMenu(Menu.mainMenu);
     }
 
-    public static void newGame(String username1, String username2, String username3) {
-        Player me = App.getCurrentPlayer();
+    public static void newGame(String username0, String username1, String username2, String username3) {
+        System.out.println(username0+" "+username1+" "+username2+" "+username3);
+        Player me = App.getInstance().findPlayerByUsername(username0);
         Player player1 = App.getInstance().findPlayerByUsername(username1);
         Player player2 = App.getInstance().findPlayerByUsername(username2);
         Player player3 = App.getInstance().findPlayerByUsername(username3);
-        if (player1 == null || player2 == null || player3 == null) {
+        if (player1 == null && player2 == null && player3 == null) {
             System.out.println("One or more players not found.");
-            return;
         }
-        App.getInstance().setGame(new Game(List.of(App.getCurrentPlayer(),App.getInstance().findPlayerByUsername(username1)
-            , App.getInstance().findPlayerByUsername(username2), App.getInstance().findPlayerByUsername(username3))));
-        System.out.println("ll");
-        App.getGame().getGameMap().generateRandomThings(App.getGame().getPlayers(), 4);
-        Player.initializePlayerRelations(App.getGame().players);
-        System.out.println("khosh oomadid");
+
+        else if (player2 == null && player3 == null) {
+            App.getInstance().setGame(new Game(List.of(me, player1)));
+            System.out.println("ll");
+            App.getGame().getGameMap().generateRandomThings(App.getGame().getPlayers(), 4);
+            Player.initializePlayerRelations(App.getGame().players);
+            System.out.println("khosh oomadid");
+        }
+
+
+        else if (player3 == null) {
+            System.out.println("3");
+            App.getInstance().setGame(new Game(List.of(me , player1, player2)));
+            System.out.println("ll");
+            App.getGame().getGameMap().generateRandomThings(App.getGame().getPlayers(), 4);
+            Player.initializePlayerRelations(App.getGame().players);
+            System.out.println("khosh oomadid");
+        }
+        else {
+            App.getInstance().setGame(new Game(List.of(me , player1, player2, player3)));
+            System.out.println("ll");
+            App.getGame().getGameMap().generateRandomThings(App.getGame().getPlayers(), 4);
+            Player.initializePlayerRelations(App.getGame().players);
+            System.out.println("khosh oomadid");
+        }
     }
 
     public void loadGame(String index) {
