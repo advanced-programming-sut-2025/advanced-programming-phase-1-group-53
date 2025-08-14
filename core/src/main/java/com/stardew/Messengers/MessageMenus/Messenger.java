@@ -36,7 +36,7 @@ public abstract class Messenger extends AppMenu {
         inboxBtn.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
             @Override
             public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
-
+                //TODO
             }
         });
         table.add(inboxBtn).pad(10).row();
@@ -58,75 +58,6 @@ public abstract class Messenger extends AppMenu {
         table.add(backBtn).pad(10).row();
     }
 
-    protected void showChoosePlayerWindow() {
-        java.util.List<String> playerNames = new java.util.ArrayList<>();
-        for (var player : com.stardew.Models.Game.App.getInstance().getPlayers()) {
-            String displayName = player.getUsername();
-            if (player.getUsername().equals(com.stardew.Models.Game.App.getMyPlayer().getUsername())) {
-                displayName += " (You)";
-            }
-            playerNames.add(displayName);
-        }
-        SelectBox<String> selectBox = new SelectBox<>(skin);
-        selectBox.setItems(playerNames.toArray(new String[0]));
-        Window window = new Window("Choose Player", skin);
-        window.setSize(400, 300);
-        window.setPosition((stage.getWidth() - 400) / 2f, (stage.getHeight() - 300) / 2f);
-        window.add(selectBox).width(350).height(60).pad(20).row();
-        TextButton closeBtn = new TextButton("Close", skin);
-        closeBtn.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
-            @Override
-            public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
-                window.remove();
-            }
-        });
-        window.add(closeBtn).pad(20);
-        stage.addActor(window);
-        selectBox.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
-            @Override
-            public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
-                // TODO: use selectBox.getSelected() for further logic
-            }
-        });
-    }
-
-    public void showPlayersWindow() {
-        contactWindow = new Window("Player Info", skin);
-        contactWindow.setSize(400, 500);
-        contactWindow.setPosition((Gdx.graphics.getWidth() - 400) / 2f, (Gdx.graphics.getHeight() - 500) / 2f);
-        java.util.List<String> playerNames = new java.util.ArrayList<>();
-        for (var player : App.getInstance().getPlayers()) {
-            String displayName = player.getUsername();
-            if (player.getUsername().equals(App.getMyPlayer().getUsername())) {
-                displayName += " (You)";
-            }
-            playerNames.add(displayName);
-        }
-        SelectBox<String> selectBox = new SelectBox<>(skin);
-        selectBox.setItems(playerNames.toArray(new String[0]));
-        contactWindow.add(selectBox).width(350).height(60).pad(20).row();
-
-        TextButton messagingBtn = STab.createTextButton("message");
-        messagingBtn.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
-            @Override
-            public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
-                if (selectBox.getSelected() == null) {
-                    return;
-                }
-                sendMessage(selectBox.getSelected());
-            }
-        });
-
-        TextButton closeBtn = new TextButton("Close", skin);
-        Window finalWindow = contactWindow;
-        closeBtn.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
-            @Override
-            public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
-                finalWindow.remove();
-            }
-        });
-        contactWindow.add(closeBtn).pad(20);
-        stage.addActor(contactWindow);
-    }
+    protected abstract void showChoosePlayerWindow();
     protected abstract void sendMessage(String contactName);
 }
