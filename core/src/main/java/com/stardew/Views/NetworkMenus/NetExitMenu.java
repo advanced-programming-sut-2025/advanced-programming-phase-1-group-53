@@ -6,6 +6,10 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.stardew.Models.Game.App;
+import com.stardew.Models.Game.Player;
+import com.stardew.Network.Client.ClientApp;
+import com.stardew.Network.Server.ServerApp;
 import com.stardew.Views.AppMenu;
 
 public class NetExitMenu extends AppMenu {
@@ -20,6 +24,9 @@ public class NetExitMenu extends AppMenu {
     @Override
     public void show() {
         Gdx.app.exit();
-        //TODO Khosro: close the related connection threads
+        Player player = App.getMyPlayer();
+        App.getInstance().getPlayers().remove(player);
+        ServerApp.getInstance().getConnections().get(player.personalInfo.getConnectionId()).end();
+        ClientApp.getInstance().getConnectionThread().end();
     }
 }
