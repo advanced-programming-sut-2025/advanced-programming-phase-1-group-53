@@ -73,7 +73,7 @@ public class NetMainMenu extends AppMenu {
         exitButton.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
             @Override
             public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
-                ShareController.exit(null); // No Scanner needed for graphical exit
+                App.main.setScreen(new NetExitMenu(main));
             }
         });
         table.add(exitButton).pad(10).row();

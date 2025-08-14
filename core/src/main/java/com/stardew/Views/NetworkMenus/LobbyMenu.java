@@ -112,7 +112,7 @@ public class LobbyMenu extends AppMenu {
         ExitBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                App.main.setScreen(new ExitMenu(App.main));
+                App.main.setScreen(new NetExitMenu(App.main));
             }
         });
         table.add(ExitBtn).pad(20).row();
