@@ -81,7 +81,12 @@ public class App {
     }
 
     public static Player getCurrentPlayer() {
-        return currentPlayer;
+        if (Thread.currentThread() == App.getMainThread()) {
+            return App.getMyPlayer();
+        }
+        else {
+            return App.getCurrentPlayer();
+        }
     }
     public synchronized static void setCurrentPlayer(Player currentPlayer) {
         App.currentPlayer = currentPlayer;

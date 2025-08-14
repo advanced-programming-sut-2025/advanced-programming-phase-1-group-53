@@ -30,7 +30,7 @@ public class Player {
     private Farm farm;
     public final PersonalInfo personalInfo;
     public final Abilities abilities;
-    public final Backpack backpack = new Backpack();
+    public Backpack backpack = null;
     public final Energy energy;
     public final Activity activity;
     public final Position position;
@@ -81,6 +81,10 @@ public class Player {
         this.currentLobby = null;
         this.NPCDialogueHistory = new HashMap<>();
 //        System.out.println("1");
+    }
+
+    public void initializeBackPack() {
+        backpack = new Backpack();
     }
 
     public void loadGraphics() {

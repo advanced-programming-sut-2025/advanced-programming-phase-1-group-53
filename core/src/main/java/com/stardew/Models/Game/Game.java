@@ -83,7 +83,12 @@ public class Game {
     }
 
     public Player getCurrentPlayer(){
-        return players.get(numOfTurn);
+        if (Thread.currentThread() == App.getMainThread()) {
+            return App.getMyPlayer();
+        }
+        else {
+            return App.getCurrentPlayer();
+        }
     }
 
     public Item getItemByItemType(ItemType itemType){
