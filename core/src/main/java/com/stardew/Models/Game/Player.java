@@ -30,7 +30,7 @@ public class Player {
     private Farm farm;
     public final PersonalInfo personalInfo;
     public final Abilities abilities;
-    public final Backpack backpack = null;
+    public final Backpack backpack = new Backpack();
     public final Energy energy;
     public final Activity activity;
     public final Position position;

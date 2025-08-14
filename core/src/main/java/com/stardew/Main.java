@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.stardew.Controllers.GameMenuController;
 import com.stardew.Models.Game.App;
+import com.stardew.Models.Game.GameAssetManager;
 import com.stardew.Network.Client.ClientApp;
 //import com.stardew.Views.AppView;
 import com.stardew.Views.LoginRegisterMenu;
@@ -37,6 +38,8 @@ public class Main extends Game {
 
     @Override
     public void create() {
+        GameAssetManager manager = new GameAssetManager();
+        new Tab();
 //        stage = new Stage();
 //        TextButton textButton = Tab.createTextButton("kkk");
 //        textButton.setSize(0, 0);

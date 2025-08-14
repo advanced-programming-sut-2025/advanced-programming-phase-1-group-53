@@ -81,6 +81,7 @@ public class ServerConnectionThread extends ConnectionThread {
         System.out.println(packet.getSenderId());
         if (player != null) {
             App.setCurrentPlayer(player);
+            System.out.println("hi");
         }
         Result result;
         System.out.println("Received packet from " + getClientId() + ": " + packet.getClass().getSimpleName());
@@ -116,6 +117,8 @@ public class ServerConnectionThread extends ConnectionThread {
         } else if (packet instanceof StartGamePacket startGamePacket) {
             System.out.println("start game packet received for clientId: " + clientId);
             GameMenuController.newGame( startGamePacket.username1, startGamePacket.username2, startGamePacket.username3,startGamePacket.username4);
+            App.getGame().setMessages(new GameMessages());
+            System.out.println("njnn");
             ServerGeneralRespondPacket pk = new ServerGeneralRespondPacket(new Result(true, "game started"), startGamePacket);
             ArrayList<String> usernames = new ArrayList<>();
             usernames.add(startGamePacket.username1);
@@ -124,7 +127,7 @@ public class ServerConnectionThread extends ConnectionThread {
             usernames.add(startGamePacket.username4);
             for(String str : usernames) {
                 if(str != null) {
-                    ServerApp.getInstance().getConnections().get(str).sendPacket(pk);
+                    ServerApp.getInstance().getConnections().get(App.getInstance().findPlayerByUsername(str).personalInfo.getConnectionId()).sendPacket(pk);
                 }
             }
             return true;

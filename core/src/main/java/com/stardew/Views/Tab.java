@@ -17,7 +17,7 @@ public class Tab implements Screen, InputProcessor {
     protected  float START_Y = SCREEN_HEIGHT /3;
     protected float WIDTH = SCREEN_WIDTH /3;
     protected float HEIGHT = SCREEN_HEIGHT /3;
-    public static Skin skin = new Skin(Gdx.files.internal("skin/comic-ui.json"));
+    public static Skin skin = new Skin(Gdx.files.internal("Skin/comic-ui.json"));
     public static Skin stardewSkin =  new Skin(Gdx.files.internal("skin/LibGdx-Skin-main/NzSkin.json"));
     protected boolean menuVisible = false;
     protected Stage stage;

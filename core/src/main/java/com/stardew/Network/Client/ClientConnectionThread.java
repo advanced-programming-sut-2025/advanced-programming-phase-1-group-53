@@ -142,6 +142,8 @@ public class ClientConnectionThread extends ConnectionThread {
                 GameMenuController.newGame(startGamePacket.username1, startGamePacket.username2, startGamePacket.username3,
                     startGamePacket.username4);
                 System.out.println("aaas");
+                App.getGame().setMessages(new GameMessages());
+                App.getGame().initializeGame();
                 Main.main.setScreen(GameMenu.getInstance());
                 System.out.println("Game started");
                 return true;

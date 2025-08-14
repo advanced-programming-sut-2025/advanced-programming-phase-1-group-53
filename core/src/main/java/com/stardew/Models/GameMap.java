@@ -102,10 +102,10 @@ public class GameMap {
         owner.position.setY((startY + FARM_SIZE / 2)*GameMap.getTilePrintSize());
         MapsNames location = findLocationInGameMap(owner.position.getX(), owner.position.getY());
         owner.setCurrentMap(location);
-//        owner.setMyFarm(location);
-//        Farm farm = new Farm((new Position(startX, startY, FARM_SIZE, FARM_SIZE)), owner);
-//        owner.setFarm(farm);
-//        addFarmDoors(startY, startX, owner);
+        owner.setMyFarm(location);
+        Farm farm = new Farm((new Position(startX, startY, FARM_SIZE, FARM_SIZE)), owner);
+        owner.setFarm(farm);
+        addFarmDoors(startY, startX, owner);
     }
 
     private void placeStructure(int startY, int startX, int structureNumber) {

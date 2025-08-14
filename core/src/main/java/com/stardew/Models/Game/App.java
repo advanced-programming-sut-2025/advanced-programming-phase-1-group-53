@@ -18,6 +18,7 @@ public class App {
 
     //TODO: fix into multiplayer
     private static Player currentPlayer = null;
+    private static final Thread MAIN_THREAD = Thread.currentThread();
     private static Player myPlayer = null;
     private static App app = null;
     private static Menu currentMenu = null;
@@ -101,6 +102,10 @@ public class App {
 
     public ArrayList<Game> getGames() {
         return games;
+    }
+
+    public static Thread getMainThread() {
+        return MAIN_THREAD;
     }
 
     public Player findPlayerByUsername(String username) {

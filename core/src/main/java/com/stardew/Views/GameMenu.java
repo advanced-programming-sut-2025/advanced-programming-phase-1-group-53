@@ -79,7 +79,7 @@ public class GameMenu extends AppMenu implements InputProcessor {
     public static void renewInstance(){
         gameMenu = null;
     }
-    private String currentPlayerName = App.getCurrentPlayer().getPersonalInfo().getName();
+    private String currentPlayerName = App.getMyPlayer().getPersonalInfo().getName();
 
     public GameMenu(Game main) {
         super(main);
