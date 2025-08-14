@@ -515,5 +515,14 @@ public class Player {
         }
         return boxes;
     }
+
+    public MessageBox findMessageBoxBySender(String sender) {
+        for (MessageBox box : getMessageBoxes()) {
+            if (box.getSender().equalsIgnoreCase(sender)) {
+                return box;
+            }
+        }
+        return null;
+    }
 }
 

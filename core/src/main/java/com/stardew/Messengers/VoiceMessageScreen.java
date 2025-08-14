@@ -1,11 +1,10 @@
 package com.stardew.Messengers;
 
-import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Window;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.stardew.Models.Game.App;
 import com.stardew.Views.STab;
+
+import java.util.ArrayList;
 
 public class VoiceMessageScreen extends Messenger {
     @Override
@@ -77,11 +76,66 @@ public class VoiceMessageScreen extends Messenger {
 
     @Override
     public void showInbox() {
+        ArrayList<String> senderNames = new ArrayList<>();
+        for (MessageBox box : App.getMyPlayer().getMessageBoxes()){
+            senderNames.add(box.getSender());
+        }
 
+        SelectBox<String> selectBox = new SelectBox<>(skin);
+        selectBox.setItems(senderNames.toArray(new String[0]));
+
+        Window window = new Window("Inbox", skin);
+        window.setSize(600, 800);
+        window.setPosition((stage.getWidth() - 600) / 2f, (stage.getHeight() - 800) / 2f);
+        window.add(selectBox).width(500).height(80).pad(30).row();
+
+        TextButton selectBtn = STab.createTextButton("select");
+        selectBtn.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
+            @Override
+            public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
+                if (selectBox.getSelected() != null) {
+                    receiveMessage(selectBox.getSelected());
+                }
+            }
+        });
+        window.add(selectBtn).pad(30).row();
+
+        TextButton closeBtn = new TextButton("Close", skin);
+        closeBtn.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
+            @Override
+            public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
+                window.remove();
+            }
+        });
+        window.add(closeBtn).pad(30);
+        stage.addActor(window);
     }
 
     @Override
-    public void receiveMessage(MessageBox box) {
+    public void receiveMessage(String senderName) {
+        MessageBox box = App.getMyPlayer().findMessageBoxBySender(senderName);
 
+        Window window = new Window("Messages from " + senderName, skin);
+        window.setSize(600, 800);
+        window.setPosition((stage.getWidth() - 600) / 2f, (stage.getHeight() - 800) / 2f);
+
+        Table messageTable = new Table();
+        for (String message : box.getMessages()) {
+            TextButton messageBtn = new TextButton(message, skin);
+            messageTable.add(messageBtn).width(500).height(60).pad(5).row();
+        }
+
+        ScrollPane scrollPane = new ScrollPane(messageTable, skin);
+        window.add(scrollPane).width(550).height(650).pad(20).row();
+
+        TextButton closeBtn = new TextButton("Close", skin);
+        closeBtn.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
+            @Override
+            public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
+                window.remove();
+            }
+        });
+        window.add(closeBtn).pad(20);
+        stage.addActor(window);
     }
 }

@@ -61,5 +61,5 @@ public abstract class Messenger extends AppMenu {
 
     //receive message methods
     public abstract void showInbox();
-    public abstract void receiveMessage(MessageBox box);
+    public abstract void receiveMessage(String boxName);
 }
