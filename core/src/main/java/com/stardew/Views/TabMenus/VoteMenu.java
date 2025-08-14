@@ -59,8 +59,8 @@ public class VoteMenu extends Tab {
         back.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-//                ClientApp.getInstance().getConnectionThread().sendPacket(new StartVotingPacket(App.getMyPlayer(),
-//                     ElectionType.REMOVE_PLAYER,(String) selectBox.getSelected());
+                ClientApp.getInstance().getConnectionThread().sendPacket(new StartVotingPacket(App.getMyPlayer(),
+                     ElectionType.REMOVE_PLAYER,(String) selectBox.getSelected()));
             }
         });
         stage.addActor(back);
@@ -71,8 +71,8 @@ public class VoteMenu extends Tab {
         dis.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-//                ClientApp.getInstance().getConnectionThread().sendPacket(new StartVotingPacket(App.getMyPlayer(),
-//                     ElectionType.TERMINATE_GAME,null));
+                ClientApp.getInstance().getConnectionThread().sendPacket(new StartVotingPacket(App.getMyPlayer(),
+                     ElectionType.TERMINATE_GAME,null));
             }
         });
         stage.addActor(dis);
