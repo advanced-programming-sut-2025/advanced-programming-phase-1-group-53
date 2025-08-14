@@ -2,6 +2,9 @@ package com.stardew.Messengers.MessageMenus;
 
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.stardew.Models.Game.App;
+import com.stardew.Network.Client.ClientApp;
+import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.SendPrivateMessagePacket;
+import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.SendPublicMessagePacket;
 import com.stardew.Views.AppMenu;
 import com.stardew.Views.NetworkMenus.PlayersMenu;
 import com.stardew.Views.STab;
@@ -59,7 +62,8 @@ public class TextMessageScreen extends Messenger {
     }
 
     @Override
-    protected void sendMessage(String ContactName) {
+    protected void sendMessage(String contactName) {
+        this.contactName = contactName;
         Window window = new Window("Send Text Message", skin);
         window.setSize(600, 800);
         window.setPosition((stage.getWidth() - 600) / 2f, (stage.getHeight() - 800) / 2f);
@@ -70,7 +74,16 @@ public class TextMessageScreen extends Messenger {
         messagingBtn.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
             @Override
             public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
-//                if (public )
+                if (contactName.equalsIgnoreCase("public")) {
+                    ClientApp.getInstance().getConnectionThread().sendPacket(
+                        new SendPublicMessagePacket(App.getMyPlayer(), textArea.getText(), contactName, true)
+                    );
+                }
+                else {
+                    ClientApp.getInstance().getConnectionThread().sendPacket(
+                        new SendPrivateMessagePacket(App.getMyPlayer(), textArea.getText(), contactName)
+                    );
+                }
             }
         });
         window.add(messagingBtn).pad(30).row();
