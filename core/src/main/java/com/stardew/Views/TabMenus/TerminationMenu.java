@@ -7,8 +7,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.stardew.Main;
+import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.Player;
 import com.stardew.Models.MessageManager;
+import com.stardew.Network.Client.ClientApp;
+import com.stardew.Network.Common.Packet.ClientPacket.ElectionPackets.VotePacket;
 import com.stardew.Views.GameMenu;
 import com.stardew.Views.Tab;
 
@@ -37,6 +40,7 @@ public class TerminationMenu extends Tab {
         back.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                ClientApp.getInstance().sendPacketToServer(new VotePacket(App.getCurrentPlayer(), true));
                 Main.main.setScreen(GameMenu.getInstance());
             }
         });
@@ -48,6 +52,7 @@ public class TerminationMenu extends Tab {
         dis.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                ClientApp.getInstance().sendPacketToServer(new VotePacket(App.getCurrentPlayer(), false));
                 Main.main.setScreen(GameMenu.getInstance());
             }
         });

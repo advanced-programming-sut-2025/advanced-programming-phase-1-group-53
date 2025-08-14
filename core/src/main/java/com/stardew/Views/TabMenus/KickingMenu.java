@@ -11,6 +11,10 @@ import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.GameAssetManager;
 import com.stardew.Models.Game.Player;
 import com.stardew.Models.MessageManager;
+import com.stardew.Network.Client.ClientApp;
+import com.stardew.Network.Common.Packet.ClientPacket.ElectionPackets.ElectionType;
+import com.stardew.Network.Common.Packet.ClientPacket.ElectionPackets.StartVotingPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.ElectionPackets.VotePacket;
 import com.stardew.Views.GameMenu;
 import com.stardew.Views.Tab;
 
@@ -46,6 +50,7 @@ public class KickingMenu extends Tab {
         back.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                ClientApp.getInstance().sendPacketToServer(new VotePacket(App.getCurrentPlayer(), true));
                 Main.main.setScreen(GameMenu.getInstance());
             }
         });
@@ -57,6 +62,7 @@ public class KickingMenu extends Tab {
         dis.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                ClientApp.getInstance().sendPacketToServer(new VotePacket(App.getCurrentPlayer(), false));
                 Main.main.setScreen(GameMenu.getInstance());
             }
         });
