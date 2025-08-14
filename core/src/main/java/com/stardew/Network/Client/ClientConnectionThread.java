@@ -2,10 +2,13 @@ package com.stardew.Network.Client;
 
 import com.stardew.Controllers.GameMenuController;
 import com.stardew.Controllers.InGameControllers.Controller;
+import com.stardew.Controllers.InGameControllers.InventoryMenuController;
+import com.stardew.Main;
 import com.stardew.Models.Election;
 import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.Player;
 import com.stardew.Models.GameMessages;
+import com.stardew.Models.Items.Animal;
 import com.stardew.Models.Lobby;
 import com.stardew.Models.NPC.NPC;
 import com.stardew.Models.Result;
@@ -13,6 +16,7 @@ import com.stardew.Network.Common.ConnectionThread;
 import com.stardew.Network.Common.Packet.*;
 import com.stardew.Network.Common.Packet.ClientPacket.AudioPackets.RequestAudioPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.AudioPackets.UploadAudioPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.BuyItemPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.Reaction;
 import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.ReactionPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.SendPrivateMessagePacket;
@@ -31,6 +35,7 @@ import com.stardew.Network.Common.Packet.ClientPacket.KeyboardPackets.*;
 import com.stardew.Network.Common.Packet.ClientPacket.LobbyPackets.CreateLobbyPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.LobbyPackets.JoinLobbyPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.LobbyPackets.LeaveLobbyPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.PickItemPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.RegisterPackets.LoginPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.RegisterPackets.SignUpPacket;
 import com.stardew.Network.Common.Packet.ServerPacket.NPCDialoguePacket;
@@ -38,6 +43,8 @@ import com.stardew.Network.Common.Packet.ServerPacket.ServerGeneralRespondPacket
 import com.stardew.Network.Common.Packet.ServerPacket.UpdateMapPacket;
 import com.stardew.Network.Common.Packet.ServerPacket.WelcomePacket;
 import com.stardew.Network.Server.ChangeDurationPacket;
+import com.stardew.Network.Server.ServerApp;
+import com.stardew.Views.GameMenu;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -79,6 +86,7 @@ public class ClientConnectionThread extends ConnectionThread {
 
         if (packet instanceof ServerGeneralRespondPacket serverGeneralRespondPacket) {
             Packet innerPacket = serverGeneralRespondPacket.getReceivedPacket();
+            System.out.println("Received from server: " + innerPacket.getClass().getSimpleName());
             Result result = serverGeneralRespondPacket.result;
             Player player = App.getInstance().findPlayerByUsername(innerPacket.getSenderId());
             System.out.println(innerPacket.getSenderId());
@@ -136,7 +144,12 @@ public class ClientConnectionThread extends ConnectionThread {
                 }
                 return true;
             } else if (innerPacket instanceof StartGamePacket startGamePacket) {
-                GameMenuController.newGame(startGamePacket.username1, startGamePacket.username2, startGamePacket.username3);
+                GameMenuController.newGame(startGamePacket.username1, startGamePacket.username2, startGamePacket.username3,
+                    startGamePacket.username4);
+                System.out.println("aaas");
+                App.getGame().setMessages(new GameMessages());
+                App.getGame().initializeGame();
+                Main.getInstance().setGameStarted(true);
                 System.out.println("Game started");
                 return true;
             } else if (innerPacket instanceof NPCDialoguePacket npcDialoguePacket) {
@@ -266,6 +279,26 @@ public class ClientConnectionThread extends ConnectionThread {
                 }
                 Reaction.sendReaction(reactionPacket);
                 System.out.println(result.message());
+                return true;
+            } else if (innerPacket instanceof PickItemPacket pickItemPacket) {
+                if (!result.success()) {
+                    System.out.println(result.message());
+                    return true;
+                }
+                InventoryMenuController.pickItem(pickItemPacket);
+                System.out.println(result.message());
+                return true;
+            } else if (innerPacket instanceof BuyItemPacket buyItemPacket) {
+                if(App.getGame().getItemByItemType(buyItemPacket.itemType) instanceof Animal)
+                    GameMenu.getInstance().getController().abilities.shopping.purchase(buyItemPacket.itemType, buyItemPacket.field);
+                else{
+                    try{
+                        GameMenu.getInstance().getController().abilities.shopping.purchase(buyItemPacket.itemType, Integer.parseInt(buyItemPacket.field));
+                    }
+                    catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
                 return true;
             }
             return false;

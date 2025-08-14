@@ -10,6 +10,7 @@ import com.stardew.Models.Game.GameAssetManager;
 import com.stardew.Models.Items.Item;
 import com.stardew.Network.Client.ClientApp;
 import com.stardew.Network.Common.Packet.ClientPacket.KeyboardPackets.TouchDownPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.PickItemPacket;
 import com.stardew.Views.GameMenu;
 import com.stardew.Views.Tab;
 
@@ -163,7 +164,8 @@ public class InventoryMenu extends Tab {
                 b2 = GameMenuController.coordinateCollision(SCREEN_HEIGHT-screenY, 0,s.getY(), s.getHeight());
                 if(b1 && b2){
                     try {
-                        App.getCurrentPlayer().backpack.setItemInHand(App.getCurrentPlayer().backpack.showInventory().get(i-6).clone());
+                        ClientApp.getInstance().sendPacketToServer(new PickItemPacket(App.getCurrentPlayer(),
+                            App.getCurrentPlayer().backpack.showInventory().get(i-6).getItemType()));
                     }
                     catch (Exception e){
                         e.printStackTrace();

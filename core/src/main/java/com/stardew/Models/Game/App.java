@@ -18,6 +18,7 @@ public class App {
 
     //TODO: fix into multiplayer
     private static Player currentPlayer = null;
+    private static final Thread MAIN_THREAD = Thread.currentThread();
     private static Player myPlayer = null;
     private static App app = null;
     private static Menu currentMenu = null;
@@ -43,7 +44,7 @@ public class App {
         if(app == null){
             app = new App();
             setControllers();
-            new GameMenuController().newGame("ilias", "iliass", "iliasss");
+            new GameMenuController().newGame("ilia", "ilias", "iliass", "iliasss");
         }
         return app;
     }
@@ -80,7 +81,12 @@ public class App {
     }
 
     public static Player getCurrentPlayer() {
-        return currentPlayer;
+        if (Thread.currentThread() == App.getMainThread()) {
+            return App.getMyPlayer();
+        }
+        else {
+            return App.getCurrentPlayer();
+        }
     }
     public synchronized static void setCurrentPlayer(Player currentPlayer) {
         App.currentPlayer = currentPlayer;
@@ -101,6 +107,10 @@ public class App {
 
     public ArrayList<Game> getGames() {
         return games;
+    }
+
+    public static Thread getMainThread() {
+        return MAIN_THREAD;
     }
 
     public Player findPlayerByUsername(String username) {

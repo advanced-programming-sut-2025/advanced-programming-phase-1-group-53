@@ -10,13 +10,10 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
-import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.utils.Array;
 import com.stardew.Controllers.GameMenuController;
 import com.stardew.Controllers.ShareController;
@@ -43,7 +40,7 @@ public class GameMenu extends AppMenu implements InputProcessor {
     private static int SCREEN_WIDTH;
     private static int SCREEN_HEIGHT;
     private static GameMenu gameMenu = null;
-    private SpriteBatch batch;
+    private SpriteBatch batch ;
     private Sprite sprite;
     private Stage stage;
     private float thunderAlpha = 0f;
@@ -67,7 +64,7 @@ public class GameMenu extends AppMenu implements InputProcessor {
     }
 
     private GameMenu(){
-
+        super();
     }
 
     public static GameMenu getInstance(){
@@ -79,7 +76,7 @@ public class GameMenu extends AppMenu implements InputProcessor {
     public static void renewInstance(){
         gameMenu = null;
     }
-    private String currentPlayerName = App.getCurrentPlayer().getPersonalInfo().getName();
+    private String currentPlayerName = App.getMyPlayer().getPersonalInfo().getName();
 
     public GameMenu(Game main) {
         super(main);
@@ -125,8 +122,6 @@ public class GameMenu extends AppMenu implements InputProcessor {
             ShareController.enterMenu(matcher.group("menu"));
         } else if ((matcher = GameMenuCommand.exitGame.getMatcher(input)) != null) {
             controller.exitGame();
-        } else if ((matcher = GameMenuCommand.newGame.getMatcher(input)) != null) {
-            controller.newGame(matcher.group("username1"), matcher.group("username2"), matcher.group("username3"));
         } else if ((matcher = GameMenuCommand.loadGame.getMatcher(input)) != null) {
             controller.loadGame(matcher.group("index"));
         } else if ((matcher = GameMenuCommand.selectMap.getMatcher(input)) != null) {
@@ -288,29 +283,29 @@ public class GameMenu extends AppMenu implements InputProcessor {
 
     @Override
     public void show() {
-        table.clear();
+        table = new Table();
         stage = new Stage();
         batch = new SpriteBatch();
         shapeRenderer = new ShapeRenderer();
         Gdx.input.setInputProcessor(this);
-        Label title = new Label("Game Menu", skin);
-        table.add(title).pad(20).row();
-        TextButton playersButton = new TextButton("Players", skin);
-        playersButton.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
-            @Override
-            public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
-                showPlayersWindow();
-            }
-        });
-        table.add(playersButton).pad(10).row();
-        TextButton backButton = new TextButton("Back", skin);
-        backButton.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
-            @Override
-            public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
-                main.setScreen(new MainMenu(main));
-            }
-        });
-        table.add(backButton).pad(20).row();
+//        Label title = new Label("Game Menu", skin);
+//        table.add(title).pad(20).row();
+//        TextButton playersButton = new TextButton("Players", skin);
+//        playersButton.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
+//            @Override
+//            public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
+//                showPlayersWindow();
+//            }
+//        });
+//        table.add(playersButton).pad(10).row();
+//        TextButton backButton = new TextButton("Back", skin);
+//        backButton.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
+//            @Override
+//            public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
+//                main.setScreen(new MainMenu(main));
+//            }
+//        });
+//        table.add(backButton).pad(20).row();
         for(TextButton textButton : MessageManager.getTextButtons().keySet()){
             stage.addActor(textButton);
             MessageManager.setChanged(false);

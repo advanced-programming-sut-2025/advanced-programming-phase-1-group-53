@@ -18,30 +18,7 @@ public class Tile {
     public Tile(Position position, TileKind tileKind) {
         this.position = position;
         this.tileKind = tileKind;
-        if(tileKind.equals(TileKind.grass))
-            sprite = new Sprite(GameAssetManager.getTilesTextures()[0],GameMap.getTilePrintSize() ,GameMap.getTilePrintSize());
-        else if(tileKind.equals(TileKind.wall))
-            sprite = new Sprite(GameAssetManager.getTilesTextures()[1],GameMap.getTilePrintSize() ,GameMap.getTilePrintSize());
-        else if(tileKind.equals(TileKind.asphalt))
-            sprite = new Sprite(GameAssetManager.getTilesTextures()[2],GameMap.getTilePrintSize() ,GameMap.getTilePrintSize());
-        else if(tileKind.equals(TileKind.shippingBin))
-            sprite = new Sprite(GameAssetManager.getTilesTextures()[2],GameMap.getTilePrintSize() ,GameMap.getTilePrintSize());
-        else if(tileKind.equals(TileKind.structure))
-            sprite = new Sprite(GameAssetManager.getTilesTextures()[0],GameMap.getTilePrintSize() ,GameMap.getTilePrintSize());
-        else if(tileKind.equals(TileKind.shop))
-            sprite = new Sprite(GameAssetManager.getTilesTextures()[2],GameMap.getTilePrintSize() ,GameMap.getTilePrintSize());
-        else if(tileKind.equals(TileKind.NPC))
-            sprite = new Sprite(GameAssetManager.getTilesTextures()[1],GameMap.getTilePrintSize() ,GameMap.getTilePrintSize());
-        else if(tileKind.equals(TileKind.mine))
-            sprite = new Sprite(GameAssetManager.getTilesTextures()[3],GameMap.getTilePrintSize() ,GameMap.getTilePrintSize());
-        else if(tileKind.equals(TileKind.wateredPlowed))
-            sprite = new Sprite(GameAssetManager.getTilesTextures()[6],GameMap.getTilePrintSize() ,GameMap.getTilePrintSize());
-        else if(tileKind.equals(TileKind.soiledPlowed))
-            sprite = new Sprite(GameAssetManager.getTilesTextures()[7],GameMap.getTilePrintSize() ,GameMap.getTilePrintSize());
-        else if(tileKind.equals(TileKind.plowed))
-            sprite = new Sprite(GameAssetManager.getTilesTextures()[4],GameMap.getTilePrintSize() ,GameMap.getTilePrintSize());
-        else
-            sprite = new Sprite(GameAssetManager.getTilesTextures()[0],GameMap.getTilePrintSize() ,GameMap.getTilePrintSize());
+
     }
 
     public Sprite getSprite() {

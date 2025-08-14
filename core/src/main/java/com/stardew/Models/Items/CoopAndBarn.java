@@ -6,6 +6,7 @@ import com.stardew.Main;
 import com.stardew.Models.Game.GameAssetManager;
 import com.stardew.Models.MessageManager;
 import com.stardew.Models.Result;
+import com.stardew.Views.Tab;
 import com.stardew.Views.TabMenus.CoopMenu;
 
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ public class CoopAndBarn extends Item{
     private int capacity;
     private final ArrayList<Animal> animals = new ArrayList<>();
     private ArrayList<Animal> outAnimals = new ArrayList<>();
-    private CoopMenu coopMenu = new CoopMenu();
+    private CoopMenu coopMenu;
 
     private CoopAndBarn(ItemType itemType){
         super(itemType);
@@ -41,6 +42,10 @@ public class CoopAndBarn extends Item{
         if(animals.size()>= capacity)
             return false;
         return true;
+    }
+
+    public void initializeForClient(){
+        coopMenu=new CoopMenu();
     }
 
     public void setUpCoopMenu(){

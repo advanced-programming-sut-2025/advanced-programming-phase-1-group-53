@@ -63,10 +63,11 @@ public class LobbyController {
         }
         ClientApp.getInstance().getConnectionThread().sendPacket(packet);
         try {
-            Thread.sleep(100);
+            Thread.sleep(200);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+//        System.out.println(App.getInstance().getLobbies().size() + " lobbies");
     }
 
     public Lobby searchLobbyById(String id) {

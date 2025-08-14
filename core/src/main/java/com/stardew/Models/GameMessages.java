@@ -18,8 +18,8 @@ public class GameMessages {
                 continue;
             }
             ArrayList<ChatMessage> chatMessages = new ArrayList<>();
-            App.getGame().getMessages().getPrivateChatMessages().put(player1.personalInfo.getName() + ":" + player.personalInfo.getName(), chatMessages);
-            App.getGame().getMessages().getPrivateChatMessages().put(player.personalInfo.getName() + ":" + player1.personalInfo.getName(), chatMessages);
+            this.getPrivateChatMessages().put(player1.personalInfo.getName() + ":" + player.personalInfo.getName(), chatMessages);
+            this.getPrivateChatMessages().put(player.personalInfo.getName() + ":" + player1.personalInfo.getName(), chatMessages);
         }
     }
 

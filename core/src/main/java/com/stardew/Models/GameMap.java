@@ -60,20 +60,28 @@ public class GameMap {
 
     private void initializeMap(List<Player> players) {
         // Fill the entire map with "wall" tiles
+        System.out.println("aa");
+
         for (int y = 0; y < MAP_SIZE; y++) {
             for (int x = 0; x < MAP_SIZE; x++) {
                 tiles[y][x] = new Tile(new Position(x, y, 1, 1), TileKind.grass);
             }
         }
 
+        System.out.println("aa");
+
+        int[] x= new int[]{0, MAP_SIZE-FARM_SIZE, 0, MAP_SIZE-FARM_SIZE};
+        int[] y = new int[]{0, 0, MAP_SIZE-FARM_SIZE, MAP_SIZE-FARM_SIZE};
         // Initialize farms in the four corners
-        initializeFarm(0, 0, players.get(0)); // Top-left
-        initializeFarm(0, MAP_SIZE - FARM_SIZE, players.get(1)); // Top-right
-        initializeFarm(MAP_SIZE - FARM_SIZE, 0, players.get(2)); // Bottom-left
-        initializeFarm(MAP_SIZE - FARM_SIZE, MAP_SIZE - FARM_SIZE, players.get(3)); // Bottom-right
+        for(int i = 0; i< players.size(); i++){
+            initializeFarm(y[i], x[i], players.get(i));
+        }
+        System.out.println("aa");
+
 
         // Initialize the village at the center
         initializeVillage();
+        System.out.println("aa");
 
     }
 
