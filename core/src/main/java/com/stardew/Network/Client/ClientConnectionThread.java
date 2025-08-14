@@ -86,9 +86,7 @@ public class ClientConnectionThread extends ConnectionThread {
                 App.setCurrentPlayer(player);
             }
 
-            if (innerPacket instanceof LoginPacket) {
-
-            } else if (innerPacket instanceof CreateLobbyPacket createLobbyPacket) {
+            if (innerPacket instanceof CreateLobbyPacket createLobbyPacket) {
                 if (!result.success()) {
                     System.out.println(result.message());
                     return true;

@@ -60,10 +60,10 @@ public class NetSignupController {
                 return "Password must be at least 8 chars, include upper case, number, special char.";
             }
 
-            FileHandle profileFile = Gdx.files.local(PROFILE_DIR + username + ".json");
-            if (profileFile.exists()) {
-                return "Username already exists.";
-            }
+//            FileHandle profileFile = Gdx.files.local(PROFILE_DIR + username + ".json");
+//            if (profileFile.exists()) {
+//                return "Username already exists.";
+//            }
         }
         String hashedPassword = hashPassword(password);
         SignUpPacket packet = finalizeRegistration(
@@ -71,7 +71,7 @@ public class NetSignupController {
         );
         ClientApp.getInstance().getConnectionThread().sendPacket(packet);
         try {
-            Thread.sleep(50);
+            Thread.sleep(100);
         } catch (InterruptedException e) {
             // ignore
         }
