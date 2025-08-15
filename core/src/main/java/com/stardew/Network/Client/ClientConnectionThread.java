@@ -168,8 +168,9 @@ public class ClientConnectionThread extends ConnectionThread {
                     return true;
                 }
                 String dialogue = npcDialoguePacket.dialogue;
-                // کلاینت به دیالوگ هیستوری دسترسی نداره
-                // TODO show dialogue
+                if (player != null) {
+                    player.setNpcDialogue(dialogue);
+                }
                 return true;
             } else if (innerPacket instanceof KeyUpPacket keyUpPacket) {
                 if (!result.success()) {
