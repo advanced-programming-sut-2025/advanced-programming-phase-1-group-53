@@ -73,6 +73,7 @@ public class Election {
             return result;
         }
         applyElectionResult(result);
+        App.getGame().setElection(null);
         return result;
     }
 
@@ -107,7 +108,7 @@ public class Election {
             return new ServerGeneralRespondPacket(new Result(false, "an Election is running."), packet);
         }
         startElection(packet);
-        return new ServerGeneralRespondPacket(new Result(true, "Election finished"), packet);
+        return new ServerGeneralRespondPacket(new Result(true, "Election started"), packet);
     }
 
     public static void startElection(StartVotingPacket packet) {
@@ -129,7 +130,7 @@ public class Election {
             return;
         }
         App.getGame().getElection().getVotes().add(packet.vote);
-        if (App.getGame().getElection().getVotes().size() == App.getGame().getPlayers().size()) {
+        if (App.getGame().getElection().getVotes().size() >= App.getGame().getPlayers().size()) {
             try {
                 Thread.sleep(500);
                 App.getGame().getElection().setFinished(true);
