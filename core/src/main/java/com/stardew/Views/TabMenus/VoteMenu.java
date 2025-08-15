@@ -1,6 +1,7 @@
 package com.stardew.Views.TabMenus;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
@@ -15,6 +16,7 @@ import com.stardew.Models.MessageManager;
 import com.stardew.Network.Client.ClientApp;
 import com.stardew.Network.Common.Packet.ClientPacket.ElectionPackets.ElectionType;
 import com.stardew.Network.Common.Packet.ClientPacket.ElectionPackets.StartVotingPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.KeyboardPackets.KeyDownPacket;
 import com.stardew.Views.GameMenu;
 import com.stardew.Views.Tab;
 
@@ -100,5 +102,14 @@ public class VoteMenu extends Tab {
 
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
+    }
+
+    @Override
+    public boolean keyDown(int keycode) {
+
+        if(keycode == Input.Keys.ESCAPE){
+            Main.getInstance().setScreen(GameMenu.getInstance());
+        }
+        return true;
     }
 }

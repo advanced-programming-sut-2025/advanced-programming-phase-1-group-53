@@ -241,11 +241,10 @@ public class ClientConnectionThread extends ConnectionThread {
             } else if (innerPacket instanceof StartVotingPacket startVotingPacket) {
                 if (!result.success()) {
                     System.out.println(result.message());
-                    // TODO jabar
                 }
                 Election.startElection(startVotingPacket);
                 System.out.println(result.message());
-                //TODO jabar
+
                 return true;
             } else if (innerPacket instanceof VotePacket votePacket) {
                 if (!result.success()) {

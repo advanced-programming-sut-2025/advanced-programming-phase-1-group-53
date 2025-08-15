@@ -21,6 +21,7 @@ import com.stardew.Enums.GameMenuCommand;
 import com.stardew.Enums.ItemType;
 import com.stardew.Enums.TileKind;
 import com.stardew.Main;
+import com.stardew.Models.Election;
 import com.stardew.Models.Energy;
 import com.stardew.Models.Game.App;
 import com.stardew.Models.GameMap;
@@ -28,6 +29,7 @@ import com.stardew.Models.Items.*;
 import com.stardew.Models.Items.CraftAbleAndArtisan.Artisan;
 import com.stardew.Models.MessageManager;
 import com.stardew.Network.Client.ClientApp;
+import com.stardew.Network.Common.Packet.ClientPacket.ElectionPackets.ElectionType;
 import com.stardew.Network.Common.Packet.ClientPacket.KeyboardPackets.*;
 import com.stardew.Views.TabMenus.*;
 
@@ -360,6 +362,15 @@ public class GameMenu extends AppMenu implements InputProcessor {
         }
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
+
+        if(App.getGame().getElection() != null){
+            if(App.getGame().getElection().getType().equals(ElectionType.TERMINATE_GAME)){
+                Main.getInstance().setScreen(new TerminationMenu());
+            }
+            else{
+                Main.getInstance().setScreen(new KickingMenu(App.getInstance().findPlayerByUsername(App.getGame().getElection().getUsername())));
+            }
+        }
         MessageManager.update(delta);
         if(MessageManager.isChanged()){
             stage = new Stage();
