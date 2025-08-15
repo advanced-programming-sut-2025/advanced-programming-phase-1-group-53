@@ -362,4 +362,25 @@ public class NPC {
     public void setDialogueOpen(boolean dialogueOpen) {
         isDialogueOpen = dialogueOpen;
     }
+
+    public static final ArrayList<NPC> allNPCs = new ArrayList<>(){{
+        add(Harvey);
+        add(Abigail);
+        add(Robin);
+        add(Lia);
+        add(Sebastian);
+    }};
+
+    public ArrayList<Sprite> dialogueSprites(){
+        if(isDialogueOpen){
+            return null;
+        }
+        else{
+            Sprite s = new Sprite(GameAssetManager.collect);
+            s.setPosition(position.getX()*GameMap.getTilePrintSize()- GameMenuController.getPrintStartX()+sprite.getWidth()/2,
+                position.getY()*GameMap.getTilePrintSize() - GameMenuController.getPrintStartY()+sprite.getHeight()+20);
+            s.setSize(20, 20);
+            return new ArrayList<>(){{add(s);}};
+        }
+    }
 }

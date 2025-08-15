@@ -204,6 +204,16 @@ public class GameMenuController {
             sprites.add(s);
         }
 
+        for(NPC npc : NPC.allNPCs){
+            Sprite s = npc.getSprite();
+            if(isInPrintRegion(s)){
+                sprites.add(npc.fixForPrint());
+                if(npc.isDialogueReady()){
+                    sprites.addAll(npc.dialogueSprites());
+                }
+            }
+        }
+
 
         for(Player player : App.getGame().players){
             sprites.add(player.getSprite());
