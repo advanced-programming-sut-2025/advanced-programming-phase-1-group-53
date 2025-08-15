@@ -6,10 +6,10 @@ import com.stardew.Network.Common.Packet.PacketSender;
 import com.stardew.Network.Common.Packet.PacketType;
 
 public class FinalizeElectionPacket extends Packet {
-    public ElectionType type;
-    public FinalizeElectionPacket(Player sender, ElectionType type) {
+    public ElectionType electionType;
+    public FinalizeElectionPacket(Player sender, ElectionType electionType) {
         super(sender.personalInfo.getConnectionId(), sender.personalInfo.getName());
-        this.type = type;
+        this.electionType = electionType;
     }
 
     @Override
