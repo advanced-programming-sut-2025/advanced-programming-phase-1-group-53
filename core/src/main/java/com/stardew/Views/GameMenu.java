@@ -363,8 +363,8 @@ public class GameMenu extends AppMenu implements InputProcessor {
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
 
+
         if(App.getGame().getElection() != null){
-            System.out.println("aaaaaa");
             if(App.getGame().getElection().getType().equals(ElectionType.TERMINATE_GAME)){
                 Main.getInstance().setScreen(new TerminationMenu());
             }

@@ -18,6 +18,36 @@ public class GameAssetManager {
         new Texture("Buildings/Pelican Town Fall.png"),
         new Texture("Buildings/Pelican Town Winter.png")
     };
+
+    private static final HashMap<String, Texture> NPC_Textures = new HashMap<>(){{
+        put("Abigail", new Texture("NPC/Abigail.png"));
+        put("Harvey", new Texture("NPC/Harvey.png"));
+        put("Lia", new Texture("NPC/Leah.png"));
+        put("Robin", new Texture("NPC/Robin.png"));
+        put("Sebastian", new Texture("NPC/Sebastian.png"));
+    }};
+
+    private static final HashMap<String, TextureRegion[][]> NPC_SPRITES = new HashMap<>(){{
+        put("Abigail", new TextureRegion[4][4]);
+        put("Harvey", new TextureRegion[4][4]);
+        put("Lia", new TextureRegion[4][4]);
+        put("Robin", new TextureRegion[4][4]);
+        put("Sebastian", new TextureRegion[4][4]);
+    }};
+
+    static {
+        for(String s : NPC_SPRITES.keySet()){
+            for(int i = 0; i< 4; i++){
+                for(int j = 0; j< 4; j++){
+                    NPC_SPRITES.get(s)[i][j] = new TextureRegion(NPC_Textures.get(s), j*16, i*32, 16, 32);
+                }
+            }
+        }
+    }
+
+    public static HashMap<String, TextureRegion[][]> getNpcSprites(){
+        return NPC_SPRITES;
+    }
     private final static Texture FULL_ENERGY_SPRITE = new Texture("energy_bar.png");
     private final static Texture EMPTY_ENERGY_BAR_SPRITE = new Texture("empty_energy.png");
     private final static Texture LAKE_TEXTURE = new Texture("Buildings/lakeSprite.png");
