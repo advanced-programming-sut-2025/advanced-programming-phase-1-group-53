@@ -30,7 +30,7 @@ public class NPC {
     private final ArrayList<Request> requests;
     private final String personality;
     private final Position position;
-    private boolean isIdle = true;
+    private boolean isIdle = false;
     private float lastTimeUpdatedSprite = 0;
 
     private boolean isDialogueReady = true;
@@ -38,6 +38,7 @@ public class NPC {
 
 
     public void update(float delta){
+        System.out.println(direction);
 
         if(!isIdle){
             if(indexOfSprite == 0) {
