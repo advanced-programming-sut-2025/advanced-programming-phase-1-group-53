@@ -38,7 +38,6 @@ public class MovementController {
         if(direction == 3) x = -App.ADVANCE_OF_EACH_STEP;
         v2 = GameMap.getPositionByCoordinates(App.getCurrentPlayer().position.getX() + x,
             App.getCurrentPlayer().position.getY() + y);
-        System.out.println(x+"kk"+y + App.getGame().dateAndTime.getDay()+ "rr" + App.getGame().dateAndTime.getHour());
         if(!App.getGame().getGameMap().areInBound(App.getCurrentPlayer().position.getX() + x,
             App.getCurrentPlayer().position.getY() + y))
             return false;
@@ -81,8 +80,6 @@ public class MovementController {
                 MessageManager.getMessage(Result.success("you must handle a fishing rod to enter the lake."));
             }
         }
-        System.out.println(App.getGame().getGameMap().getTileByPixelCoordinate(App.getCurrentPlayer().position.getX() + x,
-            App.getCurrentPlayer().position.getY() + y).getTileKind());
         return App.getGame().getGameMap().getTileByPixelCoordinate(App.getCurrentPlayer().position.getX() + x,
             App.getCurrentPlayer().position.getY() + y).getTileKind().isWalkable();
     }

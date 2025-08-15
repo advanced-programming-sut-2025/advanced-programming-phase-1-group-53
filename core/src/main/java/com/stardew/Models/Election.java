@@ -1,9 +1,9 @@
 package com.stardew.Models;
 
+import com.stardew.Controllers.ShareController;
 import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.Player;
 import com.stardew.Network.Common.Packet.ClientPacket.ElectionPackets.ElectionType;
-import com.stardew.Network.Common.Packet.ClientPacket.ElectionPackets.FinalizeElectionPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.ElectionPackets.StartVotingPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.ElectionPackets.VotePacket;
 import com.stardew.Network.Common.Packet.ServerPacket.ServerGeneralRespondPacket;
@@ -14,6 +14,7 @@ import java.util.ArrayList;
 public class Election {
     private final ElectionType type;
     private final String username;
+    private boolean isFinished = false;
     private final ArrayList<Boolean> votes = new ArrayList<>();
     public Election(ElectionType type, String username) {
         this.type = type;
@@ -29,6 +30,14 @@ public class Election {
 
     public String getUsername() {
         return username;
+    }
+
+    public boolean isFinished() {
+        return isFinished;
+    }
+
+    public synchronized void setFinished(boolean finished) {
+        isFinished = finished;
     }
 
     public Result getElectionResult() {
@@ -51,7 +60,7 @@ public class Election {
         else return new Result(true, "Election lost");
     }
 
-    public static Result finishElection(FinalizeElectionPacket packet) {
+    public static Result finishElection() {
         Election election = App.getGame().getElection();
         if (election == null) {
             return new Result(false, "Election is not even started.");
@@ -63,13 +72,17 @@ public class Election {
         if (!result.success()) {
             return result;
         }
-        applyElectionResult(packet, result);
+        applyElectionResult(result);
+        App.getGame().setElection(null);
         return result;
     }
 
-    public static void applyElectionResult(FinalizeElectionPacket packet, Result result) {
+    public static void applyElectionResult(Result result) {
         Election election = App.getGame().getElection();
-        if (packet.type.equals(ElectionType.REMOVE_PLAYER)) {
+        if (election == null) {
+            return;
+        }
+        if (election.getType().equals(ElectionType.REMOVE_PLAYER)) {
             if (result.message().equalsIgnoreCase("election lost")) {
                 return;
             }
@@ -79,12 +92,13 @@ public class Election {
                     App.getGame().getPlayers().remove(player);
                 }
             }
-        } else if (packet.type.equals(ElectionType.TERMINATE_GAME)) {
+        } else if (election.getType().equals(ElectionType.TERMINATE_GAME)) {
             if (result.message().equalsIgnoreCase("election lost")) {
                 return;
             }
             else if (result.message().equalsIgnoreCase("election wins")) {
-                // TODO fatemeh
+                ShareController.exit(null);
+                return;
             }
         }
     }
@@ -94,12 +108,12 @@ public class Election {
             return new ServerGeneralRespondPacket(new Result(false, "an Election is running."), packet);
         }
         startElection(packet);
-        return new ServerGeneralRespondPacket(new Result(true, "Election finished"), packet);
+        return new ServerGeneralRespondPacket(new Result(true, "Election started"), packet);
     }
 
     public static void startElection(StartVotingPacket packet) {
         if (App.getGame().getElection() == null) {
-            App.getGame().setElection(new Election(packet.type, packet.username));
+            App.getGame().setElection(new Election(packet.electionType, packet.username));
         }
     }
 
@@ -116,5 +130,13 @@ public class Election {
             return;
         }
         App.getGame().getElection().getVotes().add(packet.vote);
+        if (App.getGame().getElection().getVotes().size() >= App.getGame().getPlayers().size()) {
+            try {
+                Thread.sleep(500);
+                App.getGame().getElection().setFinished(true);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 }

@@ -15,7 +15,7 @@ public class TouchDownPacket extends Packet {
         this.screenY = screenY;
         this.pointer = pointer;
         this.button = button;
-        className = clazz.getName();
+        className = clazz.getSimpleName();
     }
 
     @Override

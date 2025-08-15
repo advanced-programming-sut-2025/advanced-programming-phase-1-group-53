@@ -80,7 +80,7 @@ public class PacketParser {
                 .registerSubtype(FinalizeElectionPacket.class, PacketType.FINALIZE_ELECTION_PACKET.name())
                 .registerSubtype(ChangeDurationPacket.class, PacketType.CHANGE_DURATION_PACKET.name())
                 .registerSubtype(PickItemPacket.class, PacketType.PICK_ITEM_PACKET.name())
-                .registerSubtype(BuyItemPacket.class, PacketType.BUY_ITEM_PACKET.name());
+                .registerSubtype(BuyItemPacket.class);
 
         gson = new GsonBuilder()
             .registerTypeAdapterFactory(packetAdapter)

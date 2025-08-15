@@ -12,7 +12,7 @@ public class ClickPacket extends Packet {
     public ClickPacket(Player sender, TextButtonType textButtonType, Class<? extends Screen> clazz) {
         super(sender.personalInfo.getConnectionId(), sender.personalInfo.getName());
         this.textButtonType = textButtonType;
-        this.className = clazz.getName();
+        this.className = clazz.getSimpleName();
     }
 
     @Override

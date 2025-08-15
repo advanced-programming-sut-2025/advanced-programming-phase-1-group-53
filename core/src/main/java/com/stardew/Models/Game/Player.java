@@ -49,6 +49,7 @@ public class Player {
     private Lobby currentLobby = null;
     private final HashMap<NPC, StringBuilder> NPCDialogueHistory ;
     private final HashMap<Reaction, Float> reactions = new HashMap<>();
+    private String npcDialogue = null;
 
     public Player(String name, String nickName, String password, String email, Gender gender, String connectionId) {
 //        System.out.println("1");
@@ -504,6 +505,14 @@ public class Player {
             NPCDialogueHistory.put(npc, new StringBuilder());
         }
         return NPCDialogueHistory.get(npc);
+    }
+
+    public String getNpcDialogue() {
+        return npcDialogue;
+    }
+
+    public void setNpcDialogue(String npcDialogue) {
+        this.npcDialogue = npcDialogue;
     }
 }
 

@@ -13,7 +13,7 @@ public class MouseMovePacket extends Packet {
         super(sender.personalInfo.getConnectionId(), sender.personalInfo.getName());
         this.screenX = screenX;
         this.screenY = screenY;
-        this.className = clazz.getName();
+        this.className = clazz.getSimpleName();
     }
 
     @Override

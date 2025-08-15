@@ -82,59 +82,56 @@ public class Friendship {
         }
     }
 
-    public static void gifting(Player me, Player other, Item item, int amount) {
+    public static Result gifting(Player me, Player other, Item item, int amount) {
         if (other.getFriendship().get(me).getLevel() >= 1) {
             if (!App.getGame().getGameMap().amINearPlayer(other)) {
-                System.out.println("You are not near the player.");
-                return;
+                return new Result(false, "You are not near the player.");
             }
             if (me.backpack.areItemsAvailable(item, amount)) {
                 me.backpack.getItems().compute(item, (k, v) ->(v-amount));
                 other.backpack.addItem(item);
                 other.gifts.add(item);
-                System.out.println("You gifted " + item.getItemType().name() + " to " + other.personalInfo.getName());
                 me.getGiftHistory().get(other).append(item.getItemType().name()).append("\n");
                 other.getFriendship().get(me).addXP(50);
+                return new Result(true, "You gifted " + item.getItemType().name() + " to " + other.personalInfo.getName());
             }
             else {
-                System.out.println("not enough items");
+                return new Result(false, "You are not near the player.");
             }
         } else {
-            System.out.println("You need to be friends to gift items.");
+            return new Result(false, "You need to be friends to gift items.");
         }
     }
 
-    public static void hugging(Player me, Player other) {
+    public static Result hugging(Player me, Player other) {
         if (other.getFriendship().get(me).getLevel() >= 2) {
             if (!App.getGame().getGameMap().amINearPlayer(other)) {
-                System.out.println("You are not near the player.");
-                return;
+                return new Result(false, "You are not near the player.");
             }
-            System.out.println("You hugged " + other.personalInfo.getName());
             me.getFriendship().get(other).addXP(30);
+            return new Result(true, "You hugged " + other.personalInfo.getName());
         } else {
-            System.out.println("You need to be close friends to hug.");
+            return new Result(false, "You need to be close friends to hug.");
         }
     }
 
-    public static void bouquetGiving(Player me, Player other, Item flower) {
+    public static Result bouquetGiving(Player me, Player other, Item flower) {
         if (other.getFriendship().get(me).getLevel() >= 2) {
             if (!App.getGame().getGameMap().amINearPlayer(other)) {
-                System.out.println("You are not near the player.");
-                return;
+                return new Result(false, "You are not near the player.");
             }
             if (me.backpack.areItemsAvailable(flower, 1)) {
                 me.backpack.getItems().compute(flower, (k, v) ->(v-1));
                 other.backpack.addItem(flower);
-                System.out.println("You gave a bouquet to " + other.personalInfo.getName());
                 me.getFriendship().get(other).bouquetGiven = true;
                 me.getFriendship().get(other).addXP(10);
+                return new Result(true, "You gave a bouquet to " + other.personalInfo.getName());
             }
             else {
-                System.out.println("not enough flowers");
+                return new Result(false, "not enough flowers");
             }
         } else {
-            System.out.println("You need to be lovers to give a bouquet.");
+            return new Result(false, "You need to be lovers to give a bouquet.");
         }
     }
 

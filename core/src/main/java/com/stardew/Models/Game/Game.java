@@ -83,7 +83,7 @@ public class Game {
     }
 
     public Player getCurrentPlayer(){
-        if (Thread.currentThread() == App.getMainThread()) {
+        if (Thread.currentThread().getName().equals("main")) {
             return App.getMyPlayer();
         }
         else {

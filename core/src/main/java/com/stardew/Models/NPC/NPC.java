@@ -1,27 +1,87 @@
 package com.stardew.Models.NPC;
 
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.stardew.Controllers.GameMenuController;
 import com.stardew.Enums.ItemType;
 import com.stardew.Models.Game.App;
+import com.stardew.Models.Game.GameAssetManager;
 import com.stardew.Models.Game.Player;
+import com.stardew.Models.GameMap;
 import com.stardew.Models.Items.Item;
 import com.stardew.Models.Position;
 import com.stardew.Models.Request;
 import com.stardew.Models.Result;
+import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.Reaction;
 import com.stardew.Network.Server.ChangeDurationPacket;
 import com.stardew.Network.Server.ServerApp;
+import com.stardew.Views.GameMenu;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class NPC {
+    private Sprite sprite = null;
+
+    private int direction;
+    private int indexOfSprite = 0;
     private final String name;
     private final ArrayList<Item> favoriteItems;
     private final ArrayList<Request> requests;
     private final String personality;
     private final Position position;
-    private int direction;
+    private boolean isIdle = false;
+    private float lastTimeUpdatedSprite = 0;
+
+    private boolean isDialogueReady = true;
+    private boolean isDialogueOpen = false;
 
 
+    public void update(float delta){
+        if(!isIdle){
+            if(indexOfSprite == 0) {
+                indexOfSprite = 1;
+                lastTimeUpdatedSprite = 0;
+            }
+            else if((GameMenu.getTotalTimeSpent()-lastTimeUpdatedSprite) >= App.TAKING_STEP_TIME_GAP){
+                indexOfSprite = (indexOfSprite % 2) + 1;
+                lastTimeUpdatedSprite = GameMenu.getTotalTimeSpent();
+                if(direction == 0)
+                    position.changeY(0);
+                if(direction == 1)
+                    position.changeX(0);
+                if(direction == 2)
+                    position.changeY(0);
+                if(direction == 3)
+                    position.changeX(0);
+            }
+            if(!GameMenuController.mvc.canPlayerMove(direction)){
+                isIdle = true;
+                return;
+            }
+        }
+        if(isIdle){
+            indexOfSprite = 0;
+        }
+    }
+
+    private NPC setSprite(){
+        this.sprite = new Sprite(GameAssetManager.getNpcSprites().get(name)[direction][indexOfSprite]);
+        this.sprite.setPosition(position.getX()* GameMap.getTilePrintSize(), position.getY()*GameMap.getTilePrintSize());
+        return this;
+    }
+
+    public Sprite fixForPrint(){
+        this.sprite.setPosition(position.getX()*GameMap.getTilePrintSize()- GameMenuController.getPrintStartX(),
+            position.getY()*GameMap.getTilePrintSize() - GameMenuController.getPrintStartY());
+        return sprite;
+    }
+    public Sprite getSprite(){
+        this.sprite = new Sprite(GameAssetManager.getNpcSprites().get(name)[direction][indexOfSprite]);
+        this.sprite.setPosition(position.getX()*GameMap.getTilePrintSize(), position.getY()*GameMap.getTilePrintSize());
+        this.sprite.setSize((float) (32 * 1.5), (float) (64*1.5));
+        return sprite;
+    }
     // Example village tile locations (must be asphalt tiles inside the village area)
     // Adjust these coordinates as needed to fit your village layout
     public static final Position SEBASTIAN_POSITION = new Position(31, 31, 1, 1);
@@ -117,6 +177,40 @@ public class NPC {
         "Robin is an energetic, friendly carpenter who loves building and improving homes. She’s practical, resourceful, and always ready to share a laugh.",
         ROBIN_POSITION, 0
     );
+
+//    public void update(float delta){
+//        ArrayList<Reaction> mustRemove = new ArrayList<>();
+//        for(Reaction reaction : mustRemove){
+//            reactions.remove(reaction);
+//        }
+//
+//        if(!isIdle){
+//            if(indexOfSprite == 0) {
+//                indexOfSprite = 1;
+//                lastTimeUpdatedSprite = 0;
+//            }
+//            else if((GameMenu.getTotalTimeSpent()-lastTimeUpdatedSprite) >= App.TAKING_STEP_TIME_GAP){
+//                indexOfSprite = (indexOfSprite % 2) + 1;
+//                lastTimeUpdatedSprite = GameMenu.getTotalTimeSpent();
+//            }
+//            if(!GameMenuController.mvc.canPlayerMove(direction)){
+//                isIdle = true;
+//                return;
+//            }
+//            if(direction == 0)
+//                position.changeY(-App.ADVANCE_OF_EACH_STEP);
+//            if(direction == 1)
+//                position.changeX(App.ADVANCE_OF_EACH_STEP);
+//            if(direction == 2)
+//                position.changeY(App.ADVANCE_OF_EACH_STEP);
+//            if(direction == 3)
+//                position.changeX(-App.ADVANCE_OF_EACH_STEP);
+//            energy.updateEnergy(-(int) (energy.getMaxEnergy()*0.00005));
+//        }
+//        if(isIdle){
+//            indexOfSprite = 0;
+//        }
+//    }
 
 
     public String getName() {
@@ -249,5 +343,43 @@ public class NPC {
         Harvey.direction = packet.HarveyDuration;
         Lia.direction = packet.LiaDuration;
         Robin.direction = packet.RobinDuration;
+    }
+
+
+    public boolean isDialogueReady() {
+        return isDialogueReady;
+    }
+
+    public void setDialogueReady(boolean dialogueReady) {
+        isDialogueReady = dialogueReady;
+    }
+
+    public boolean isDialogueOpen() {
+        return isDialogueOpen;
+    }
+
+    public void setDialogueOpen(boolean dialogueOpen) {
+        isDialogueOpen = dialogueOpen;
+    }
+
+    public static final ArrayList<NPC> allNPCs = new ArrayList<>(){{
+        add(Harvey);
+        add(Abigail);
+        add(Robin);
+        add(Lia);
+        add(Sebastian);
+    }};
+
+    public ArrayList<Sprite> dialogueSprites(){
+        if(isDialogueOpen){
+            return null;
+        }
+        else{
+            Sprite s = new Sprite(GameAssetManager.collect);
+            s.setPosition(position.getX()*GameMap.getTilePrintSize()- GameMenuController.getPrintStartX()+sprite.getWidth()/2,
+                position.getY()*GameMap.getTilePrintSize() - GameMenuController.getPrintStartY()+sprite.getHeight()+20);
+            s.setSize(20, 20);
+            return new ArrayList<>(){{add(s);}};
+        }
     }
 }

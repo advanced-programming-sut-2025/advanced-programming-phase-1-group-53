@@ -6,11 +6,11 @@ import com.stardew.Network.Common.Packet.PacketSender;
 import com.stardew.Network.Common.Packet.PacketType;
 
 public class StartVotingPacket extends Packet {
-    public ElectionType type;
+    public ElectionType electionType;
     public String username;
-    public StartVotingPacket(Player sender, ElectionType type, String username) {
+    public StartVotingPacket(Player sender, ElectionType electionType, String username) {
         super(sender.personalInfo.getConnectionId(), sender.personalInfo.getName());
-        this.type = type;
+        this.electionType = electionType;
         this.username = username;
     }
 

@@ -1,17 +1,16 @@
 package com.stardew.Network.Client;
 
+import com.badlogic.gdx.Input;
 import com.stardew.Controllers.GameMenuController;
 import com.stardew.Controllers.InGameControllers.Controller;
 import com.stardew.Controllers.InGameControllers.InventoryMenuController;
 import com.stardew.Main;
-import com.stardew.Models.Election;
+import com.stardew.Models.*;
 import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.Player;
-import com.stardew.Models.GameMessages;
 import com.stardew.Models.Items.Animal;
-import com.stardew.Models.Lobby;
+import com.stardew.Models.Items.Item;
 import com.stardew.Models.NPC.NPC;
-import com.stardew.Models.Result;
 import com.stardew.Network.Common.ConnectionThread;
 import com.stardew.Network.Common.Packet.*;
 import com.stardew.Network.Common.Packet.ClientPacket.AudioPackets.RequestAudioPacket;
@@ -21,7 +20,6 @@ import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.Reaction;
 import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.ReactionPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.SendPrivateMessagePacket;
 import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.SendPublicMessagePacket;
-import com.stardew.Network.Common.Packet.ClientPacket.ElectionPackets.FinalizeElectionPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.ElectionPackets.StartVotingPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.ElectionPackets.VotePacket;
 import com.stardew.Network.Common.Packet.ClientPacket.GamePackets.RestartGamePacket;
@@ -82,13 +80,15 @@ public class ClientConnectionThread extends ConnectionThread {
 
     @Override
     protected boolean handlePacket(Packet packet) {
-        System.out.println("Received from server: " + packet.getClass().getSimpleName());
+        if (!packet.getClass().getSimpleName().equals("MouseMovePacket")) {
+            System.out.println("Received from server: " + packet.getClass().getSimpleName());
+        }
 
         if (packet instanceof ServerGeneralRespondPacket serverGeneralRespondPacket) {
             Packet innerPacket = serverGeneralRespondPacket.getReceivedPacket();
             System.out.println("Received from server: " + innerPacket.getClass().getSimpleName());
             Result result = serverGeneralRespondPacket.result;
-            Player player = App.getInstance().findPlayerByUsername(innerPacket.getSenderId());
+            Player player = App.getInstance().findPlayerByUsername(innerPacket.getSenderUsername());
             System.out.println(innerPacket.getSenderId());
             if (player != null) {
                 App.setCurrentPlayer(player);
@@ -103,9 +103,17 @@ public class ClientConnectionThread extends ConnectionThread {
                     createLobbyPacket.isPublic, createLobbyPacket.isVisible, createLobbyPacket.ownerName);
                 return true;
             } else if (innerPacket instanceof GiveFlowerPacket giveFlowerPacket) {
-                //TODO
+                Friendship.bouquetGiving(App.getInstance().findPlayerByUsername(giveFlowerPacket.doerUsername),
+                    App.getInstance().findPlayerByUsername(giveFlowerPacket.receiverUsername), Item.Bouquet);
+                System.out.println(result.message());
+                ServerApp.getInstance().broadcastInGame(new ServerGeneralRespondPacket(result, giveFlowerPacket));
+                return true;
             } else if (innerPacket instanceof HuggingPacket huggingPacket) {
-                //TODO
+                Friendship.hugging(App.getInstance().findPlayerByUsername(huggingPacket.doerUsername),
+                    App.getInstance().findPlayerByUsername(huggingPacket.receiverUsername));
+                System.out.println(result.message());
+                ServerApp.getInstance().broadcastInGame(new ServerGeneralRespondPacket(result, huggingPacket));
+                return true;
             } else if (innerPacket instanceof JoinLobbyPacket joinLobbyPacket) {
                 if (!result.success()) {
                     System.out.println(result.message());
@@ -123,7 +131,11 @@ public class ClientConnectionThread extends ConnectionThread {
             } else if (innerPacket instanceof MarrigePacket marrigePacket) {
                 //TODO
             } else if (innerPacket instanceof GiftingPacket giftingPacket) {
-                //TODO
+                Friendship.gifting(App.getInstance().findPlayerByUsername(giftingPacket.doerUsername),
+                    App.getInstance().findPlayerByUsername(giftingPacket.receiverUsername), App.getGame().getItemByItemType(giftingPacket.itemType),
+                    giftingPacket.amount);
+                System.out.println(result.message());
+                return true;
             } else if (innerPacket instanceof RestartGamePacket) {
 
             } else if (innerPacket instanceof SaveGamePacket) {
@@ -158,8 +170,9 @@ public class ClientConnectionThread extends ConnectionThread {
                     return true;
                 }
                 String dialogue = npcDialoguePacket.dialogue;
-                // کلاینت به دیالوگ هیستوری دسترسی نداره
-                // TODO show dialogue
+                if (player != null) {
+                    player.setNpcDialogue(dialogue);
+                }
                 return true;
             } else if (innerPacket instanceof KeyUpPacket keyUpPacket) {
                 if (!result.success()) {
@@ -168,23 +181,24 @@ public class ClientConnectionThread extends ConnectionThread {
                 }
                 Controller controller = App.getInstance().getController(keyUpPacket.className);
                 if (controller == null) {
-                    System.out.println("controller not found");
+                    System.out.println("controller not found " + keyUpPacket.className);
                     return true;
                 }
                 controller.keyUp(keyUpPacket);
                 System.out.println(result.message());
                 return true;
             } else if (innerPacket instanceof KeyDownPacket keyDownPacket) {
+                System.out.println(keyDownPacket.getSenderUsername()+" "+keyDownPacket.className+"sghbghsrbgjs"+keyDownPacket.keycode);
                 if (!result.success()) {
                     System.out.println(result.message());
                     return true;
                 }
                 Controller controller = App.getInstance().getController(keyDownPacket.className);
                 if (controller == null) {
-                    System.out.println("controller not found");
+                    System.out.println("controller not found " + keyDownPacket.className);
                     return true;
                 }
-                controller.keyDown(keyDownPacket);
+                App.getInstance().getController(keyDownPacket.className).keyDown(keyDownPacket);
                 System.out.println(result.message());
                 return true;
             } else if (innerPacket instanceof TouchDownPacket touchDownPacket) {
@@ -194,7 +208,7 @@ public class ClientConnectionThread extends ConnectionThread {
                 }
                 Controller controller = App.getInstance().getController(touchDownPacket.className);
                 if (controller == null) {
-                    System.out.println("controller not found");
+                    System.out.println("controller not found " + touchDownPacket.className);
                     return true;
                 }
                 controller.touchDown(touchDownPacket);
@@ -202,16 +216,16 @@ public class ClientConnectionThread extends ConnectionThread {
                 return true;
             } else if (innerPacket instanceof MouseMovePacket mouseMovePacket) {
                 if (!result.success()) {
-                    System.out.println(result.message());
+//                    System.out.println(result.message());
                     return true;
                 }
                 Controller controller = App.getInstance().getController(mouseMovePacket.className);
                 if (controller == null) {
-                    System.out.println("controller not found");
+//                    System.out.println("controller not found " + mouseMovePacket.className);
                     return true;
                 }
                 controller.mouseMove(mouseMovePacket);
-                System.out.println(result.message());
+//                System.out.println(result.message());
                 return true;
             } else if (innerPacket instanceof ClickPacket clickPacket) {
                 if (!result.success()) {
@@ -220,7 +234,7 @@ public class ClientConnectionThread extends ConnectionThread {
                 }
                 Controller controller = App.getInstance().getController(clickPacket.className);
                 if (controller == null) {
-                    System.out.println("controller not found");
+                    System.out.println("controller not found " + clickPacket.className);
                     return true;
                 }
                 controller.click(clickPacket);
@@ -229,11 +243,10 @@ public class ClientConnectionThread extends ConnectionThread {
             } else if (innerPacket instanceof StartVotingPacket startVotingPacket) {
                 if (!result.success()) {
                     System.out.println(result.message());
-                    // TODO jabar
                 }
                 Election.startElection(startVotingPacket);
                 System.out.println(result.message());
-                //TODO jabar
+
                 return true;
             } else if (innerPacket instanceof VotePacket votePacket) {
                 if (!result.success()) {
@@ -243,15 +256,6 @@ public class ClientConnectionThread extends ConnectionThread {
                 Election.vote(votePacket);
                 System.out.println(result.message());
                 //TODO jabar
-                return true;
-            } else if (innerPacket instanceof FinalizeElectionPacket finalizeElectionPacket) {
-                if (!result.success()) {
-                    System.out.println(result.message());
-                    // TODO jabar
-                }
-                Election.applyElectionResult(finalizeElectionPacket, result);
-                System.out.println(result.message());
-                // TODO jabbar
                 return true;
             } else if (innerPacket instanceof SendPublicMessagePacket sendPublicMessagePacket) {
                 if (!result.success()) {

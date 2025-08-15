@@ -253,21 +253,21 @@ public class GameMap {
     }
 
     public void generateRandomThings(int randomPercent) {
-        generateWoodAndStone(randomPercent);
-        generateMineralsInMine(App.getGame().getCurrentPlayer().getFarm().getMine(), 10*randomPercent);
-        generateForagingSeeds(randomPercent);
-        generateForagingTrees(randomPercent);
-        generateForagingCrops(randomPercent);
+//        generateWoodAndStone(randomPercent);
+//        generateMineralsInMine(App.getGame().getCurrentPlayer().getFarm().getMine(), 10*randomPercent);
+//        generateForagingSeeds(randomPercent);
+//        generateForagingTrees(randomPercent);
+//        generateForagingCrops(randomPercent);
     }
 
     public void generateRandomThings(List<Player> players, int randomPercent) {
-        generateWoodAndStone(10*randomPercent);
-        generateForagingSeeds(10*randomPercent);
-        generateForagingTrees(6*randomPercent);
-        generateForagingCrops(10*randomPercent);
-        for(Player p : players){
-            generateMineralsInMine(p.getFarm().getMine(), randomPercent);
-        }
+//        generateWoodAndStone(10*randomPercent);
+//        generateForagingSeeds(10*randomPercent);
+//        generateForagingTrees(6*randomPercent);
+//        generateForagingCrops(10*randomPercent);
+//        for(Player p : players){
+//            generateMineralsInMine(p.getFarm().getMine(), randomPercent);
+//        }
     }
 
     private void generateWoodAndStone(int randomPercent) {

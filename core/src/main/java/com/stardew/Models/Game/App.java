@@ -1,7 +1,6 @@
 package com.stardew.Models.Game;
 
 import com.stardew.Controllers.InGameControllers.*;
-import com.stardew.Controllers.GameMenuController;
 import com.stardew.Enums.Menu;
 import com.stardew.Main;
 import com.stardew.Models.Lobby;
@@ -44,14 +43,14 @@ public class App {
         if(app == null){
             app = new App();
             setControllers();
-            new GameMenuController().newGame("ilia", "ilias", "iliass", "iliasss");
+//            new GameMenuController().newGame("ilia", "ilias", "iliass", "iliasss");
         }
         return app;
     }
 
     private static void setControllers() {
         app.controllerRegistry.put(AbilityMenuController.MENU_NAME, new AbilityMenuController());
-        app.controllerRegistry.put(AnimalMenuController.MENU_NAME, new AnimalMenuController());
+        app.controllerRegistry.put(RankingsController.MENU_NAME, new RankingsController());
         app.controllerRegistry.put(CheatMenuController.MENU_NAME, new CheatMenuController());
         app.controllerRegistry.put(CookingMenuController.MENU_NAME, new CookingMenuController());
         app.controllerRegistry.put(CoopMenuController.MENU_NAME, new CoopMenuController());
@@ -81,11 +80,11 @@ public class App {
     }
 
     public static Player getCurrentPlayer() {
-        if (Thread.currentThread() == App.getMainThread()) {
+        if (Thread.currentThread().getName().equals("main")) {
             return App.getMyPlayer();
         }
         else {
-            return App.getCurrentPlayer();
+            return currentPlayer;
         }
     }
     public synchronized static void setCurrentPlayer(Player currentPlayer) {
