@@ -20,7 +20,6 @@ import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.Reaction;
 import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.ReactionPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.SendPrivateMessagePacket;
 import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.SendPublicMessagePacket;
-import com.stardew.Network.Common.Packet.ClientPacket.ElectionPackets.FinalizeElectionPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.ElectionPackets.StartVotingPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.ElectionPackets.VotePacket;
 import com.stardew.Network.Common.Packet.ClientPacket.GamePackets.RestartGamePacket;
@@ -254,15 +253,6 @@ public class ClientConnectionThread extends ConnectionThread {
                 Election.vote(votePacket);
                 System.out.println(result.message());
                 //TODO jabar
-                return true;
-            } else if (innerPacket instanceof FinalizeElectionPacket finalizeElectionPacket) {
-                if (!result.success()) {
-                    System.out.println(result.message());
-                    // TODO jabar
-                }
-                Election.applyElectionResult(finalizeElectionPacket, result);
-                System.out.println(result.message());
-                // TODO jabbar
                 return true;
             } else if (innerPacket instanceof SendPublicMessagePacket sendPublicMessagePacket) {
                 if (!result.success()) {

@@ -18,7 +18,6 @@ import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.Reaction;
 import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.ReactionPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.SendPrivateMessagePacket;
 import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.SendPublicMessagePacket;
-import com.stardew.Network.Common.Packet.ClientPacket.ElectionPackets.FinalizeElectionPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.ElectionPackets.StartVotingPacket;
 import com.stardew.Network.Common.Packet.ClientPacket.ElectionPackets.VotePacket;
 import com.stardew.Network.Common.Packet.ClientPacket.GamePackets.RestartGamePacket;
@@ -256,11 +255,6 @@ public class ServerConnectionThread extends ConnectionThread {
             result = Election.voteRequest(votePacket);
             System.out.println(result.message());
             sendPacket(new ServerGeneralRespondPacket(result, votePacket));
-            return true;
-        } else if (packet instanceof FinalizeElectionPacket finalizeElectionPacket) {
-            result = Election.finishElection(finalizeElectionPacket);
-            System.out.println(result.message());
-            ServerApp.getInstance().broadcastInGame(new ServerGeneralRespondPacket(result, finalizeElectionPacket));
             return true;
         } else if (packet instanceof SendPublicMessagePacket sendPublicMessagePacket) {
             result = GameMessages.newPublicChatMessage(sendPublicMessagePacket);
