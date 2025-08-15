@@ -365,6 +365,9 @@ public class GameMenu extends AppMenu implements InputProcessor {
 
 
         if(App.getGame().getElection() != null){
+            if(App.getGame().getElection().isFinished()){
+                Election.finishElection();
+            }
             if(App.getGame().getElection().getType().equals(ElectionType.TERMINATE_GAME)){
                 Main.getInstance().setScreen(new TerminationMenu());
             }

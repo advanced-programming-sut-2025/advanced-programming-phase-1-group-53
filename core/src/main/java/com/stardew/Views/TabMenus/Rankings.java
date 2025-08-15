@@ -62,8 +62,12 @@ public class Rankings extends Tab {
     @Override
     public void show(){
         selectBox =Tab.createSelectBox(new Array<>(){{
-            add("show all");
-            add("show availables");
+            add("gold");
+            add("foraging");
+            add("mining");
+            add("farming");
+            add("fishing");
+            add("quests done");
         }});
         sprites = new ArrayList<>();
         super.show();

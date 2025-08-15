@@ -75,8 +75,7 @@ public class VoteMenu extends Tab {
             public void clicked(InputEvent event, float x, float y) {
                 ClientApp.getInstance().getConnectionThread().sendPacket(new StartVotingPacket(App.getMyPlayer(),
                      ElectionType.TERMINATE_GAME,null));
-            }
-        });
+            }});
         stage.addActor(dis);
 
         TextButton bb = Tab.createTextButton("back");
