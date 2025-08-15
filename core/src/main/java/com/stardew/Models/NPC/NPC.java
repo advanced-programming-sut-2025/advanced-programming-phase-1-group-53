@@ -30,7 +30,7 @@ public class NPC {
     private final ArrayList<Request> requests;
     private final String personality;
     private final Position position;
-    private boolean isIdle = true;
+    private boolean isIdle = false;
     private float lastTimeUpdatedSprite = 0;
 
     private boolean isDialogueReady = true;
@@ -50,16 +50,17 @@ public class NPC {
             }
             if(!GameMenuController.mvc.canPlayerMove(direction)){
                 isIdle = true;
+                if(direction == 0)
+                    position.changeY(-1);
+                if(direction == 1)
+                    position.changeX(1);
+                if(direction == 2)
+                    position.changeY(1);
+                if(direction == 3)
+                    position.changeX(-1);
                 return;
             }
-            if(direction == 0)
-                position.changeY(-App.ADVANCE_OF_EACH_STEP/GameMap.getTilePrintSize());
-            if(direction == 1)
-                position.changeX(App.ADVANCE_OF_EACH_STEP/GameMap.getTilePrintSize());
-            if(direction == 2)
-                position.changeY(App.ADVANCE_OF_EACH_STEP/GameMap.getTilePrintSize());
-            if(direction == 3)
-                position.changeX(-App.ADVANCE_OF_EACH_STEP/GameMap.getTilePrintSize());
+
         }
         if(isIdle){
             indexOfSprite = 0;
