@@ -3,22 +3,17 @@ package com.stardew.Views.TabMenus;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.stardew.Controllers.AnimalMenuController;
+import com.stardew.Controllers.InGameControllers.RankingsController;
 import com.stardew.Enums.ItemType;
 import com.stardew.Models.Game.App;
-import com.stardew.Models.Game.GameAssetManager;
 import com.stardew.Models.Items.*;
 import com.stardew.Network.Client.ClientApp;
-import com.stardew.Network.Common.Packet.ClientPacket.ClickPacket;
-import com.stardew.Network.Common.Packet.ClientPacket.TextButtonType;
-import com.stardew.Views.GameMenu;
+import com.stardew.Network.Common.Packet.ClientPacket.KeyboardPackets.ClickPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.KeyboardPackets.TextButtonType;
 import com.stardew.Views.Tab;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -30,7 +25,7 @@ public class AnimalMenu extends Tab {
     private ArrayList<Sprite> sprites = new ArrayList<>();
     private boolean isChanged = true;
     private Animal animal;
-    private static AnimalMenuController controller = new AnimalMenuController();
+    private static RankingsController controller = new RankingsController();
     int u = 0;
 
 

@@ -13,6 +13,7 @@ import com.stardew.Models.Abilities.Abilities;
 import com.stardew.Models.Abilities.Activity;
 import com.stardew.Models.Items.Item;
 import com.stardew.Models.NPC.NPC;
+import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.Reaction;
 import com.stardew.Views.GameMenu;
 
 import java.util.*;
@@ -29,7 +30,7 @@ public class Player {
     private Farm farm;
     public final PersonalInfo personalInfo;
     public final Abilities abilities;
-    public final Backpack backpack = null;
+    public final Backpack backpack = new Backpack();
     public final Energy energy;
     public final Activity activity;
     public final Position position;
@@ -47,6 +48,8 @@ public class Player {
     private final ArrayList<Lobby> lobbies ;
     private Lobby currentLobby = null;
     private final HashMap<NPC, StringBuilder> NPCDialogueHistory ;
+    private final HashMap<Reaction, Float> reactions = new HashMap<>();
+    private String npcDialogue = null;
 
     public Player(String name, String nickName, String password, String email, Gender gender, String connectionId) {
 //        System.out.println("1");
@@ -95,7 +98,7 @@ public class Player {
         this.abilities = new Abilities();
 //        System.out.println("2");
 
-        this.energy = null;
+        this.energy = new Energy();
         this.activity = new Activity();
 //        System.out.println("2");
         this.position = new Position(0, 0, 1, 1);
@@ -124,6 +127,16 @@ public class Player {
     }
 
     public void update(float delta){
+        ArrayList<Reaction> mustRemove = new ArrayList<>();
+        for(Reaction reaction : reactions.keySet()){
+            reactions.compute(reaction, (k, v) -> ( v- delta));
+            if(reactions.get(reaction) <= 0)
+                mustRemove.add(reaction);
+        }
+        for(Reaction reaction : mustRemove){
+            reactions.remove(reaction);
+        }
+
         backpack.update(delta);
         if(!isIdle){
             if(indexOfSprite == 0) {
@@ -240,6 +253,10 @@ public class Player {
 
     public PersonalInfo getPersonalInfo() {
         return personalInfo;
+    }
+
+    public HashMap<Reaction, Float> getReactions() {
+        return reactions;
     }
 
     /**
@@ -488,6 +505,14 @@ public class Player {
             NPCDialogueHistory.put(npc, new StringBuilder());
         }
         return NPCDialogueHistory.get(npc);
+    }
+
+    public String getNpcDialogue() {
+        return npcDialogue;
+    }
+
+    public void setNpcDialogue(String npcDialogue) {
+        this.npcDialogue = npcDialogue;
     }
 }
 

@@ -11,7 +11,7 @@ public class PersonalInfo {
     private String password;
     private String coupleEmail = null;
     private Gender gender;
-    private int gold = 22222220;
+    private int gold = 0;
     private String securityQuestion;
     private int securityAnswer;
     private String connectionId;

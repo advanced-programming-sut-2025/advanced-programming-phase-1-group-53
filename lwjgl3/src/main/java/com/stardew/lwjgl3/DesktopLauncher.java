@@ -7,10 +7,11 @@ import com.stardew.Main;
 public class DesktopLauncher {
     public static void main (String[] arg) {
         Main.getInstance().setPlayerId(arg[0]);
+        Main.getInstance().setServerIp(arg[1]);
 
         Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
         config.setTitle("My Game");
-        config.setWindowedMode(2048, 1152);
+        config.setWindowedMode(1600, 1600);
         config.useVsync(true);
         new Lwjgl3Application(Main.getInstance(), config);
 

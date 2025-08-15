@@ -6,6 +6,8 @@ import com.stardew.Models.Game.Player;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import static java.lang.Math.random;
+
 public class Lobby {
     private final String name;
     private final String id;
@@ -37,9 +39,11 @@ public class Lobby {
         for (Lobby lobby : lobbies) {
             ids.add(lobby.id);
         }
-        String id = UUID.randomUUID().toString();
+        int ID = (int) (Math.random() * 10000000);
+        String id = ID + "";
         while (ids.contains(id)) {
-            id = UUID.randomUUID().toString();
+            ID = (int) (Math.random() * 10000000);
+            id = ID + "";
         }
         Lobby lobby = new Lobby(name, id, password, isPublic, isVisible, ownerName);
         lobbies.add(lobby);

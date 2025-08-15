@@ -85,7 +85,7 @@ public class LoginRegisterMenuController {
         Type playerType = new TypeToken<PersonalInfo>() {}.getType();
         PersonalInfo pI = gson.fromJson(json, playerType);
         Player p = new Player(pI);
-        App.setCurrentPlayer(p);
+        App.setMyPlayer(p);
         return "Continued as " + lastUsername + ".";
     }
 

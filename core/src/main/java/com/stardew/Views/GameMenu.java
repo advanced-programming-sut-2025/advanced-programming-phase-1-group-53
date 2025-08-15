@@ -10,13 +10,10 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
-import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.utils.Array;
 import com.stardew.Controllers.GameMenuController;
 import com.stardew.Controllers.ShareController;
@@ -24,15 +21,15 @@ import com.stardew.Enums.GameMenuCommand;
 import com.stardew.Enums.ItemType;
 import com.stardew.Enums.TileKind;
 import com.stardew.Main;
-import com.stardew.Models.Energy;
+import com.stardew.Models.*;
 import com.stardew.Models.Game.App;
-import com.stardew.Models.GameMap;
 import com.stardew.Models.Items.*;
 import com.stardew.Models.Items.CraftAbleAndArtisan.Artisan;
-import com.stardew.Models.Items.Foragings.ForagingMineral;
-import com.stardew.Models.MessageManager;
+import com.stardew.Models.NPC.NPC;
 import com.stardew.Network.Client.ClientApp;
-import com.stardew.Network.Common.Packet.ClientPacket.*;
+import com.stardew.Network.Common.Packet.ClientPacket.ElectionPackets.ElectionType;
+import com.stardew.Network.Common.Packet.ClientPacket.KeyboardPackets.*;
+import com.stardew.Network.Common.Packet.ClientPacket.NPCPackets.TalkToNPCPacket;
 import com.stardew.Views.TabMenus.*;
 
 import java.util.ArrayList;
@@ -44,7 +41,7 @@ public class GameMenu extends AppMenu implements InputProcessor {
     private static int SCREEN_WIDTH;
     private static int SCREEN_HEIGHT;
     private static GameMenu gameMenu = null;
-    private SpriteBatch batch;
+    private SpriteBatch batch ;
     private Sprite sprite;
     private Stage stage;
     private float thunderAlpha = 0f;
@@ -61,6 +58,7 @@ public class GameMenu extends AppMenu implements InputProcessor {
     private float mouseX = 0;
     private boolean isGoingInCoop = false;
     private boolean showFullTiles = false;
+    private float checkElection = 0;
 
 
     public GameMenuController getController() {
@@ -68,7 +66,7 @@ public class GameMenu extends AppMenu implements InputProcessor {
     }
 
     private GameMenu(){
-
+        super();
     }
 
     public static GameMenu getInstance(){
@@ -80,7 +78,7 @@ public class GameMenu extends AppMenu implements InputProcessor {
     public static void renewInstance(){
         gameMenu = null;
     }
-    private String currentPlayerName = App.getCurrentPlayer().getPersonalInfo().getName();
+    private String currentPlayerName = App.getMyPlayer().getPersonalInfo().getName();
 
     public GameMenu(Game main) {
         super(main);
@@ -126,8 +124,6 @@ public class GameMenu extends AppMenu implements InputProcessor {
             ShareController.enterMenu(matcher.group("menu"));
         } else if ((matcher = GameMenuCommand.exitGame.getMatcher(input)) != null) {
             controller.exitGame();
-        } else if ((matcher = GameMenuCommand.newGame.getMatcher(input)) != null) {
-            controller.newGame(matcher.group("username1"), matcher.group("username2"), matcher.group("username3"));
         } else if ((matcher = GameMenuCommand.loadGame.getMatcher(input)) != null) {
             controller.loadGame(matcher.group("index"));
         } else if ((matcher = GameMenuCommand.selectMap.getMatcher(input)) != null) {
@@ -289,29 +285,29 @@ public class GameMenu extends AppMenu implements InputProcessor {
 
     @Override
     public void show() {
-        table.clear();
+        table = new Table();
         stage = new Stage();
         batch = new SpriteBatch();
         shapeRenderer = new ShapeRenderer();
         Gdx.input.setInputProcessor(this);
-        Label title = new Label("Game Menu", skin);
-        table.add(title).pad(20).row();
-        TextButton playersButton = new TextButton("Players", skin);
-        playersButton.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
-            @Override
-            public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
-                showPlayersWindow();
-            }
-        });
-        table.add(playersButton).pad(10).row();
-        TextButton backButton = new TextButton("Back", skin);
-        backButton.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
-            @Override
-            public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
-                main.setScreen(new MainMenu(main));
-            }
-        });
-        table.add(backButton).pad(20).row();
+//        Label title = new Label("Game Menu", skin);
+//        table.add(title).pad(20).row();
+//        TextButton playersButton = new TextButton("Players", skin);
+//        playersButton.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
+//            @Override
+//            public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
+//                showPlayersWindow();
+//            }
+//        });
+//        table.add(playersButton).pad(10).row();
+//        TextButton backButton = new TextButton("Back", skin);
+//        backButton.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
+//            @Override
+//            public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
+//                main.setScreen(new MainMenu(main));
+//            }
+//        });
+//        table.add(backButton).pad(20).row();
         for(TextButton textButton : MessageManager.getTextButtons().keySet()){
             stage.addActor(textButton);
             MessageManager.setChanged(false);
@@ -320,6 +316,7 @@ public class GameMenu extends AppMenu implements InputProcessor {
 
     @Override
     public void render(float delta) {
+        checkElection+=delta;
         SCREEN_WIDTH = Gdx.graphics.getWidth();
         SCREEN_HEIGHT = Gdx.graphics.getHeight();
         ScreenUtils.clear(0, 0, 0, 1);
@@ -366,6 +363,27 @@ public class GameMenu extends AppMenu implements InputProcessor {
         }
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
+
+
+        if(checkElection >=1){
+            checkElection=0;
+            if(App.getGame().getElection() != null){
+                if(App.getGame().getElection().isFinished()){
+                    Election.finishElection();
+                }
+                if(App.getGame().getElection().getType().equals(ElectionType.TERMINATE_GAME)){
+                    Main.getInstance().setScreen(new TerminationMenu());
+                }
+                else{
+                    Main.getInstance().setScreen(new KickingMenu(App.getInstance().findPlayerByUsername(App.getGame().getElection().getUsername())));
+                }
+            }
+        }
+
+        if(App.getMyPlayer().getNpcDialogue() != null){
+            MessageManager.setShowNpcDialogueButton(App.getMyPlayer().getNpcDialogue(), GameMenu.getScreenWidth()/2
+                , GameMenu.getScreenHeight()/2);
+        }
         MessageManager.update(delta);
         if(MessageManager.isChanged()){
             stage = new Stage();
@@ -383,7 +401,7 @@ public class GameMenu extends AppMenu implements InputProcessor {
             sleep.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    ClientApp.getInstance().getConnectionThread().sendPacket(new ClickPacket(App.getMyPlayer(), TextButtonType.sleep, GameMenu.class));
+                    ClientApp.getInstance().getConnectionThread().sendPacket(new ClickPacket(App.getMyPlayer(), TextButtonType.sleep, AbilityMenu.class));
 
                     try{
                         TimeCheatMenu.setIsCheatActivate(true);
@@ -480,9 +498,20 @@ public class GameMenu extends AppMenu implements InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
-        ClientApp.getInstance().getConnectionThread().sendPacket(new KeyDownPacket(App.getMyPlayer(),keycode, GameMenu.class));
+        if(keycode == Input.Keys.R){
+            Rankings.instance.setChanged(true);
+            Rankings.instance.setProducts(App.getGame().players);
+            Main.getInstance().setScreen(Rankings.instance);
 
-        return controller.keyDown(keycode).success();
+            return true;
+        }
+
+        ClientApp.getInstance().getConnectionThread().sendPacket(new KeyDownPacket(App.getMyPlayer(),keycode, AbilityMenu.class));
+
+        if(keycode == Input.Keys.V){
+            Main.getInstance().setScreen(new VoteMenu());
+        }
+        return true;
     }
 
     public void useItem(int x, int y, Item item){
@@ -518,22 +547,9 @@ public class GameMenu extends AppMenu implements InputProcessor {
 
     @Override
     public boolean keyUp(int keycode) {
-        ClientApp.getInstance().getConnectionThread().sendPacket(new KeyUpPacket(App.getMyPlayer(), keycode, GameMenu.class));
+        ClientApp.getInstance().getConnectionThread().sendPacket(new KeyUpPacket(App.getMyPlayer(), keycode, AbilityMenu.class));
 
-        Vector2 v = GameMap.getPositionByCoordinates((int) (App.getCurrentPlayer().position.getX()),
-            (int) (App.getCurrentPlayer().position.getY()));
-        int x = (int) (v.x+App.getCurrentPlayer().getDirectionVector().x);
-        int y = (int)(v.y + App.getCurrentPlayer().getDirectionVector().y);
-        if(keycode == Input.Keys.W || keycode == Input.Keys.A ||keycode == Input.Keys.S ||
-            keycode == Input.Keys.D){
-            GameMenuController.mvc.stopMoving(keycode);
-            return true;
-        }
-        if(keycode == Input.Keys.Q){
-            if(App.getCurrentPlayer().backpack.getItemInHand() instanceof Tool){
-                ((Tool) App.getCurrentPlayer().backpack.getItemInHand()).setHoldInPlace(false);
-            }
-        }
+
         return false;
     }
 
@@ -545,47 +561,15 @@ public class GameMenu extends AppMenu implements InputProcessor {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 
-        ClientApp.getInstance().getConnectionThread().sendPacket(new TouchDownPacket(App.getMyPlayer(), screenX, screenY, pointer, button ,GameMenu.class));
+        ClientApp.getInstance().getConnectionThread().sendPacket(new TouchDownPacket(App.getMyPlayer(), screenX, screenY, pointer, button ,AbilityMenu.class));
 
-        Vector2 v = GameMap.getPositionByCoordinates((int) (App.getCurrentPlayer().position.getX()),
-            (int) (App.getCurrentPlayer().position.getY()));
-        int x = (int) (v.x+App.getCurrentPlayer().getDirectionVector().x);
-        int y = (int)(v.y + App.getCurrentPlayer().getDirectionVector().y);
-
-        if(button == Input.Buttons.LEFT){
-            float degree = angleBetweenPoints(App.getCurrentPlayer().position.getX(), App.getCurrentPlayer().position.getY(),
-                screenX, SCREEN_HEIGHT-screenY);
-            if(degree>=45 && degree< 135){
-                App.getCurrentPlayer().setDirection(2);
-            }
-            else if(degree>=135 && degree< 225){
-                App.getCurrentPlayer().setDirection(3);
-            }
-            else if(degree>=225 && degree< 315){
-                App.getCurrentPlayer().setDirection(0);
-            }
-            else if(degree>=315 || degree< 45){
-                App.getCurrentPlayer().setDirection(1);
-            }
-
-            if(setToolToMouse){
-                v = GameMap.getPositionByCoordinates((int)mouseX,
-                    (int) mouseY);
-                x = (int) (v.x);
-                y = (int)(v.y);
-                useItem(x, y, App.getGame().getItemByItemType(App.getCurrentPlayer().backpack.getItemInHand().getItemType()));
-            }
-
-            else if(App.getCurrentPlayer().backpack.getItemInHand() != null)
-                useItem(x, y, App.getGame().getItemByItemType(App.getCurrentPlayer().backpack.getItemInHand().getItemType()));
-        }
-        if(button == Input.Buttons.RIGHT){
-            for(Animal animal : App.getCurrentPlayer().backpack.getAnimals()){
-                boolean b1 =GameMenuController.coordinateCollision(animal.getSprite().getX(), animal.getSprite().getWidth(), screenX, 0);
-                boolean b2 =GameMenuController.coordinateCollision(animal.getSprite().getY(), animal.getSprite().getHeight(), SCREEN_HEIGHT-screenY, 0);
+        for(NPC npc : NPC.allNPCs){
+            if(true){
+                boolean b1 =GameMenuController.coordinateCollision(npc.dialogueSprites().get(0).getX(), npc.dialogueSprites().get(0).getWidth(), mouseX, 0);
+                boolean b2 =GameMenuController.coordinateCollision(npc.dialogueSprites().get(0).getY(), npc.dialogueSprites().get(0).getHeight(), mouseY, 0);
 
                 if(b1 && b2){
-                    animal.setUpAnimalMenu();
+                    ClientApp.getInstance().getConnectionThread().sendPacket(new TalkToNPCPacket(App.getMyPlayer(), npc.getName()));
                     return true;
                 }
             }
@@ -611,16 +595,6 @@ public class GameMenu extends AppMenu implements InputProcessor {
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
 
-        ClientApp.getInstance().getConnectionThread().sendPacket(new MouseMovePacket(App.getMyPlayer(), screenX, screenY, GameMenu.class));
-
-        mouseX = screenX;
-        mouseY = SCREEN_HEIGHT - screenY;
-        if(SHOW_TILE_DETAILS){
-            Vector2 v2 = GameMap.getPositionByCoordinates(screenX+controller.getPrintStartX(), SCREEN_HEIGHT - screenY + controller.getPrintStartY());
-            Vector2 v22 = GameMap.getPositionByCoordinates(screenX, SCREEN_HEIGHT - screenY);
-            System.out.println(App.getGame().getGameMap().getTiles()[(int)v2.y][(int)v2.x].getDetails());
-            MessageManager.setShowTileDetailButton(App.getGame().getGameMap().getTiles()[(int)v2.y][(int)v2.x].getDetails(), v22.x*GameMap.getTilePrintSize(), v22.y * GameMap.getTilePrintSize());
-        }
         return false;
     }
 

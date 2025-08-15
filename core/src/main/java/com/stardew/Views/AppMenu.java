@@ -8,20 +8,20 @@ import com.badlogic.gdx.utils.viewport.*;
 
 public abstract class AppMenu implements Screen {
     protected Game main;
-    protected Stage stage;
-    protected Skin skin;
+    protected static Stage stage;
+    protected final static Skin skin = new Skin(Gdx.files.internal("skin/LibGdx-Skin-main/NzSkin.json"));
     protected Table table;
     public AppMenu(Game main) {
         this.main = main;
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
-        skin = new Skin(Gdx.files.internal("skin/LibGdx-Skin-main/NzSkin.json"));
         table = new Table();
         table.setFillParent(true);
         stage.addActor(table);
     }
 
     protected AppMenu() {
+
     }
 
     public abstract void check(String scanner);

@@ -6,9 +6,9 @@ import com.stardew.Models.Game.GameAssetManager;
 import com.stardew.Views.GameMenu;
 
 public class Energy {
-    private Sprite fullEnergySprite = new Sprite(GameAssetManager.getFullEnergySprite());
-    private float fullEnergySpriteWidth =  fullEnergySprite.getWidth();
-    private float fullEnergySpriteHeight =  fullEnergySprite.getHeight();
+    private Sprite fullEnergySprite ;
+    private float fullEnergySpriteWidth;
+    private float fullEnergySpriteHeight ;
 
     private int lastUpdateTime = 0;
     private boolean isLimited = true;
@@ -23,6 +23,9 @@ public class Energy {
     }
 
     public Sprite[] getSprite() {
+        fullEnergySprite= new Sprite(GameAssetManager.getFullEnergySprite());
+        fullEnergySpriteWidth =  fullEnergySprite.getWidth();
+        fullEnergySpriteHeight =  fullEnergySprite.getHeight();
         float v = 1- ((float)energy / maxEnergy);
         Sprite sprite = new Sprite(GameAssetManager.getEmptyEnergyBarSprite(), GameAssetManager.getEmptyEnergyBarSprite().getWidth(),
             (int)(GameAssetManager.getEmptyEnergyBarSprite().getHeight()*v));

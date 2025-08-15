@@ -80,7 +80,7 @@ public class Tool extends Item {
         else
             sprite = new Sprite(GameAssetManager.getToolSprites().get(itemType).get(level));
         sprite.setOrigin(0, 0);
-        sprite.setPosition((float) (App.getCurrentPlayer().getSprite().getX()+App.getCurrentPlayer().getSprite().getWidth()*0.7),
+        sprite.setPosition((float) (App.getMyPlayer().getSprite().getX()+App.getMyPlayer().getSprite().getWidth()*0.7),
             (float) (App.getCurrentPlayer().getSprite().getY()+ App.getCurrentPlayer().getSprite().getHeight()*0.37));
         sprite.setSize((float) (((double) GameMap.getTilePrintSize() /40)*sprite.getWidth()*0.7),
             (float) (((double) GameMap.getTilePrintSize() /40)*sprite.getHeight()*0.7));

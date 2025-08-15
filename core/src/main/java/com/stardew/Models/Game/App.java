@@ -1,9 +1,6 @@
 package com.stardew.Models.Game;
 
-import com.stardew.Controllers.AbilityMenuController;
-import com.stardew.Controllers.Controller;
-import com.stardew.Controllers.GameMenuController;
-import com.stardew.Enums.Gender;
+import com.stardew.Controllers.InGameControllers.*;
 import com.stardew.Enums.Menu;
 import com.stardew.Main;
 import com.stardew.Models.Lobby;
@@ -20,6 +17,7 @@ public class App {
 
     //TODO: fix into multiplayer
     private static Player currentPlayer = null;
+    private static final Thread MAIN_THREAD = Thread.currentThread();
     private static Player myPlayer = null;
     private static App app = null;
     private static Menu currentMenu = null;
@@ -44,11 +42,25 @@ public class App {
     public static App getInstance(){
         if(app == null){
             app = new App();
-            app.controllerRegistry.put(AbilityMenuController.MENU_NAME, new AbilityMenuController());
-            //TODO other controllers
-            new GameMenuController().newGame("ilias", "iliass", "iliasss");
+            setControllers();
+//            new GameMenuController().newGame("ilia", "ilias", "iliass", "iliasss");
         }
         return app;
+    }
+
+    private static void setControllers() {
+        app.controllerRegistry.put(AbilityMenuController.MENU_NAME, new AbilityMenuController());
+        app.controllerRegistry.put(RankingsController.MENU_NAME, new RankingsController());
+        app.controllerRegistry.put(CheatMenuController.MENU_NAME, new CheatMenuController());
+        app.controllerRegistry.put(CookingMenuController.MENU_NAME, new CookingMenuController());
+        app.controllerRegistry.put(CoopMenuController.MENU_NAME, new CoopMenuController());
+        app.controllerRegistry.put(CraftingMenuController.MENU_NAME, new CraftingMenuController());
+        app.controllerRegistry.put(InventoryMenuController.MENU_NAME, new InventoryMenuController());
+        app.controllerRegistry.put(MapMenuController.MENU_NAME, new MapMenuController());
+        app.controllerRegistry.put(MiniGameMenuController.MENU_NAME, new MiniGameMenuController());
+        app.controllerRegistry.put(RefrigeratorMenuController.MENU_NAME, new RefrigeratorMenuController());
+        app.controllerRegistry.put(SellingMenuController.MENU_NAME, new SellingMenuController());
+        app.controllerRegistry.put(ShopMenuController.MENU_NAME, new ShopMenuController());
     }
 
     public static Game getGame(){
@@ -68,7 +80,12 @@ public class App {
     }
 
     public static Player getCurrentPlayer() {
-        return currentPlayer;
+        if (Thread.currentThread().getName().equals("main")) {
+            return App.getMyPlayer();
+        }
+        else {
+            return currentPlayer;
+        }
     }
     public synchronized static void setCurrentPlayer(Player currentPlayer) {
         App.currentPlayer = currentPlayer;
@@ -89,6 +106,10 @@ public class App {
 
     public ArrayList<Game> getGames() {
         return games;
+    }
+
+    public static Thread getMainThread() {
+        return MAIN_THREAD;
     }
 
     public Player findPlayerByUsername(String username) {

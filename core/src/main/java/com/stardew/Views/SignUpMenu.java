@@ -59,6 +59,13 @@ public class SignUpMenu extends AppMenu {
         passwordField.setMessageText("Password");
         confirmPasswordField.setMessageText("Confirm Password");
 
+        usernameField.setText("Username");
+        nicknameField.setText("Nickname");
+        emailField.setText("Email");
+        genderField.setText("MALE");
+        passwordField.setText("Password@123");
+        confirmPasswordField.setMessageText("Confirm Password");
+
         passwordField.setPasswordMode(true);
         passwordField.setPasswordCharacter('*');
         confirmPasswordField.setPasswordMode(true);

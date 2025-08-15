@@ -7,8 +7,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.stardew.Controllers.GameMenuController;
 import com.stardew.Models.Game.App;
+import com.stardew.Models.Game.GameAssetManager;
 import com.stardew.Network.Client.ClientApp;
 //import com.stardew.Views.AppView;
+import com.stardew.Views.GameMenu;
 import com.stardew.Views.LoginRegisterMenu;
 import com.stardew.Views.NetworkMenus.NetMainMenu;
 import com.stardew.Views.Tab;
@@ -20,7 +22,11 @@ public class Main extends Game {
     public static Sprite sprite;
     public Stage stage;
 
-    private final String serverIp = "127.0.1.1";
+    public void setServerIp(String ip){
+        serverIp = ip;
+    }
+
+    private String serverIp = "";
     private final int port = 12345;
     private String playerId;
 
@@ -35,8 +41,12 @@ public class Main extends Game {
         return main;
     }
 
+    private boolean isGameStarted = false;
+
     @Override
     public void create() {
+        GameAssetManager manager = new GameAssetManager();
+        new Tab();
 //        stage = new Stage();
 //        TextButton textButton = Tab.createTextButton("kkk");
 //        textButton.setSize(0, 0);
@@ -62,6 +72,10 @@ public class Main extends Game {
 
     @Override
     public void render() {
+        if(isGameStarted){
+            main.setScreen(GameMenu.getInstance());
+            isGameStarted = false;
+        }
 //        ScreenUtils.clear(1, 1, 1, 1);
 //        stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
 //        stage.draw();
@@ -81,5 +95,13 @@ public class Main extends Game {
     public void dispose() {
         batch.dispose();
         sprite.getTexture().dispose();
+    }
+
+    public boolean isGameStarted() {
+        return isGameStarted;
+    }
+
+    public void setGameStarted(boolean gameStarted) {
+        isGameStarted = gameStarted;
     }
 }

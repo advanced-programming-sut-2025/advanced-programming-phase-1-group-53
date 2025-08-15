@@ -9,6 +9,7 @@ import com.stardew.Models.Items.CraftAbleAndArtisan.Artisan;
 import com.stardew.Models.Items.CraftAbleAndArtisan.*;
 import com.stardew.Models.Items.Foragings.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Game {
@@ -18,41 +19,55 @@ public class Game {
     private final ArrayList<Item> allItemsInTheGame = new ArrayList<>();
     public final DateAndTime dateAndTime = new DateAndTime();
     public final Weather weather = new Weather();
-    private final GameMap gameMap;
+    private GameMap gameMap;
     private Tile[][] currentMap;
     private Election election = null;
+    private GameMessages messages;
 
     // Helper to initialize player relationship HashMaps
 
     public Game(List<Player> players){
-//        this.players.addAll(players);
-//        numOfTurn = 0;
-//        numOfPlayers = players.size();
-//        allItemsInTheGame.addAll(Artisan.allArtisan);
-//        allItemsInTheGame.addAll(ArtisanGood.allArtisanGoods);
-//        allItemsInTheGame.addAll(CraftAble.allCraftables);
-//        allItemsInTheGame.addAll(ForagingCrop.foragingCrops);
-//        allItemsInTheGame.addAll(ForagingMineral.minerals);
-//        allItemsInTheGame.addAll(ForagingSeed.foragingSeeds);
-//        allItemsInTheGame.addAll(ForagingTree.allItems);
-//        allItemsInTheGame.addAll(Fruit.allFruits);
-//        allItemsInTheGame.addAll(PlantAbleCrop.allPlantAbleCrops);
-//        allItemsInTheGame.addAll(Tree.allTrees);
-//        allItemsInTheGame.addAll(Animal.allAnimals);
-//        allItemsInTheGame.addAll(AnimalProduct.allAnimalProducts);
-//        allItemsInTheGame.addAll(CoopAndBarn.COOP_AND_BARN);
-//        allItemsInTheGame.addAll(CraftingRecipe.craftingRecipes);
-//        allItemsInTheGame.addAll(Fish.fishes);
-//        allItemsInTheGame.addAll(Recipe.allRecipes);
-//        allItemsInTheGame.addAll(Food.allFoods);
-//        allItemsInTheGame.addAll(Item.allItems);
-//        allItemsInTheGame.addAll(Tool.allTools);
-//        allItemsInTheGame.add(TrashCan.normalTrashCan);
-//        allItemsInTheGame.add(ShippingBin.ShippingBin);
-//        allItemsInTheGame.add(WateringCan.normalWateringCan);
+        this.players.addAll(players);
+        numOfTurn = 0;
+        numOfPlayers = players.size();
+    }
+
+    public void initializeGame() {
+        allItemsInTheGame.addAll(Artisan.allArtisan);
+        allItemsInTheGame.addAll(ArtisanGood.allArtisanGoods);
+        allItemsInTheGame.addAll(CraftAble.allCraftables);
+        allItemsInTheGame.addAll(ForagingCrop.foragingCrops);
+        allItemsInTheGame.addAll(ForagingMineral.minerals);
+        allItemsInTheGame.addAll(ForagingSeed.foragingSeeds);
+        allItemsInTheGame.addAll(ForagingTree.allItems);
+        allItemsInTheGame.addAll(Fruit.allFruits);
+        allItemsInTheGame.addAll(PlantAbleCrop.allPlantAbleCrops);
+        allItemsInTheGame.addAll(Tree.allTrees);
+        allItemsInTheGame.addAll(Animal.allAnimals);
+        allItemsInTheGame.addAll(AnimalProduct.allAnimalProducts);
+        allItemsInTheGame.addAll(CoopAndBarn.COOP_AND_BARN);
+        allItemsInTheGame.addAll(CraftingRecipe.craftingRecipes);
+        allItemsInTheGame.addAll(Fish.fishes);
+        allItemsInTheGame.addAll(Recipe.allRecipes);
+        allItemsInTheGame.addAll(Food.allFoods);
+        allItemsInTheGame.addAll(Item.allItems);
+        allItemsInTheGame.addAll(Tool.allTools);
+        allItemsInTheGame.add(TrashCan.normalTrashCan);
+        allItemsInTheGame.add(ShippingBin.ShippingBin);
+        allItemsInTheGame.add(WateringCan.normalWateringCan);
         this.gameMap = new GameMap(players);
         this.currentMap = gameMap.getTiles();
-        //TODO uncomment
+
+        gameMap.generateRandomThings(App.getGame().getPlayers(), 4);
+        Player.initializePlayerRelations(App.getGame().players);
+    }
+
+    public GameMessages getMessages() {
+        return messages;
+    }
+
+    public void setMessages(GameMessages messages) {
+        this.messages = messages;
     }
 
     public ArrayList<Player> getPlayers() {
@@ -68,7 +83,12 @@ public class Game {
     }
 
     public Player getCurrentPlayer(){
-        return players.get(numOfTurn);
+        if (Thread.currentThread().getName().equals("main")) {
+            return App.getMyPlayer();
+        }
+        else {
+            return App.getCurrentPlayer();
+        }
     }
 
     public Item getItemByItemType(ItemType itemType){
@@ -159,6 +179,10 @@ public class Game {
 
     public Election getElection() {
         return election;
+    }
+
+    public void setElection(Election election) {
+        this.election = election;
     }
 
     public void printMap() {

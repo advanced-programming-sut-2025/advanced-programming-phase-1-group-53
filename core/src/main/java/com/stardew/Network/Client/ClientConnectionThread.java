@@ -1,17 +1,48 @@
 package com.stardew.Network.Client;
 
-import com.stardew.Controllers.Controller;
+import com.badlogic.gdx.Input;
+import com.stardew.Controllers.GameMenuController;
+import com.stardew.Controllers.InGameControllers.Controller;
+import com.stardew.Controllers.InGameControllers.InventoryMenuController;
+import com.stardew.Main;
+import com.stardew.Models.*;
 import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.Player;
-import com.stardew.Models.Lobby;
-import com.stardew.Models.Result;
+import com.stardew.Models.Items.Animal;
+import com.stardew.Models.Items.Item;
+import com.stardew.Models.NPC.NPC;
 import com.stardew.Network.Common.ConnectionThread;
 import com.stardew.Network.Common.Packet.*;
-import com.stardew.Network.Common.Packet.ClientPacket.*;
+import com.stardew.Network.Common.Packet.ClientPacket.AudioPackets.RequestAudioPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.AudioPackets.UploadAudioPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.BuyItemPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.Reaction;
+import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.ReactionPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.SendPrivateMessagePacket;
+import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.SendPublicMessagePacket;
+import com.stardew.Network.Common.Packet.ClientPacket.ElectionPackets.StartVotingPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.ElectionPackets.VotePacket;
+import com.stardew.Network.Common.Packet.ClientPacket.GamePackets.RestartGamePacket;
+import com.stardew.Network.Common.Packet.ClientPacket.GamePackets.SaveGamePacket;
+import com.stardew.Network.Common.Packet.ClientPacket.GamePackets.StartGamePacket;
+import com.stardew.Network.Common.Packet.ClientPacket.IntractionPackets.GiftingPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.IntractionPackets.GiveFlowerPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.IntractionPackets.HuggingPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.IntractionPackets.MarrigePacket;
+import com.stardew.Network.Common.Packet.ClientPacket.KeyboardPackets.*;
+import com.stardew.Network.Common.Packet.ClientPacket.LobbyPackets.CreateLobbyPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.LobbyPackets.JoinLobbyPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.LobbyPackets.LeaveLobbyPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.PickItemPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.RegisterPackets.LoginPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.RegisterPackets.SignUpPacket;
 import com.stardew.Network.Common.Packet.ServerPacket.NPCDialoguePacket;
 import com.stardew.Network.Common.Packet.ServerPacket.ServerGeneralRespondPacket;
 import com.stardew.Network.Common.Packet.ServerPacket.UpdateMapPacket;
 import com.stardew.Network.Common.Packet.ServerPacket.WelcomePacket;
+import com.stardew.Network.Server.ChangeDurationPacket;
+import com.stardew.Network.Server.ServerApp;
+import com.stardew.Views.GameMenu;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -49,23 +80,21 @@ public class ClientConnectionThread extends ConnectionThread {
 
     @Override
     protected boolean handlePacket(Packet packet) {
-//        for (Player player : App.getGame().getPlayers()) {
-//            System.out.println(player.personalInfo.getName());
-//        }
-        System.out.println("Received from server: " + packet.getClass().getSimpleName());
+        if (!packet.getClass().getSimpleName().equals("MouseMovePacket")) {
+            System.out.println("Received from server: " + packet.getClass().getSimpleName());
+        }
 
         if (packet instanceof ServerGeneralRespondPacket serverGeneralRespondPacket) {
             Packet innerPacket = serverGeneralRespondPacket.getReceivedPacket();
+            System.out.println("Received from server: " + innerPacket.getClass().getSimpleName());
             Result result = serverGeneralRespondPacket.result;
-            Player player = App.getInstance().findPlayerByUsername(innerPacket.getSenderId());
+            Player player = App.getInstance().findPlayerByUsername(innerPacket.getSenderUsername());
             System.out.println(innerPacket.getSenderId());
             if (player != null) {
                 App.setCurrentPlayer(player);
             }
 
-            if (innerPacket instanceof LoginPacket) {
-
-            } else if (innerPacket instanceof CreateLobbyPacket createLobbyPacket) {
+            if (innerPacket instanceof CreateLobbyPacket createLobbyPacket) {
                 if (!result.success()) {
                     System.out.println(result.message());
                     return true;
@@ -74,9 +103,17 @@ public class ClientConnectionThread extends ConnectionThread {
                     createLobbyPacket.isPublic, createLobbyPacket.isVisible, createLobbyPacket.ownerName);
                 return true;
             } else if (innerPacket instanceof GiveFlowerPacket giveFlowerPacket) {
-                //TODO
+                Friendship.bouquetGiving(App.getInstance().findPlayerByUsername(giveFlowerPacket.doerUsername),
+                    App.getInstance().findPlayerByUsername(giveFlowerPacket.receiverUsername), Item.Bouquet);
+                System.out.println(result.message());
+                ServerApp.getInstance().broadcastInGame(new ServerGeneralRespondPacket(result, giveFlowerPacket));
+                return true;
             } else if (innerPacket instanceof HuggingPacket huggingPacket) {
-                //TODO
+                Friendship.hugging(App.getInstance().findPlayerByUsername(huggingPacket.doerUsername),
+                    App.getInstance().findPlayerByUsername(huggingPacket.receiverUsername));
+                System.out.println(result.message());
+                ServerApp.getInstance().broadcastInGame(new ServerGeneralRespondPacket(result, huggingPacket));
+                return true;
             } else if (innerPacket instanceof JoinLobbyPacket joinLobbyPacket) {
                 if (!result.success()) {
                     System.out.println(result.message());
@@ -94,27 +131,22 @@ public class ClientConnectionThread extends ConnectionThread {
             } else if (innerPacket instanceof MarrigePacket marrigePacket) {
                 //TODO
             } else if (innerPacket instanceof GiftingPacket giftingPacket) {
-                //TODO
-            } else if (innerPacket instanceof ReactionPacket) {
-
+                Friendship.gifting(App.getInstance().findPlayerByUsername(giftingPacket.doerUsername),
+                    App.getInstance().findPlayerByUsername(giftingPacket.receiverUsername), App.getGame().getItemByItemType(giftingPacket.itemType),
+                    giftingPacket.amount);
+                System.out.println(result.message());
+                return true;
             } else if (innerPacket instanceof RestartGamePacket) {
 
             } else if (innerPacket instanceof SaveGamePacket) {
 
-            } else if (innerPacket instanceof SendPublicMessagePacket) {
-
-            }  else if (innerPacket instanceof SignUpPacket signUpPacket) {
+            } else if (innerPacket instanceof SignUpPacket signUpPacket) {
                 if (!result.success()) {
                     System.out.println(result.message());
                     return true;
                 }
                 Player.createPlayer(signUpPacket.username, signUpPacket.nickname, signUpPacket.password,
                     signUpPacket.email, signUpPacket.gender, signUpPacket.getSenderId());
-//                System.out.println(result.message());
-//                System.out.println(App.getInstance().getPlayers().get(0).personalInfo.getName());
-//                System.out.println(signUpPacket.getSenderId());
-//                System.out.println(signUpPacket.username);
-//                System.out.println(signUpPacket.getSenderUsername());
                 Player player1 = App.getInstance().findPlayerByUsername(signUpPacket.getSenderUsername());
                 if (player1 == null) {
                     System.out.println("what the fuck");
@@ -123,20 +155,24 @@ public class ClientConnectionThread extends ConnectionThread {
                     App.setMyPlayer(player1);
                 }
                 return true;
-            } else if (innerPacket instanceof StartGamePacket) {
-
-            } else if (innerPacket instanceof StartVotingPacket) {
-
-            } else if (innerPacket instanceof VotePacket) {
-
+            } else if (innerPacket instanceof StartGamePacket startGamePacket) {
+                GameMenuController.newGame(startGamePacket.username1, startGamePacket.username2, startGamePacket.username3,
+                    startGamePacket.username4);
+                System.out.println("aaas");
+                App.getGame().setMessages(new GameMessages());
+                App.getGame().initializeGame();
+                Main.getInstance().setGameStarted(true);
+                System.out.println("Game started");
+                return true;
             } else if (innerPacket instanceof NPCDialoguePacket npcDialoguePacket) {
                 if (!result.success()) {
                     System.out.println(result.message());
                     return true;
                 }
                 String dialogue = npcDialoguePacket.dialogue;
-                // کلاینت به دیالوگ هیستوری دسترسی نداره
-                // TODO show dialogue
+                if (player != null) {
+                    player.setNpcDialogue(dialogue);
+                }
                 return true;
             } else if (innerPacket instanceof KeyUpPacket keyUpPacket) {
                 if (!result.success()) {
@@ -145,23 +181,24 @@ public class ClientConnectionThread extends ConnectionThread {
                 }
                 Controller controller = App.getInstance().getController(keyUpPacket.className);
                 if (controller == null) {
-                    System.out.println("controller not found");
+                    System.out.println("controller not found " + keyUpPacket.className);
                     return true;
                 }
                 controller.keyUp(keyUpPacket);
                 System.out.println(result.message());
                 return true;
             } else if (innerPacket instanceof KeyDownPacket keyDownPacket) {
+                System.out.println(keyDownPacket.getSenderUsername()+" "+keyDownPacket.className+"sghbghsrbgjs"+keyDownPacket.keycode);
                 if (!result.success()) {
                     System.out.println(result.message());
                     return true;
                 }
                 Controller controller = App.getInstance().getController(keyDownPacket.className);
                 if (controller == null) {
-                    System.out.println("controller not found");
+                    System.out.println("controller not found " + keyDownPacket.className);
                     return true;
                 }
-                controller.keyDown(keyDownPacket);
+                App.getInstance().getController(keyDownPacket.className).keyDown(keyDownPacket);
                 System.out.println(result.message());
                 return true;
             } else if (innerPacket instanceof TouchDownPacket touchDownPacket) {
@@ -171,7 +208,7 @@ public class ClientConnectionThread extends ConnectionThread {
                 }
                 Controller controller = App.getInstance().getController(touchDownPacket.className);
                 if (controller == null) {
-                    System.out.println("controller not found");
+                    System.out.println("controller not found " + touchDownPacket.className);
                     return true;
                 }
                 controller.touchDown(touchDownPacket);
@@ -179,16 +216,16 @@ public class ClientConnectionThread extends ConnectionThread {
                 return true;
             } else if (innerPacket instanceof MouseMovePacket mouseMovePacket) {
                 if (!result.success()) {
-                    System.out.println(result.message());
+//                    System.out.println(result.message());
                     return true;
                 }
                 Controller controller = App.getInstance().getController(mouseMovePacket.className);
                 if (controller == null) {
-                    System.out.println("controller not found");
+//                    System.out.println("controller not found " + mouseMovePacket.className);
                     return true;
                 }
                 controller.mouseMove(mouseMovePacket);
-                System.out.println(result.message());
+//                System.out.println(result.message());
                 return true;
             } else if (innerPacket instanceof ClickPacket clickPacket) {
                 if (!result.success()) {
@@ -197,11 +234,75 @@ public class ClientConnectionThread extends ConnectionThread {
                 }
                 Controller controller = App.getInstance().getController(clickPacket.className);
                 if (controller == null) {
-                    System.out.println("controller not found");
+                    System.out.println("controller not found " + clickPacket.className);
                     return true;
                 }
                 controller.click(clickPacket);
                 System.out.println(result.message());
+                return true;
+            } else if (innerPacket instanceof StartVotingPacket startVotingPacket) {
+                if (!result.success()) {
+                    System.out.println(result.message());
+                }
+                Election.startElection(startVotingPacket);
+                System.out.println(result.message());
+
+                return true;
+            } else if (innerPacket instanceof VotePacket votePacket) {
+                if (!result.success()) {
+                    System.out.println(result.message());
+                    //TODO jabbar
+                }
+                Election.vote(votePacket);
+                System.out.println(result.message());
+                //TODO jabar
+                return true;
+            } else if (innerPacket instanceof SendPublicMessagePacket sendPublicMessagePacket) {
+                if (!result.success()) {
+                    System.out.println(result.message());
+                    //TODO jabar
+                    return true;
+                }
+                GameMessages.sendPublicChatMessage(sendPublicMessagePacket);
+                System.out.println(result.message());
+                return true;
+            } else if (innerPacket instanceof SendPrivateMessagePacket sendPrivateMessagePacket) {
+                if (!result.success()) {
+                    System.out.println(result.message());
+                    // TODO jabar
+                    return true;
+                }
+                GameMessages.sendPrivateChatMessage(sendPrivateMessagePacket);
+                System.out.println(result.message());
+                // TODO jabbar
+                return true;
+            } else if (innerPacket instanceof ReactionPacket reactionPacket) {
+                if (!result.success()) {
+                    System.out.println(result.message());
+                    return true;
+                }
+                Reaction.sendReaction(reactionPacket);
+                System.out.println(result.message());
+                return true;
+            } else if (innerPacket instanceof PickItemPacket pickItemPacket) {
+                if (!result.success()) {
+                    System.out.println(result.message());
+                    return true;
+                }
+                InventoryMenuController.pickItem(pickItemPacket);
+                System.out.println(result.message());
+                return true;
+            } else if (innerPacket instanceof BuyItemPacket buyItemPacket) {
+                if(App.getGame().getItemByItemType(buyItemPacket.itemType) instanceof Animal)
+                    GameMenu.getInstance().getController().abilities.shopping.purchase(buyItemPacket.itemType, buyItemPacket.field);
+                else{
+                    try{
+                        GameMenu.getInstance().getController().abilities.shopping.purchase(buyItemPacket.itemType, Integer.parseInt(buyItemPacket.field));
+                    }
+                    catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
                 return true;
             }
             return false;
@@ -209,6 +310,21 @@ public class ClientConnectionThread extends ConnectionThread {
 
         } else if (packet instanceof WelcomePacket) {
 
+        } else if (packet instanceof RequestAudioPacket requestAudioPacket) {
+            UploadAudioPacket audioPacket = null;//TODO jabar
+            if (audioPacket == null) {
+                System.out.println("did not send audio packet");
+                return true;
+            }
+            System.out.println("sending audio packet");
+            sendPacket(audioPacket);
+            return true;
+        } else if (packet instanceof UploadAudioPacket uploadAudioPacket) {
+            Result result = PacketParser.saveAudio(uploadAudioPacket);
+            System.out.println(result.message());
+            return true;
+        } else if (packet instanceof ChangeDurationPacket changeDurationPacket) {
+            NPC.changeDuration(changeDurationPacket);
         }
 
         return false;

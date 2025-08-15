@@ -8,9 +8,9 @@ import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.Player;
 import com.stardew.Models.Lobby;
 import com.stardew.Network.Client.ClientApp;
-import com.stardew.Network.Common.Packet.ClientPacket.JoinLobbyPacket;
-import com.stardew.Network.Common.Packet.ClientPacket.LeaveLobbyPacket;
-import com.stardew.Network.Common.Packet.ClientPacket.StartGamePacket;
+import com.stardew.Network.Common.Packet.ClientPacket.LobbyPackets.JoinLobbyPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.LobbyPackets.LeaveLobbyPacket;
+import com.stardew.Network.Common.Packet.ClientPacket.GamePackets.StartGamePacket;
 import com.stardew.Views.*;
 
 import java.security.MessageDigest;
@@ -59,7 +59,7 @@ public class LobbyMenu extends AppMenu {
         lobbySelectBox = new SelectBox<>(skin);
         ArrayList<String> lobbyNames = new ArrayList<>();
         for (Lobby lobby : App.getInstance().getLobbies()) {
-            lobbyNames.add(lobby.getName());
+            lobbyNames.add(lobby.getId());
         }
         lobbySelectBox.setItems(lobbyNames.toArray(new String[0]));
         table.add(lobbySelectBox).width(300).height(60).pad(20).row();
@@ -76,20 +76,7 @@ public class LobbyMenu extends AppMenu {
         openLobbyWindowButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                String selectedLobbyName = lobbySelectBox.getSelected();
-                Lobby selectedLobby = null;
-                for (Lobby lobby : App.getInstance().getLobbies()) {
-                    if (lobby.getName().equals(selectedLobbyName)) {
-                        selectedLobby = lobby;
-                        break;
-                    }
-                }
-                if (selectedLobby != null && selectedLobby.getPlayers().size() < 4) {
-                    showLobbyWindow(selectedLobby, joinPasswordField.getText());
-                    return;
-                }
-                Dialog dialog = STab.createDialog("couldn't open the lobby!\nit may be full or closed.", "OK");
-                dialog.show(stage);
+                joinLobby(joinPasswordField.getText(), lobbySelectBox.getSelected());
             }
         });
         table.add(openLobbyWindowButton).pad(20).row();
@@ -125,7 +112,7 @@ public class LobbyMenu extends AppMenu {
         ExitBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                App.main.setScreen(new ExitMenu(App.main));
+                App.main.setScreen(new NetExitMenu(App.main));
             }
         });
         table.add(ExitBtn).pad(20).row();
@@ -163,6 +150,14 @@ public class LobbyMenu extends AppMenu {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 controller.createLobby(stage, skin, nameField, passwordField, visibilitySelectBox);
+
+                Lobby lastAppLobby = App.getInstance().getLobbies().get(App.getInstance().getLobbies().size() -1);
+                if (!lastAppLobby.getName().equals(nameField.getText())) {
+                    STab.createDialog("couldn't create the lobby", "dismiss").show(stage);
+                    return;
+                }
+                STab.createDialog("ID: " + lastAppLobby.getId(), "OK").show(stage);
+
             }
         });
         contentTable.add(createButton).pad(10).row();
@@ -193,6 +188,7 @@ public class LobbyMenu extends AppMenu {
 
     private void showLobbyWindow(Lobby lobby, String password) {
         this.id = lobby.getId();
+        this.name = lobby.getName();
         this.admin = lobby.getAdmin();
         this.players = lobby.getPlayers();
         this.isPrivate = !lobby.isPublic();
@@ -206,8 +202,26 @@ public class LobbyMenu extends AppMenu {
             return;
         }
 
+
+        if (App.getMyPlayer().getCurrentLobby() != null ) {
+            LeaveLobbyPacket leavePacket = new LeaveLobbyPacket(
+                App.getMyPlayer(), App.getMyPlayer().getUsername(),
+                App.getMyPlayer().getCurrentLobby().getId()
+            );
+            ClientApp.getInstance().getConnectionThread().sendPacket(leavePacket);
+        }
         JoinLobbyPacket packet = controller.joinLobby(App.getMyPlayer(), lobby, password);
         ClientApp.getInstance().getConnectionThread().sendPacket(packet);
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        if (App.getMyPlayer().getCurrentLobby() == null) {
+            STab.createDialog("Couldn't join the lobby!", "Dismiss").show(stage);
+            return;
+        }
 
         lobbyWindow = new com.badlogic.gdx.scenes.scene2d.ui.Window("Lobby Info", skin);
         lobbyWindow.setSize(600, 800);
@@ -217,8 +231,14 @@ public class LobbyMenu extends AppMenu {
 
         com.badlogic.gdx.scenes.scene2d.ui.Table contentTable = new com.badlogic.gdx.scenes.scene2d.ui.Table();
         contentTable.add(new Label("Lobby ID: " + id, skin)).pad(10).row();
+        contentTable.add(new Label("Lobby Name: " + name, skin)).pad(10).row();
         contentTable.add(new Label("Admin: " + admin.getPersonalInfo().getName(), skin)).pad(10).row();
-        playersCountLabel = new Label("Players (" + players.size() + ")", skin);
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        playersCountLabel = new Label("Players (" + (players.size()) + ")", skin);
         contentTable.add(playersCountLabel).pad(10).row();
 
         playerSelectBox = new SelectBox<>(skin);
@@ -230,13 +250,29 @@ public class LobbyMenu extends AppMenu {
         startButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (!lobby.getAdmin().equals(App.getCurrentPlayer()) || lobby.getPlayers().size() < 2) {
+                if (!lobby.getAdmin().equals(App.getMyPlayer()) || lobby.getPlayers().size() < 2) {
                     Dialog dialog = STab.createDialog("couldn't start the game", "OK");
                     dialog.show(stage);
                     return;
                 }
-                StartGamePacket packet = controller.startGame(lobby);
-                ClientApp.getInstance().getConnectionThread().sendPacket(packet);
+                String username1=null;
+                String username2=null;
+                String username3 = null;
+                String username4 = null;
+                try{
+
+                    username1 = lobby.getPlayers().get(0).getUsername();
+                   username2 = lobby.getPlayers().get(1).getUsername();
+                    username3 = lobby.getPlayers().get(2).getUsername();
+                    username4 = lobby.getPlayers().get(3).getUsername();
+
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+                StartGamePacket packet1 = new StartGamePacket(App.getMyPlayer(), lobby.getId(), username1, username2, username3, username4);
+                ClientApp.getInstance().getConnectionThread().sendPacket(packet1);
+//                StartGamePacket packet = controller.startGame(lobby);
             }
         });
         contentTable.add(startButton).pad(10).row();
@@ -263,6 +299,16 @@ public class LobbyMenu extends AppMenu {
             contentTable.add(deleteButton).pad(10).row();
         }
 
+
+        TextButton refreshBtn = new TextButton("Refresh", skin);
+        refreshBtn.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                refreshLobby(App.getMyPlayer(), lobby);
+            }
+        });
+        contentTable.add(refreshBtn).pad(10).row();
+
         com.badlogic.gdx.scenes.scene2d.ui.ScrollPane scrollPane = new com.badlogic.gdx.scenes.scene2d.ui.ScrollPane(contentTable, skin);
         lobbyWindow.add(scrollPane).expand().fill();
         stage.addActor(lobbyWindow);
@@ -276,13 +322,18 @@ public class LobbyMenu extends AppMenu {
     }
 
     private void refreshPlayers() {
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         String[] playerNames = players.stream().map(Player::getUsername).toArray(String[]::new);
         playerSelectBox.setItems(playerNames);
     }
 
     public void onPlayerListChanged() {
         refreshPlayers();
-        playersCountLabel.setText("Players (" + players.size() + "/4):");
+        playersCountLabel.setText("Players (" + players.size() + "):");
     }
 
     private boolean isAdmin() {
@@ -292,6 +343,22 @@ public class LobbyMenu extends AppMenu {
     @Override
     public void check(String s) {
         // No command-based logic for graphical UI
+    }
+
+    private void joinLobby(String password, String lobbyName) {
+        Lobby selectedLobby = null;
+        for (Lobby lobby : App.getInstance().getLobbies()) {
+            if (lobby.getId().equals(lobbyName)) {
+                selectedLobby = lobby;
+                break;
+            }
+        }
+        if (selectedLobby != null && selectedLobby.getPlayers().size() < 4) {
+            showLobbyWindow(selectedLobby, password);
+            return;
+        }
+        Dialog dialog = STab.createDialog("couldn't open the lobby!\nit may be full or closed.", "OK");
+        dialog.show(stage);
     }
 
     private void openSearchLobbyWindow() {
@@ -365,5 +432,23 @@ public class LobbyMenu extends AppMenu {
         ScrollPane scrollPane = new ScrollPane(contentTable, skin);
         searchWindow.add(scrollPane).expand().fill();
         stage.addActor(searchWindow);
+    }
+
+    private void refreshLobby(Player myPlayer, Lobby lobby) {
+        if (lobbyWindow == null) {
+            return;
+        }
+
+        lobbyWindow.remove();
+        lobbyWindow = null;
+        showLobbyWindow(lobby, lobby.getPassword());
+
+        for (Player player : lobby.getPlayers()) {
+            if (player.equals(myPlayer)) {
+                return;
+            }
+        }
+        lobbyWindow.remove();
+        lobbyWindow = null;
     }
 }

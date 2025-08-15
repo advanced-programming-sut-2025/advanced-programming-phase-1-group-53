@@ -1,25 +1,87 @@
 package com.stardew.Models.NPC;
 
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.stardew.Controllers.GameMenuController;
 import com.stardew.Enums.ItemType;
-import com.stardew.Enums.Season;
 import com.stardew.Models.Game.App;
+import com.stardew.Models.Game.GameAssetManager;
 import com.stardew.Models.Game.Player;
+import com.stardew.Models.GameMap;
 import com.stardew.Models.Items.Item;
 import com.stardew.Models.Position;
 import com.stardew.Models.Request;
 import com.stardew.Models.Result;
+import com.stardew.Network.Common.Packet.ClientPacket.ContactPackets.Reaction;
+import com.stardew.Network.Server.ChangeDurationPacket;
+import com.stardew.Network.Server.ServerApp;
+import com.stardew.Views.GameMenu;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 
 public class NPC {
+    private Sprite sprite = null;
+
+    private int direction;
+    private int indexOfSprite = 0;
     private final String name;
     private final ArrayList<Item> favoriteItems;
     private final ArrayList<Request> requests;
     private final String personality;
     private final Position position;
+    private boolean isIdle = false;
+    private float lastTimeUpdatedSprite = 0;
 
+    private boolean isDialogueReady = true;
+    private boolean isDialogueOpen = false;
+
+
+    public void update(float delta){
+        if(!isIdle){
+            if(indexOfSprite == 0) {
+                indexOfSprite = 1;
+                lastTimeUpdatedSprite = 0;
+            }
+            else if((GameMenu.getTotalTimeSpent()-lastTimeUpdatedSprite) >= App.TAKING_STEP_TIME_GAP){
+                indexOfSprite = (indexOfSprite % 2) + 1;
+                lastTimeUpdatedSprite = GameMenu.getTotalTimeSpent();
+                if(direction == 0)
+                    position.changeY(0);
+                if(direction == 1)
+                    position.changeX(0);
+                if(direction == 2)
+                    position.changeY(0);
+                if(direction == 3)
+                    position.changeX(0);
+            }
+            if(!GameMenuController.mvc.canPlayerMove(direction)){
+                isIdle = true;
+                return;
+            }
+        }
+        if(isIdle){
+            indexOfSprite = 0;
+        }
+    }
+
+    private NPC setSprite(){
+        this.sprite = new Sprite(GameAssetManager.getNpcSprites().get(name)[direction][indexOfSprite]);
+        this.sprite.setPosition(position.getX()* GameMap.getTilePrintSize(), position.getY()*GameMap.getTilePrintSize());
+        return this;
+    }
+
+    public Sprite fixForPrint(){
+        this.sprite.setPosition(position.getX()*GameMap.getTilePrintSize()- GameMenuController.getPrintStartX(),
+            position.getY()*GameMap.getTilePrintSize() - GameMenuController.getPrintStartY());
+        return sprite;
+    }
+    public Sprite getSprite(){
+        this.sprite = new Sprite(GameAssetManager.getNpcSprites().get(name)[direction][indexOfSprite]);
+        this.sprite.setPosition(position.getX()*GameMap.getTilePrintSize(), position.getY()*GameMap.getTilePrintSize());
+        this.sprite.setSize((float) (32 * 1.5), (float) (64*1.5));
+        return sprite;
+    }
     // Example village tile locations (must be asphalt tiles inside the village area)
     // Adjust these coordinates as needed to fit your village layout
     public static final Position SEBASTIAN_POSITION = new Position(31, 31, 1, 1);
@@ -28,12 +90,13 @@ public class NPC {
     public static final Position LIA_POSITION       = new Position(28, 36, 1, 1);
     public static final Position ROBIN_POSITION     = new Position(30, 37, 1, 1);
 
-    public NPC(String name, ArrayList<Item> favoriteItems, ArrayList<Request> requests, String personality, Position position) {
+    public NPC(String name, ArrayList<Item> favoriteItems, ArrayList<Request> requests, String personality, Position position, int duration) {
         this.name = name;
         this.favoriteItems = favoriteItems;
         this.requests = requests;
         this.personality = personality;
         this.position = position;
+        this.direction = duration;
     }
 
     public static final NPC Sebastian = new NPC(
@@ -49,7 +112,7 @@ public class NPC {
             new Request(150, App.getGame().getItemByItemType(ItemType.Stone), 50, App.getGame().getItemByItemType(ItemType.Quartz), 0)
         )),
         "Sebastian is a quiet, introspective young man who spends most of his time in his room, tinkering with computers or riding his motorcycle. He enjoys sarcastic humor, rainy days, and dislikes large crowds.",
-        SEBASTIAN_POSITION
+        SEBASTIAN_POSITION, 0
     );
 
     public static final NPC Abigail = new NPC(
@@ -66,7 +129,7 @@ public class NPC {
             new Request(1, App.getGame().getItemByItemType(ItemType.Coffee), 0, null, 5000)
         )),
         "Abigail is adventurous, bold, and a little rebellious. She loves exploring mines, playing the flute, and eating anything unusual. She has a mischievous side and enjoys teasing her friends.",
-        ABIGAIL_POSITION
+        ABIGAIL_POSITION, 1
     );
 
     public static final NPC Harvey = new NPC(
@@ -81,7 +144,7 @@ public class NPC {
             new Request(5, App.getGame().getItemByItemType(ItemType.Parsnip), 0, null, 1000)
         )),
         "Harvey is a gentle, slightly anxious town doctor who cares deeply for everyone's health. He’s polite, well-mannered, and enjoys calm conversations over a cup of coffee.",
-        HARVEY_POSITION
+        HARVEY_POSITION, 2
     );
 
     public static final NPC Lia = new NPC(
@@ -96,7 +159,7 @@ public class NPC {
             new Request(1, App.getGame().getItemByItemType(ItemType.Salad), 0, null, 1000)
         )),
         "Lia is a warm, creative artist who loves sculpting and painting. She’s kind-hearted, enjoys quiet walks in nature, and often finds inspiration in the simplest things.",
-        LIA_POSITION
+        LIA_POSITION, 1
     );
 
     public static final NPC Robin = new NPC(
@@ -112,8 +175,42 @@ public class NPC {
             new Request(10, App.getGame().getItemByItemType(ItemType.Wine), 0, null, 3000)
         )),
         "Robin is an energetic, friendly carpenter who loves building and improving homes. She’s practical, resourceful, and always ready to share a laugh.",
-        ROBIN_POSITION
+        ROBIN_POSITION, 0
     );
+
+//    public void update(float delta){
+//        ArrayList<Reaction> mustRemove = new ArrayList<>();
+//        for(Reaction reaction : mustRemove){
+//            reactions.remove(reaction);
+//        }
+//
+//        if(!isIdle){
+//            if(indexOfSprite == 0) {
+//                indexOfSprite = 1;
+//                lastTimeUpdatedSprite = 0;
+//            }
+//            else if((GameMenu.getTotalTimeSpent()-lastTimeUpdatedSprite) >= App.TAKING_STEP_TIME_GAP){
+//                indexOfSprite = (indexOfSprite % 2) + 1;
+//                lastTimeUpdatedSprite = GameMenu.getTotalTimeSpent();
+//            }
+//            if(!GameMenuController.mvc.canPlayerMove(direction)){
+//                isIdle = true;
+//                return;
+//            }
+//            if(direction == 0)
+//                position.changeY(-App.ADVANCE_OF_EACH_STEP);
+//            if(direction == 1)
+//                position.changeX(App.ADVANCE_OF_EACH_STEP);
+//            if(direction == 2)
+//                position.changeY(App.ADVANCE_OF_EACH_STEP);
+//            if(direction == 3)
+//                position.changeX(-App.ADVANCE_OF_EACH_STEP);
+//            energy.updateEnergy(-(int) (energy.getMaxEnergy()*0.00005));
+//        }
+//        if(isIdle){
+//            indexOfSprite = 0;
+//        }
+//    }
 
 
     public String getName() {
@@ -154,8 +251,7 @@ public class NPC {
         }
         player.changeNPCsFriendship(20, npc);
         LanguageModelAsync npcModel = new HttpLanguageModel(
-            "http://localhost:11434/api/generate",
-            "llama3"
+            "http://localhost:11434/api/generate", "gemma:2b"
         );
         DialogueGenerator generator = new DialogueGenerator(npcModel);
 
@@ -221,6 +317,69 @@ public class NPC {
     public static void showRequests(NPC npc) {
         for (Request request : npc.getRequests()) {
             System.out.println(request.toString());
+        }
+    }
+
+    public static void changeDirection() {
+        if (!App.getMyPlayer().personalInfo.getName().equalsIgnoreCase("SERVER")) {
+            return;
+        }
+        NPC.Sebastian.direction = generateNewDirection();
+        NPC.Abigail.direction = generateNewDirection();
+        NPC.Harvey.direction = generateNewDirection();
+        NPC.Lia.direction = generateNewDirection();
+        NPC.Robin.direction = generateNewDirection();
+        ServerApp.getInstance().broadcastInGame(new ChangeDurationPacket("SERVER", "SERVER",
+            Sebastian.direction, Abigail.direction, Harvey.direction, Lia.direction, Robin.direction));
+    }
+
+    private static int generateNewDirection() {
+        return (int)(Math.random() * 4);
+    }
+
+    public static void changeDuration(ChangeDurationPacket packet) {
+        Sebastian.direction = packet.SebastianDuration;
+        Abigail.direction = packet.AbigailDuration;
+        Harvey.direction = packet.HarveyDuration;
+        Lia.direction = packet.LiaDuration;
+        Robin.direction = packet.RobinDuration;
+    }
+
+
+    public boolean isDialogueReady() {
+        return isDialogueReady;
+    }
+
+    public void setDialogueReady(boolean dialogueReady) {
+        isDialogueReady = dialogueReady;
+    }
+
+    public boolean isDialogueOpen() {
+        return isDialogueOpen;
+    }
+
+    public void setDialogueOpen(boolean dialogueOpen) {
+        isDialogueOpen = dialogueOpen;
+    }
+
+    public static final ArrayList<NPC> allNPCs = new ArrayList<>(){{
+        add(Harvey);
+        add(Abigail);
+        add(Robin);
+        add(Lia);
+        add(Sebastian);
+    }};
+
+    public ArrayList<Sprite> dialogueSprites(){
+        if(isDialogueOpen){
+            return null;
+        }
+        else{
+            Sprite s = new Sprite(GameAssetManager.collect);
+            s.setPosition(position.getX()*GameMap.getTilePrintSize()- GameMenuController.getPrintStartX()+sprite.getWidth()/2,
+                position.getY()*GameMap.getTilePrintSize() - GameMenuController.getPrintStartY()+sprite.getHeight()+20);
+            s.setSize(20, 20);
+            return new ArrayList<>(){{add(s);}};
         }
     }
 }

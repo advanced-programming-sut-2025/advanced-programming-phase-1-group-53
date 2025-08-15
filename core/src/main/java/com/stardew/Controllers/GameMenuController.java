@@ -37,6 +37,8 @@ public class GameMenuController {
     public Activity activity = new Activity();
     public Abilities abilities = new Abilities();
 
+
+
     public static int getPrintStartX() {
         return printStartX;
     }
@@ -72,12 +74,12 @@ public class GameMenuController {
             App.getGame().dateAndTime.updateTime();
         }
         GameMenu.getInstance().updateScreen(delta);
-        App.getCurrentPlayer().update(delta);
+        App.getMyPlayer().update(delta);
         abilities.normalFarming.update(delta);
         ShippingBin.ShippingBin.update(delta);
 
         if(game.dateAndTime.isADayPassed()){
-            //System.out.println("gold :"+App.getCurrentPlayer().personalInfo.getGold());
+            //System.out.println("gold :"+App.getMyPlayer().personalInfo.getGold());
             //regenerate
             for(Vector2 v2 : game.getGameMap().getReGenerateQue().keySet()){
                 ItemType itemType = game.getGameMap().getReGenerateQue().get(v2);
@@ -97,7 +99,13 @@ public class GameMenuController {
             //choose weather
         }
 
-        App.getCurrentPlayer().foodBuff.update(delta);
+        for(NPC npc : NPC.allNPCs){
+            npc.update(delta);
+        }
+
+        for(Player player : App.getGame().getPlayers()){
+            player.update(delta);
+        }
 
         game.weather.update(delta);
 
@@ -173,10 +181,10 @@ public class GameMenuController {
             }
         }
         if(!hideEnergyBar){
-            for(int i = 0; i< App.getCurrentPlayer().energy.getSprite().length; i++){
-                Sprite s = App.getCurrentPlayer().energy.getSprite()[i];
+            for(int i = 0; i< App.getMyPlayer().energy.getSprite().length; i++){
+                Sprite s = App.getMyPlayer().energy.getSprite()[i];
                 if(i==0){
-                    Sprite ss = App.getCurrentPlayer().foodBuff.getSprite();
+                    Sprite ss = App.getMyPlayer().foodBuff.getSprite();
                     ss.setPosition(s.getX(), s.getY() + s.getHeight() + 30);
                     if(ss.getTexture() != null){
                         sprites.add(ss);
@@ -186,7 +194,7 @@ public class GameMenuController {
             }
         }
 
-        for(CoopAndBarn coop : App.getCurrentPlayer().backpack.getCoopsAndBarns()){
+        for(CoopAndBarn coop : App.getMyPlayer().backpack.getCoopsAndBarns()){
             for(Animal animal : coop.getOutAnimals()){
                 Sprite s = animal.getSprite();
                 if(isInPrintRegion(s)){
@@ -200,27 +208,39 @@ public class GameMenuController {
             sprites.add(s);
         }
 
+        for(NPC npc : NPC.allNPCs){
+            Sprite s = npc.getSprite();
+            if(isInPrintRegion(s)){
+                sprites.add(npc.fixForPrint());
+                if(npc.isDialogueReady()){
+                    sprites.addAll(npc.dialogueSprites());
+                }
+            }
+        }
 
-        sprites.add(App.getCurrentPlayer().getSprite());
-        if(App.getCurrentPlayer().backpack.getItemInHand()!= null){
-            Sprite s = App.getCurrentPlayer().backpack.getItemInHand().getSprite();
+
+        for(Player player : App.getGame().players){
+            sprites.add(player.getSprite());
+        }
+        if(App.getMyPlayer().backpack.getItemInHand()!= null){
+            Sprite s = App.getMyPlayer().backpack.getItemInHand().getSprite();
             if(GameMenu.getInstance().isSetToolToMouse()) {
                 s.setPosition(GameMenu.getInstance().getMouseX(), GameMenu.getInstance().getMouseY());
                 s.setColor(0.3f, 0.3f, 0.3f, 1);
             }
             else
-                s.setPosition((float) (App.getCurrentPlayer().getSprite().getX()+App.getCurrentPlayer().getSprite().getWidth()*0.7),
-                (float) (App.getCurrentPlayer().getSprite().getY()+ App.getCurrentPlayer().getSprite().getHeight()*0.37));
+                s.setPosition((float) (App.getMyPlayer().getSprite().getX()+App.getMyPlayer().getSprite().getWidth()*0.7),
+                (float) (App.getMyPlayer().getSprite().getY()+ App.getMyPlayer().getSprite().getHeight()*0.37));
             sprites.add(s);
         }
-        //System.out.println(App.getCurrentPlayer().position.getX()+" "+App.getCurrentPlayer().position.getY());
+        //System.out.println(App.getMyPlayer().position.getX()+" "+App.getMyPlayer().position.getY());
         return sprites;
     }
 
 
     public static boolean isInPrintRegion(Sprite sprite){
-        int x = App.getCurrentPlayer().position.getX();
-        int y = App.getCurrentPlayer().position.getY();
+        int x = App.getMyPlayer().position.getX();
+        int y = App.getMyPlayer().position.getY();
         int margin = 20;
         int startPrintX = (x/GameMenu.getScreenWidth())*GameMenu.getScreenWidth() -margin;
         int startPrintY = (y/GameMenu.getScreenHeight())*GameMenu.getScreenHeight() -margin;
@@ -246,21 +266,38 @@ public class GameMenuController {
 //        App.setCurrentMenu(Menu.mainMenu);
     }
 
-    public void newGame(String username1, String username2, String username3) {
-        Player me = App.getCurrentPlayer();
+    public static void newGame(String username0, String username1, String username2, String username3) {
+        System.out.println(username0+" "+username1+" "+username2+" "+username3);
+        Player me = App.getInstance().findPlayerByUsername(username0);
         Player player1 = App.getInstance().findPlayerByUsername(username1);
         Player player2 = App.getInstance().findPlayerByUsername(username2);
         Player player3 = App.getInstance().findPlayerByUsername(username3);
-        if (player1 == null || player2 == null || player3 == null) {
+        if (player1 == null && player2 == null && player3 == null) {
             System.out.println("One or more players not found.");
-            return;
         }
-        App.getInstance().setGame(new Game(List.of(App.getCurrentPlayer(),App.getInstance().findPlayerByUsername(username1)
-            , App.getInstance().findPlayerByUsername(username2), App.getInstance().findPlayerByUsername(username3))));
-        System.out.println("ll");
-        App.getGame().getGameMap().generateRandomThings(App.getGame().getPlayers(), 4);
-        Player.initializePlayerRelations(App.getGame().players);
-        System.out.println("khosh oomadid");
+
+        else if (player2 == null && player3 == null) {
+            App.getInstance().setGame(new Game(List.of(me, player1)));
+            System.out.println("ll");
+            System.out.println("khosh oomadid");
+        }
+
+
+        else if (player3 == null) {
+            System.out.println("3");
+            App.getInstance().setGame(new Game(List.of(me , player1, player2)));
+            System.out.println("ll");
+            App.getGame().getGameMap().generateRandomThings(App.getGame().getPlayers(), 4);
+            Player.initializePlayerRelations(App.getGame().players);
+            System.out.println("khosh oomadid");
+        }
+        else {
+            App.getInstance().setGame(new Game(List.of(me , player1, player2, player3)));
+            System.out.println("ll");
+//            App.getGame().getGameMap().generateRandomThings(App.getGame().getPlayers(), 4);
+            Player.initializePlayerRelations(App.getGame().players);
+            System.out.println("khosh oomadid");
+        }
     }
 
     public void loadGame(String index) {
@@ -290,7 +327,7 @@ public class GameMenuController {
     public void nextTurn() {
         App.getGame().goToNextPlayer();
         MapsNames mapsNames = App.getGame().getCurrentPlayer().getCurrentMap();
-        Tile[][] map = MapsNames.findMapByMapsName(mapsNames, App.getCurrentPlayer());
+        Tile[][] map = MapsNames.findMapByMapsName(mapsNames, App.getMyPlayer());
         if (map == null) {
             System.out.println("bug");
             return;
@@ -355,7 +392,7 @@ public class GameMenuController {
     }
 
     public void buildGreenHouse() {
-        App.getCurrentPlayer().getFarm().getGreenHouse().letsBuildGreenhouse();
+        App.getMyPlayer().getFarm().getGreenHouse().letsBuildGreenhouse();
     }
 
     public void walk(String x, String y) {
@@ -766,62 +803,10 @@ public class GameMenuController {
 //        NPC.talk(npc, player);
     }
 
-    public Result keyDown(int keycode) {
-
-        Vector2 v = GameMap.getPositionByCoordinates((int) (App.getCurrentPlayer().position.getX()),
-            (int) (App.getCurrentPlayer().position.getY()));
-        int x = (int) (v.x+App.getCurrentPlayer().getDirectionVector().x);
-        int y = (int)(v.y + App.getCurrentPlayer().getDirectionVector().y);
-        if(keycode == Input.Keys.W || keycode == Input.Keys.A ||keycode == Input.Keys.S ||
-            keycode == Input.Keys.D){
-            GameMenuController.mvc.movePlayer(keycode);
-            return new Result(true, "MovePlayer");
-
-        }
-        if(keycode == Input.Keys.ESCAPE){
-            Main.main.setScreen(InventoryMenu.getInstance());
-            return new Result(true, "Inventory Menu");
-        }
-        if(keycode == Input.Keys.T){
-            System.out.println("t");
-            GameMenu.getInstance().triggerThunder();
-        }
-        if(keycode == Input.Keys.H){
-            setHideEnergyBar(!isHideEnergyBar());
-        }
-        if(keycode == Input.Keys.Q){
-            GameMenu.getInstance().useItem(x, y,
-                App.getGame().getItemByItemType(App.getCurrentPlayer().backpack.getItemInHand().getItemType()));
-        }
-        if (keycode == Input.Keys.Y) {
-            abilities.normalFarming.plant(ItemType.PomegranateSapling, x, y);
-        }
-        if (keycode == Input.Keys.Z) {
-            abilities.cooking.showCookingRecipes();
-        }
-        // TODO fix this if
-//        if(keycode == Input.Keys.K){
-//            Main.main.setScreen(CheatMenuController.getInstance());
-//        }
-        if(keycode == Input.Keys.C){
-            Main.main.setScreen(CookingMenu.getInstance());
-        }
-        if(keycode == Input.Keys.B){
-            Main.main.setScreen(CraftingMenu.getInstance());
-            return new Result(true, "Crafting Menu");
-        }
-        if(keycode == Input.Keys.O){
-            GameMenu.getInstance().setSHOW_TILE_DETAILS(!GameMenu.getInstance().isSHOW_TILE_DETAILS());
-            if(!GameMenu.getInstance().isSHOW_TILE_DETAILS())
-                MessageManager.setShowTileDetailButton(null, 0, 0);
-        }
-        if(keycode == Input.Keys.P){
-            for(Animal animal : App.getCurrentPlayer().backpack.getAnimals()){
-                animal.pet();
-            }
-        }
-        return new Result(false, "non of your business");
-    }
+//    public Result keyDown(int keycode) {
+//
+//
+//    }
 
     public void giftNPC(String npcName, String itemName) {
         NPC npc = NPC.findNPCsByName(npcName);

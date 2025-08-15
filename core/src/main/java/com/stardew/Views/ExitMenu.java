@@ -1,6 +1,7 @@
 package com.stardew.Views;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 
 public class ExitMenu extends AppMenu {
 
@@ -14,6 +15,6 @@ public class ExitMenu extends AppMenu {
     @Override
     public void show() {
         table.clear();
-        table.add("Exit Screen Placeholder").pad(20);
+        Gdx.app.exit();
     }
 }
