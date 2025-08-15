@@ -59,6 +59,7 @@ public class GameMenu extends AppMenu implements InputProcessor {
     private float mouseX = 0;
     private boolean isGoingInCoop = false;
     private boolean showFullTiles = false;
+    private float checkElection = 0;
 
 
     public GameMenuController getController() {
@@ -316,6 +317,7 @@ public class GameMenu extends AppMenu implements InputProcessor {
 
     @Override
     public void render(float delta) {
+        checkElection+=delta;
         SCREEN_WIDTH = Gdx.graphics.getWidth();
         SCREEN_HEIGHT = Gdx.graphics.getHeight();
         ScreenUtils.clear(0, 0, 0, 1);
@@ -364,15 +366,18 @@ public class GameMenu extends AppMenu implements InputProcessor {
         stage.draw();
 
 
-        if(App.getGame().getElection() != null){
-            if(App.getGame().getElection().isFinished()){
-                Election.finishElection();
-            }
-            if(App.getGame().getElection().getType().equals(ElectionType.TERMINATE_GAME)){
-                Main.getInstance().setScreen(new TerminationMenu());
-            }
-            else{
-                Main.getInstance().setScreen(new KickingMenu(App.getInstance().findPlayerByUsername(App.getGame().getElection().getUsername())));
+        if(checkElection >=1){
+            checkElection=0;
+            if(App.getGame().getElection() != null){
+                if(App.getGame().getElection().isFinished()){
+                    Election.finishElection();
+                }
+                if(App.getGame().getElection().getType().equals(ElectionType.TERMINATE_GAME)){
+                    Main.getInstance().setScreen(new TerminationMenu());
+                }
+                else{
+                    Main.getInstance().setScreen(new KickingMenu(App.getInstance().findPlayerByUsername(App.getGame().getElection().getUsername())));
+                }
             }
         }
         MessageManager.update(delta);
