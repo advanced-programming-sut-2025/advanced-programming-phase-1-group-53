@@ -50,6 +50,7 @@ public class KickingMenu extends Tab {
         back.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                stage.clear();
                 ClientApp.getInstance().sendPacketToServer(new VotePacket(App.getCurrentPlayer(), true));
                 Main.main.setScreen(GameMenu.getInstance());
             }
@@ -62,6 +63,7 @@ public class KickingMenu extends Tab {
         dis.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                stage.clear();
                 ClientApp.getInstance().sendPacketToServer(new VotePacket(App.getCurrentPlayer(), false));
                 Main.main.setScreen(GameMenu.getInstance());
             }
