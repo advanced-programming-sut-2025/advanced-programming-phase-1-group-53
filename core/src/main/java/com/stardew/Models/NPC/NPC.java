@@ -48,13 +48,13 @@ public class NPC {
                 indexOfSprite = (indexOfSprite % 2) + 1;
                 lastTimeUpdatedSprite = GameMenu.getTotalTimeSpent();
                 if(direction == 0)
-                    position.changeY(-1);
+                    position.changeY(0);
                 if(direction == 1)
-                    position.changeX(1);
+                    position.changeX(0);
                 if(direction == 2)
-                    position.changeY(1);
+                    position.changeY(0);
                 if(direction == 3)
-                    position.changeX(-1);
+                    position.changeX(0);
             }
             if(!GameMenuController.mvc.canPlayerMove(direction)){
                 isIdle = true;

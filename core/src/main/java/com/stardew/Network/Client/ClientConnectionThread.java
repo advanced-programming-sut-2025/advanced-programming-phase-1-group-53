@@ -80,7 +80,9 @@ public class ClientConnectionThread extends ConnectionThread {
 
     @Override
     protected boolean handlePacket(Packet packet) {
-        System.out.println("Received from server: " + packet.getClass().getSimpleName());
+        if (!packet.getClass().getSimpleName().equals("MouseMovePacket")) {
+            System.out.println("Received from server: " + packet.getClass().getSimpleName());
+        }
 
         if (packet instanceof ServerGeneralRespondPacket serverGeneralRespondPacket) {
             Packet innerPacket = serverGeneralRespondPacket.getReceivedPacket();
@@ -214,16 +216,16 @@ public class ClientConnectionThread extends ConnectionThread {
                 return true;
             } else if (innerPacket instanceof MouseMovePacket mouseMovePacket) {
                 if (!result.success()) {
-                    System.out.println(result.message());
+//                    System.out.println(result.message());
                     return true;
                 }
                 Controller controller = App.getInstance().getController(mouseMovePacket.className);
                 if (controller == null) {
-                    System.out.println("controller not found " + mouseMovePacket.className);
+//                    System.out.println("controller not found " + mouseMovePacket.className);
                     return true;
                 }
                 controller.mouseMove(mouseMovePacket);
-                System.out.println(result.message());
+//                System.out.println(result.message());
                 return true;
             } else if (innerPacket instanceof ClickPacket clickPacket) {
                 if (!result.success()) {

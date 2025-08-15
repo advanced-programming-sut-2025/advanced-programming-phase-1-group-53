@@ -161,21 +161,7 @@ public class AbilityMenuController extends Controller {
                 GameMenu.getInstance().useItem(x, y, App.getGame().getItemByItemType(App.getCurrentPlayer().backpack.getItemInHand().getItemType()));
             return new Result(true, "Left click handled");
         }
-        if(button == Input.Buttons.RIGHT){
-            if(NPC.Abigail.isDialogueOpen()) {
-                NPC.Abigail.setDialogueOpen(false);
-                App.getMyPlayer().setNpcDialogue(null);
-            }
-
-            if(App.getMyPlayer().getNpcDialogue() != null){
-                MessageManager.setShowNpcDialogueButton(App.getMyPlayer().getNpcDialogue(), GameMenu.getScreenWidth()/2
-                , GameMenu.getScreenHeight()/2);
-                NPC.Abigail.setDialogueOpen(true);
-                return new Result(true, " ");
-            }
-            return new Result(true, "Right click handled");
-
-        }
+        if(button == Input.Buttons.RIGHT){}
         return new Result(true, "  ");
     }
 
