@@ -78,6 +78,17 @@ public class VoteMenu extends Tab {
             }
         });
         stage.addActor(dis);
+
+        TextButton bb = Tab.createTextButton("back");
+        bb.setPosition(SCREEN_WIDTH/2-150, SCREEN_HEIGHT/2 -300);
+        bb.setSize(300, 70);
+        bb.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Main.getInstance().setScreen(GameMenu.getInstance());
+            }
+        });
+        stage.addActor(bb);
     }
 
 
