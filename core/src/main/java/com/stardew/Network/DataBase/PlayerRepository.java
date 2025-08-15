@@ -1,54 +1,33 @@
 package com.stardew.Network.DataBase;
 
-import com.stardew.Enums.Gender;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stardew.Models.Game.Player;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 public class PlayerRepository {
-    private final Connection connection;
-
-    public PlayerRepository(Connection connection) {
-        this.connection = connection;
-    }
-
-    public Player findByUsername(String username) {
+    public void savePlayer(Player player) throws SQLException {
+        ObjectMapper mapper = new ObjectMapper();
+        String playerJson;
         try {
-            PreparedStatement stmt = connection.prepareStatement("SELECT * FROM users WHERE name = ?");
-            stmt.setString(1, username);
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                String genderStr = rs.getString("gender");
-                Gender gender = Gender.valueOf(genderStr.toUpperCase());
-                Player user = new Player(
-                    rs.getString("name"),
-                    rs.getString("nickname"),
-                    rs.getString("hashed_password"),
-                    rs.getString("email"),
-                    gender);
-                return user;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+            playerJson = mapper.writeValueAsString(player);
+        } catch (Exception e) {
+            throw new RuntimeException("Error serializing player", e);
         }
-        return null;
-    }
 
-    public void save(Player player) {
-        try {
-                PreparedStatement insertStmt = connection.prepareStatement(
-                    "INSERT INTO users (name, nickname, hashed_password, email, gender) VALUES (?, ?, ?, ?, ?)");
-                insertStmt.setString(1, player.personalInfo.getName());
-                insertStmt.setString(2, player.personalInfo.getNickname());
-                insertStmt.setString(3, player.personalInfo.getPassword());
-                insertStmt.setString(4, player.personalInfo.getEmail());
-                insertStmt.setString(5, player.personalInfo.getGender().name());
-        } catch (SQLException e) {
-            e.printStackTrace();
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            Statement stmt = conn.createStatement();
+            stmt.execute("CREATE TABLE IF NOT EXISTS players (" +
+                "id SERIAL PRIMARY KEY, " +
+                "data TEXT)");
+
+            PreparedStatement ps = conn.prepareStatement("INSERT INTO players (data) VALUES (?)");
+            ps.setString(1, playerJson);
+            ps.executeUpdate();
         }
     }
 
