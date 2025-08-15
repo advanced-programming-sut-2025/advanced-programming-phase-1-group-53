@@ -13,7 +13,7 @@ public class KeyDownPacket extends Packet {
     public KeyDownPacket(Player sender, int keycode, Class<? extends Screen> clazz) {
         super(sender.personalInfo.getConnectionId(), sender.personalInfo.getName());
         this.keycode = keycode;
-        this.className = clazz.getName();
+        this.className = clazz.getSimpleName();
     }
 
     @Override

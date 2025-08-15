@@ -10,11 +10,13 @@ public class GiftingPacket extends Packet {
     public String doerUsername;
     public String receiverUsername;
     public ItemType itemType;
-    public GiftingPacket(Player sender, String doerUsername, String receiverUsername, ItemType itemType) {
+    public int amount;
+    public GiftingPacket(Player sender, String doerUsername, String receiverUsername, ItemType itemType, int amount) {
         super(sender.personalInfo.getConnectionId(), sender.personalInfo.getName());
         this.doerUsername = doerUsername;
         this.receiverUsername = receiverUsername;
         this.itemType = itemType;
+        this.amount = amount;
     }
 
     @Override

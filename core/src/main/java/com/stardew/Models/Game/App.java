@@ -44,7 +44,7 @@ public class App {
         if(app == null){
             app = new App();
             setControllers();
-            new GameMenuController().newGame("ilia", "ilias", "iliass", "iliasss");
+//            new GameMenuController().newGame("ilia", "ilias", "iliass", "iliasss");
         }
         return app;
     }
@@ -81,11 +81,11 @@ public class App {
     }
 
     public static Player getCurrentPlayer() {
-        if (Thread.currentThread() == App.getMainThread()) {
+        if (Thread.currentThread().getName().equals("main")) {
             return App.getMyPlayer();
         }
         else {
-            return App.getCurrentPlayer();
+            return currentPlayer;
         }
     }
     public synchronized static void setCurrentPlayer(Player currentPlayer) {

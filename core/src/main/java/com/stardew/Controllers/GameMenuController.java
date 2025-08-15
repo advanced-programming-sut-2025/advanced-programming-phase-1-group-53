@@ -37,6 +37,8 @@ public class GameMenuController {
     public Activity activity = new Activity();
     public Abilities abilities = new Abilities();
 
+
+
     public static int getPrintStartX() {
         return printStartX;
     }
@@ -97,7 +99,9 @@ public class GameMenuController {
             //choose weather
         }
 
-        App.getMyPlayer().foodBuff.update(delta);
+        for(Player player : App.getGame().getPlayers()){
+            player.update(delta);
+        }
 
         game.weather.update(delta);
 
@@ -201,7 +205,9 @@ public class GameMenuController {
         }
 
 
-        sprites.add(App.getMyPlayer().getSprite());
+        for(Player player : App.getGame().players){
+            sprites.add(player.getSprite());
+        }
         if(App.getMyPlayer().backpack.getItemInHand()!= null){
             Sprite s = App.getMyPlayer().backpack.getItemInHand().getSprite();
             if(GameMenu.getInstance().isSetToolToMouse()) {
@@ -783,62 +789,10 @@ public class GameMenuController {
 //        NPC.talk(npc, player);
     }
 
-    public Result keyDown(int keycode) {
-
-        Vector2 v = GameMap.getPositionByCoordinates((int) (App.getMyPlayer().position.getX()),
-            (int) (App.getMyPlayer().position.getY()));
-        int x = (int) (v.x+App.getMyPlayer().getDirectionVector().x);
-        int y = (int)(v.y + App.getMyPlayer().getDirectionVector().y);
-        if(keycode == Input.Keys.W || keycode == Input.Keys.A ||keycode == Input.Keys.S ||
-            keycode == Input.Keys.D){
-            GameMenuController.mvc.movePlayer(keycode);
-            return new Result(true, "MovePlayer");
-
-        }
-        if(keycode == Input.Keys.ESCAPE){
-            Main.main.setScreen(InventoryMenu.getInstance());
-            return new Result(true, "Inventory Menu");
-        }
-        if(keycode == Input.Keys.T){
-            System.out.println("t");
-            GameMenu.getInstance().triggerThunder();
-        }
-        if(keycode == Input.Keys.H){
-            setHideEnergyBar(!isHideEnergyBar());
-        }
-        if(keycode == Input.Keys.Q){
-            GameMenu.getInstance().useItem(x, y,
-                App.getGame().getItemByItemType(App.getMyPlayer().backpack.getItemInHand().getItemType()));
-        }
-        if (keycode == Input.Keys.Y) {
-            abilities.normalFarming.plant(ItemType.PomegranateSapling, x, y);
-        }
-        if (keycode == Input.Keys.Z) {
-            abilities.cooking.showCookingRecipes();
-        }
-        // TODO fix this if
-//        if(keycode == Input.Keys.K){
-//            Main.main.setScreen(CheatMenuController.getInstance());
-//        }
-        if(keycode == Input.Keys.C){
-            Main.main.setScreen(CookingMenu.getInstance());
-        }
-        if(keycode == Input.Keys.B){
-            Main.main.setScreen(CraftingMenu.getInstance());
-            return new Result(true, "Crafting Menu");
-        }
-        if(keycode == Input.Keys.O){
-            GameMenu.getInstance().setSHOW_TILE_DETAILS(!GameMenu.getInstance().isSHOW_TILE_DETAILS());
-            if(!GameMenu.getInstance().isSHOW_TILE_DETAILS())
-                MessageManager.setShowTileDetailButton(null, 0, 0);
-        }
-        if(keycode == Input.Keys.P){
-            for(Animal animal : App.getMyPlayer().backpack.getAnimals()){
-                animal.pet();
-            }
-        }
-        return new Result(false, "non of your business");
-    }
+//    public Result keyDown(int keycode) {
+//
+//
+//    }
 
     public void giftNPC(String npcName, String itemName) {
         NPC npc = NPC.findNPCsByName(npcName);

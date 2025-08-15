@@ -3,14 +3,12 @@ package com.stardew.Network.Server;
 import com.stardew.Controllers.GameMenuController;
 import com.stardew.Controllers.InGameControllers.Controller;
 import com.stardew.Controllers.InGameControllers.InventoryMenuController;
-import com.stardew.Models.Election;
+import com.stardew.Models.*;
 import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.Player;
-import com.stardew.Models.GameMessages;
 import com.stardew.Models.Items.Animal;
-import com.stardew.Models.Lobby;
+import com.stardew.Models.Items.Item;
 import com.stardew.Models.NPC.NPC;
-import com.stardew.Models.Result;
 import com.stardew.Network.Common.ConnectionThread;
 import com.stardew.Network.Common.Packet.*;
 import com.stardew.Network.Common.Packet.ClientPacket.AudioPackets.RequestAudioPacket;
@@ -82,7 +80,7 @@ public class ServerConnectionThread extends ConnectionThread {
 
     @Override
     protected boolean handlePacket(Packet packet) {
-        Player player = App.getInstance().findPlayerByUsername(packet.getSenderId());
+        Player player = App.getInstance().findPlayerByUsername(packet.getSenderUsername());
         System.out.println(packet.getSenderId());
         if (player != null) {
             App.setCurrentPlayer(player);
@@ -92,9 +90,17 @@ public class ServerConnectionThread extends ConnectionThread {
         System.out.println("Received packet from " + getClientId() + ": " + packet.getClass().getSimpleName());
 
         if (packet instanceof GiveFlowerPacket giveFlowerPacket) {
-            //TODO
+            result = Friendship.bouquetGiving(App.getInstance().findPlayerByUsername(giveFlowerPacket.doerUsername),
+                App.getInstance().findPlayerByUsername(giveFlowerPacket.receiverUsername), Item.Bouquet);
+            System.out.println(result.message());
+            ServerApp.getInstance().broadcastInGame(new ServerGeneralRespondPacket(result, giveFlowerPacket));
+            return true;
         } else if (packet instanceof HuggingPacket huggingPacket) {
-            //TODO
+            result = Friendship.hugging(App.getInstance().findPlayerByUsername(huggingPacket.doerUsername),
+                App.getInstance().findPlayerByUsername(huggingPacket.receiverUsername));
+            System.out.println(result.message());
+            ServerApp.getInstance().broadcastInGame(new ServerGeneralRespondPacket(result, huggingPacket));
+            return true;
         } else if (packet instanceof JoinLobbyPacket joinLobbyPacket) {
             result = Lobby.addPlayer(joinLobbyPacket.playerUsername, joinLobbyPacket.lobbyId, joinLobbyPacket.password);
             System.out.println(result.message());
@@ -108,7 +114,12 @@ public class ServerConnectionThread extends ConnectionThread {
         } else if (packet instanceof MarrigePacket marrigePacket) {
             //TODO
         } else if (packet instanceof GiftingPacket giftingPacket) {
-            //TODO
+            result = Friendship.gifting(App.getInstance().findPlayerByUsername(giftingPacket.doerUsername),
+                App.getInstance().findPlayerByUsername(giftingPacket.receiverUsername), App.getGame().getItemByItemType(giftingPacket.itemType),
+                giftingPacket.amount);
+            System.out.println(result.message());
+            ServerApp.getInstance().broadcastInGame(new ServerGeneralRespondPacket(result, giftingPacket));
+            return true;
         } else if (packet instanceof RestartGamePacket) {
             //TODO
         } else if (packet instanceof SaveGamePacket) {
@@ -161,9 +172,10 @@ public class ServerConnectionThread extends ConnectionThread {
             return true;
         } else if (packet instanceof KeyDownPacket keyDownPacket) {
             Controller controller = App.getInstance().getController(keyDownPacket.className);
+            System.out.println(keyDownPacket.className + "aaa");
             if (controller == null) {
                 ServerApp.getInstance().broadcastInGame(new ServerGeneralRespondPacket(new Result(false, "controller not found"), keyDownPacket));
-                System.out.println("controller not found");
+                System.out.println("controller not found1");
                 return true;
             }
             result = controller.keyDown(keyDownPacket);

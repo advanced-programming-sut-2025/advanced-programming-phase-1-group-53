@@ -377,7 +377,7 @@ public class GameMenu extends AppMenu implements InputProcessor {
             sleep.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    ClientApp.getInstance().getConnectionThread().sendPacket(new ClickPacket(App.getMyPlayer(), TextButtonType.sleep, GameMenu.class));
+                    ClientApp.getInstance().getConnectionThread().sendPacket(new ClickPacket(App.getMyPlayer(), TextButtonType.sleep, AbilityMenu.class));
 
                     try{
                         TimeCheatMenu.setIsCheatActivate(true);
@@ -474,9 +474,9 @@ public class GameMenu extends AppMenu implements InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
-        ClientApp.getInstance().getConnectionThread().sendPacket(new KeyDownPacket(App.getMyPlayer(),keycode, GameMenu.class));
+        ClientApp.getInstance().getConnectionThread().sendPacket(new KeyDownPacket(App.getMyPlayer(),keycode, AbilityMenu.class));
 
-        return controller.keyDown(keycode).success();
+        return true;
     }
 
     public void useItem(int x, int y, Item item){
@@ -512,22 +512,9 @@ public class GameMenu extends AppMenu implements InputProcessor {
 
     @Override
     public boolean keyUp(int keycode) {
-        ClientApp.getInstance().getConnectionThread().sendPacket(new KeyUpPacket(App.getMyPlayer(), keycode, GameMenu.class));
+        ClientApp.getInstance().getConnectionThread().sendPacket(new KeyUpPacket(App.getMyPlayer(), keycode, AbilityMenu.class));
 
-        Vector2 v = GameMap.getPositionByCoordinates((int) (App.getCurrentPlayer().position.getX()),
-            (int) (App.getCurrentPlayer().position.getY()));
-        int x = (int) (v.x+App.getCurrentPlayer().getDirectionVector().x);
-        int y = (int)(v.y + App.getCurrentPlayer().getDirectionVector().y);
-        if(keycode == Input.Keys.W || keycode == Input.Keys.A ||keycode == Input.Keys.S ||
-            keycode == Input.Keys.D){
-            GameMenuController.mvc.stopMoving(keycode);
-            return true;
-        }
-        if(keycode == Input.Keys.Q){
-            if(App.getCurrentPlayer().backpack.getItemInHand() instanceof Tool){
-                ((Tool) App.getCurrentPlayer().backpack.getItemInHand()).setHoldInPlace(false);
-            }
-        }
+
         return false;
     }
 
@@ -539,51 +526,9 @@ public class GameMenu extends AppMenu implements InputProcessor {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 
-        ClientApp.getInstance().getConnectionThread().sendPacket(new TouchDownPacket(App.getMyPlayer(), screenX, screenY, pointer, button ,GameMenu.class));
+        ClientApp.getInstance().getConnectionThread().sendPacket(new TouchDownPacket(App.getMyPlayer(), screenX, screenY, pointer, button ,AbilityMenu.class));
 
-        Vector2 v = GameMap.getPositionByCoordinates((int) (App.getCurrentPlayer().position.getX()),
-            (int) (App.getCurrentPlayer().position.getY()));
-        int x = (int) (v.x+App.getCurrentPlayer().getDirectionVector().x);
-        int y = (int)(v.y + App.getCurrentPlayer().getDirectionVector().y);
 
-        if(button == Input.Buttons.LEFT){
-            float degree = angleBetweenPoints(App.getCurrentPlayer().position.getX(), App.getCurrentPlayer().position.getY(),
-                screenX, SCREEN_HEIGHT-screenY);
-            if(degree>=45 && degree< 135){
-                App.getCurrentPlayer().setDirection(2);
-            }
-            else if(degree>=135 && degree< 225){
-                App.getCurrentPlayer().setDirection(3);
-            }
-            else if(degree>=225 && degree< 315){
-                App.getCurrentPlayer().setDirection(0);
-            }
-            else if(degree>=315 || degree< 45){
-                App.getCurrentPlayer().setDirection(1);
-            }
-
-            if(setToolToMouse){
-                v = GameMap.getPositionByCoordinates((int)mouseX,
-                    (int) mouseY);
-                x = (int) (v.x);
-                y = (int)(v.y);
-                useItem(x, y, App.getGame().getItemByItemType(App.getCurrentPlayer().backpack.getItemInHand().getItemType()));
-            }
-
-            else if(App.getCurrentPlayer().backpack.getItemInHand() != null)
-                useItem(x, y, App.getGame().getItemByItemType(App.getCurrentPlayer().backpack.getItemInHand().getItemType()));
-        }
-        if(button == Input.Buttons.RIGHT){
-            for(Animal animal : App.getCurrentPlayer().backpack.getAnimals()){
-                boolean b1 =GameMenuController.coordinateCollision(animal.getSprite().getX(), animal.getSprite().getWidth(), screenX, 0);
-                boolean b2 =GameMenuController.coordinateCollision(animal.getSprite().getY(), animal.getSprite().getHeight(), SCREEN_HEIGHT-screenY, 0);
-
-                if(b1 && b2){
-                    animal.setUpAnimalMenu();
-                    return true;
-                }
-            }
-        }
         return false;
     }
 
@@ -605,16 +550,8 @@ public class GameMenu extends AppMenu implements InputProcessor {
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
 
-        ClientApp.getInstance().getConnectionThread().sendPacket(new MouseMovePacket(App.getMyPlayer(), screenX, screenY, GameMenu.class));
+        ClientApp.getInstance().getConnectionThread().sendPacket(new MouseMovePacket(App.getMyPlayer(), screenX, screenY, AbilityMenu.class));
 
-        mouseX = screenX;
-        mouseY = SCREEN_HEIGHT - screenY;
-        if(SHOW_TILE_DETAILS){
-            Vector2 v2 = GameMap.getPositionByCoordinates(screenX+controller.getPrintStartX(), SCREEN_HEIGHT - screenY + controller.getPrintStartY());
-            Vector2 v22 = GameMap.getPositionByCoordinates(screenX, SCREEN_HEIGHT - screenY);
-            System.out.println(App.getGame().getGameMap().getTiles()[(int)v2.y][(int)v2.x].getDetails());
-            MessageManager.setShowTileDetailButton(App.getGame().getGameMap().getTiles()[(int)v2.y][(int)v2.x].getDetails(), v22.x*GameMap.getTilePrintSize(), v22.y * GameMap.getTilePrintSize());
-        }
         return false;
     }
 
