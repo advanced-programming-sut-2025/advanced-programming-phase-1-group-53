@@ -22,7 +22,11 @@ public class Main extends Game {
     public static Sprite sprite;
     public Stage stage;
 
-    private final String serverIp = "127.0.1.1";
+    public void setServerIp(String ip){
+        serverIp = ip;
+    }
+
+    private String serverIp = "";
     private final int port = 12345;
     private String playerId;
 

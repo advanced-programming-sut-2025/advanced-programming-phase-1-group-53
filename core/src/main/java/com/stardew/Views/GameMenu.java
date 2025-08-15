@@ -476,6 +476,9 @@ public class GameMenu extends AppMenu implements InputProcessor {
     public boolean keyDown(int keycode) {
         ClientApp.getInstance().getConnectionThread().sendPacket(new KeyDownPacket(App.getMyPlayer(),keycode, AbilityMenu.class));
 
+        if(keycode == Input.Keys.V){
+            Main.getInstance().setScreen(new VoteMenu());
+        }
         return true;
     }
 
