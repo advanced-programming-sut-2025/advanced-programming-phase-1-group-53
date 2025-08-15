@@ -294,7 +294,7 @@ public class GameMenuController {
         else {
             App.getInstance().setGame(new Game(List.of(me , player1, player2, player3)));
             System.out.println("ll");
-            App.getGame().getGameMap().generateRandomThings(App.getGame().getPlayers(), 4);
+//            App.getGame().getGameMap().generateRandomThings(App.getGame().getPlayers(), 4);
             Player.initializePlayerRelations(App.getGame().players);
             System.out.println("khosh oomadid");
         }

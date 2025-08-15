@@ -61,6 +61,10 @@ public class AbilityMenuController extends Controller {
         System.out.println(App.getGame().players.get(0)+"mm"+App.getGame().players.get(1));
         int keycode = keyDownPacket.keycode;
 
+        if(keycode == Input.Keys.M){
+            App.getCurrentPlayer().personalInfo.updateGold(20);
+        }
+
         Vector2 v = GameMap.getPositionByCoordinates((int) (App.getCurrentPlayer().position.getX()),
                 (int) (App.getCurrentPlayer().position.getY()));
         int x = (int) (v.x+App.getCurrentPlayer().getDirectionVector().x);
@@ -124,45 +128,7 @@ public class AbilityMenuController extends Controller {
 
     @Override
     public Result touchDown(TouchDownPacket touchDownPacket) {
-        float mouseX = touchDownPacket.screenX;
-        float mouseY = GameMenu.getScreenHeight()-touchDownPacket.screenY;
-        int button = touchDownPacket.button;
 
-        Vector2 v = GameMap.getPositionByCoordinates((int) (App.getCurrentPlayer().position.getX()),
-            (int) (App.getCurrentPlayer().position.getY()));
-        int x = (int) (v.x+App.getCurrentPlayer().getDirectionVector().x);
-        int y = (int)(v.y + App.getCurrentPlayer().getDirectionVector().y);
-
-        if(button == Input.Buttons.LEFT){
-            float degree = angleBetweenPoints(App.getCurrentPlayer().position.getX(), App.getCurrentPlayer().position.getY(),
-                mouseX, mouseY);
-            if(degree>=45 && degree< 135){
-                App.getCurrentPlayer().setDirection(2);
-            }
-            else if(degree>=135 && degree< 225){
-                App.getCurrentPlayer().setDirection(3);
-            }
-            else if(degree>=225 && degree< 315){
-                App.getCurrentPlayer().setDirection(0);
-            }
-            else if(degree>=315 || degree< 45){
-                App.getCurrentPlayer().setDirection(1);
-            }
-
-            if(false){
-                v = GameMap.getPositionByCoordinates((int)mouseX,
-                    (int) mouseY);
-                x = (int) (v.x);
-                y = (int)(v.y);
-                GameMenu.getInstance().useItem(x, y, App.getGame().getItemByItemType(App.getCurrentPlayer().backpack.getItemInHand().getItemType()));
-            }
-
-            else if(App.getCurrentPlayer().backpack.getItemInHand() != null)
-                GameMenu.getInstance().useItem(x, y, App.getGame().getItemByItemType(App.getCurrentPlayer().backpack.getItemInHand().getItemType()));
-            return new Result(true, "Left click handled");
-        }
-        if(button == Input.Buttons.RIGHT){
-        }
         return new Result(true, "  ");
     }
 

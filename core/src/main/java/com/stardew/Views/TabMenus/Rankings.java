@@ -25,6 +25,7 @@ import com.stardew.Views.GameMenu;
 import com.stardew.Views.Tab;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class Rankings extends Tab {
     private static final float SCREEN_WIDTH = Gdx.graphics.getWidth();
@@ -41,6 +42,7 @@ public class Rankings extends Tab {
     private static final int NUM_OF_ITEMS_IN_A_PAGE = 5;
     private int currentPage  = 0;
     SelectBox selectBox;
+    private int filter = 0;
 
 
     public void createRow(float x, float y, Player player){
@@ -80,13 +82,11 @@ public class Rankings extends Tab {
     @Override
     public void render(float delta){
         if(selectBox != null) {
-            boolean s = showAll;
-            if(selectBox.getSelectedIndex() == 0)
-                showAll = true;
-            else
-                showAll = false;
-            if(showAll != s)
+            int current = selectBox.getSelectedIndex();
+            if(current != filter) {
                 isChanged = true;
+                filter = current;
+            }
         }
         ScreenUtils.clear(0, 0, 0, 1);
         Gdx.gl.glClearColor(0, 0, 0, 1); // RGB + Alpha
@@ -119,6 +119,22 @@ public class Rankings extends Tab {
             back.setSize(140, 80);
             stage.addActor(back);
             float currentY = START_Y+100;
+            if(filter == 0){
+                players.sort(Comparator.comparing(p -> p.personalInfo.getGold()));
+            }
+            if(filter == 1){
+                players.sort(Comparator.comparing(p -> p.abilities.getAbilities()[3]));
+            }
+            if(filter == 2){
+                players.sort(Comparator.comparing(p -> p.abilities.getAbilities()[0]));
+            }
+            if(filter == 3){
+                players.sort(Comparator.comparing(p -> p.abilities.getAbilities()[2]));
+            }
+            if(filter == 4){
+                players.sort(Comparator.comparing(p -> p.abilities.getAbilities()[1]));
+            }
+
             for(int i = currentPage*NUM_OF_ITEMS_IN_A_PAGE; i<
                 Math.min((currentPage+1)*NUM_OF_ITEMS_IN_A_PAGE, players.size()); i++){
                 Player player = players.get(i);

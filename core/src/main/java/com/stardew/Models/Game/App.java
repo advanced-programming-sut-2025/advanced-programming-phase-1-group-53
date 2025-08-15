@@ -2,6 +2,7 @@ package com.stardew.Models.Game;
 
 import com.stardew.Controllers.InGameControllers.*;
 import com.stardew.Controllers.GameMenuController;
+import com.stardew.Enums.Gender;
 import com.stardew.Enums.Menu;
 import com.stardew.Main;
 import com.stardew.Models.Lobby;
