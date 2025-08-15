@@ -32,7 +32,7 @@ public class NPC {
     private final Position position;
     private boolean isIdle = true;
     private float lastTimeUpdatedSprite = 0;
-    private final static Texture dialogueIcon = new Texture("Collect_Button.png");
+
     private boolean isDialogueReady = true;
     private boolean isDialogueOpen = false;
 

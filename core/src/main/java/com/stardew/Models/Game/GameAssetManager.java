@@ -19,6 +19,8 @@ public class GameAssetManager {
         new Texture("Buildings/Pelican Town Winter.png")
     };
 
+    public static final Texture collect = new Texture("Collect_Button.png");
+
     private static final HashMap<String, Texture> NPC_Textures = new HashMap<>(){{
         put("Abigail", new Texture("NPC/Abigail.png"));
         put("Harvey", new Texture("NPC/Harvey.png"));
