@@ -24,16 +24,11 @@ public class Abilities {
     }
 
     public int getMiningLevel() {
-        return Math.min((abilities[0] - 50) / 100, 0);
+        return abilities[0];
     }
 
     public void setMiningLevel(int miningLevel) {
-        if (miningLevel == 0) {
-            abilities[0] += 10;
-            this.miningLevel += 10;
-        } else
-            abilities[0] += miningLevel;
-        this.miningLevel += miningLevel;
+        abilities[0] = miningLevel;
     }
 
     public int[] getAbilities() {
@@ -41,29 +36,20 @@ public class Abilities {
     }
 
     public int getFishingLevel() {
-        return Math.min((abilities[1] - 50) / 100, 0);
+        return abilities[1];
     }
 
     public void setFishingLevel(int fishingLevel) {
-        if (fishingLevel == 0) {
-            abilities[1] += 5;
-            this.fishingLevel += 5;
-        } else
-            abilities[1] += fishingLevel;
-        this.fishingLevel += fishingLevel;
+        abilities[1] = fishingLevel;
     }
 
     public int getFarmingLevel() {
-        return Math.min((abilities[2] - 50) / 100, 0);
+        return abilities[2] ;
     }
 
     public void setFarmingLevel(int farmingLevel) {
-        if (farmingLevel == 0) {
-            abilities[2] += 5;
-            this.farmingLevel += 5;
-        } else
-            abilities[2] += farmingLevel;
-        this.farmingLevel += farmingLevel;
+
+        abilities[2] = farmingLevel;
     }
 
     public int getForagingLevel() {

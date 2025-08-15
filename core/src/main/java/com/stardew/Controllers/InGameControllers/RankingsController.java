@@ -3,8 +3,8 @@ package com.stardew.Controllers.InGameControllers;
 import com.stardew.Models.Result;
 import com.stardew.Network.Common.Packet.ClientPacket.KeyboardPackets.*;
 
-public class AnimalMenuController extends Controller {
-    public static final String MENU_NAME = "AnimalMenu";
+public class RankingsController extends Controller {
+    public static final String MENU_NAME = "Rankings";
 
     @Override
     public Result keyUp(KeyUpPacket keyUpPacket) { return new Result(true, ""); }

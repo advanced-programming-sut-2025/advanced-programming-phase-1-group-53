@@ -498,6 +498,14 @@ public class GameMenu extends AppMenu implements InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
+        if(keycode == Input.Keys.R){
+            Rankings.instance.setChanged(true);
+            Rankings.instance.setProducts(App.getGame().players);
+            Main.getInstance().setScreen(Rankings.instance);
+
+            return true;
+        }
+
         ClientApp.getInstance().getConnectionThread().sendPacket(new KeyDownPacket(App.getMyPlayer(),keycode, AbilityMenu.class));
 
         if(keycode == Input.Keys.V){
@@ -586,8 +594,6 @@ public class GameMenu extends AppMenu implements InputProcessor {
 
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
-
-        ClientApp.getInstance().getConnectionThread().sendPacket(new MouseMovePacket(App.getMyPlayer(), screenX, screenY, AbilityMenu.class));
 
         return false;
     }

@@ -5,22 +5,12 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.stardew.Controllers.InGameControllers.AnimalMenuController;
-import com.stardew.Enums.ItemType;
 import com.stardew.Main;
-import com.stardew.Models.Game.App;
 import com.stardew.Models.Game.GameAssetManager;
 import com.stardew.Models.Game.Player;
-import com.stardew.Models.Items.Animal;
-import com.stardew.Models.Items.Item;
-import com.stardew.Models.Product;
-import com.stardew.Network.Client.ClientApp;
-import com.stardew.Network.Common.Packet.ClientPacket.KeyboardPackets.ClickPacket;
-import com.stardew.Network.Common.Packet.ClientPacket.KeyboardPackets.TextButtonType;
 import com.stardew.Views.GameMenu;
 import com.stardew.Views.Tab;
 
@@ -39,6 +29,7 @@ public class Rankings extends Tab {
     private static final float ROW_WIDTH = 1000;
     private boolean isChanged = true;
     private boolean showAll = true;
+    public static Rankings instance = new Rankings();
     private static final int NUM_OF_ITEMS_IN_A_PAGE = 5;
     private int currentPage  = 0;
     SelectBox selectBox;
@@ -59,7 +50,7 @@ public class Rankings extends Tab {
                 player.abilities.getAbilities()[2]+" mining: "+player.abilities.getAbilities()[0]+
                 "\nfishing: "+player.abilities.getAbilities()[1]+" quests done : 0");
         details.setSize(0, 0);
-        details.setPosition(x+ROW_WIDTH/6+90,y+90);
+        details.setPosition(x+ROW_WIDTH/6+300,y+90);
         stage.addActor(details);
     }
 

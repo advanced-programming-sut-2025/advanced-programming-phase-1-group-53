@@ -6,7 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.stardew.Controllers.InGameControllers.AnimalMenuController;
+import com.stardew.Controllers.InGameControllers.RankingsController;
 import com.stardew.Enums.ItemType;
 import com.stardew.Models.Game.App;
 import com.stardew.Models.Items.*;
@@ -25,7 +25,7 @@ public class AnimalMenu extends Tab {
     private ArrayList<Sprite> sprites = new ArrayList<>();
     private boolean isChanged = true;
     private Animal animal;
-    private static AnimalMenuController controller = new AnimalMenuController();
+    private static RankingsController controller = new RankingsController();
     int u = 0;
 
 

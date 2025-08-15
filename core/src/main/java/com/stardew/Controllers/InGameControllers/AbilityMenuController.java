@@ -19,10 +19,7 @@ import com.stardew.Models.Result;
 import com.stardew.Network.Common.Packet.ClientPacket.KeyboardPackets.*;
 import com.stardew.Views.GameMenu;
 import com.stardew.Views.Tab;
-import com.stardew.Views.TabMenus.CookingMenu;
-import com.stardew.Views.TabMenus.CraftingMenu;
-import com.stardew.Views.TabMenus.InventoryMenu;
-import com.stardew.Views.TabMenus.MapMenu;
+import com.stardew.Views.TabMenus.*;
 import com.stardew.Models.NPC.NPC;
 
 import static com.stardew.Views.GameMenu.angleBetweenPoints;
@@ -61,8 +58,27 @@ public class AbilityMenuController extends Controller {
         System.out.println(App.getGame().players.get(0)+"mm"+App.getGame().players.get(1));
         int keycode = keyDownPacket.keycode;
 
+
         if(keycode == Input.Keys.M){
+            System.out.println("aaaaa");
             App.getCurrentPlayer().personalInfo.updateGold(20);
+        }
+        if(keycode == Input.Keys.Z){
+            App.getCurrentPlayer().abilities.setFarmingLevel(App.getCurrentPlayer().abilities.getFarmingLevel()+1);
+        }
+        if(keycode == Input.Keys.X){
+            App.getCurrentPlayer().abilities.setFishingLevel(App.getCurrentPlayer().abilities.getFishingLevel()+1);
+        }
+        if(keycode == Input.Keys.C){
+            App.getCurrentPlayer().abilities.setMiningLevel(App.getCurrentPlayer().abilities.getMiningLevel()+1);
+        }
+
+        if(keycode == Input.Keys.Z || keycode == Input.Keys.M || keycode == Input.Keys.C || keycode == Input.Keys.X){
+            if(!(App.getMyPlayer() == null || App.getMyPlayer().personalInfo.getName().equalsIgnoreCase("server"))){
+                Rankings.instance.setProducts(App.getGame().players);
+                Rankings.instance.setChanged(true);
+            }
+            return new Result(true, "");
         }
 
         Vector2 v = GameMap.getPositionByCoordinates((int) (App.getCurrentPlayer().position.getX()),

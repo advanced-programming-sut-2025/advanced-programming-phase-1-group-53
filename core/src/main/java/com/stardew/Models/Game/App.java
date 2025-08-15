@@ -1,8 +1,6 @@
 package com.stardew.Models.Game;
 
 import com.stardew.Controllers.InGameControllers.*;
-import com.stardew.Controllers.GameMenuController;
-import com.stardew.Enums.Gender;
 import com.stardew.Enums.Menu;
 import com.stardew.Main;
 import com.stardew.Models.Lobby;
@@ -52,7 +50,7 @@ public class App {
 
     private static void setControllers() {
         app.controllerRegistry.put(AbilityMenuController.MENU_NAME, new AbilityMenuController());
-        app.controllerRegistry.put(AnimalMenuController.MENU_NAME, new AnimalMenuController());
+        app.controllerRegistry.put(RankingsController.MENU_NAME, new RankingsController());
         app.controllerRegistry.put(CheatMenuController.MENU_NAME, new CheatMenuController());
         app.controllerRegistry.put(CookingMenuController.MENU_NAME, new CookingMenuController());
         app.controllerRegistry.put(CoopMenuController.MENU_NAME, new CoopMenuController());
