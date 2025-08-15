@@ -1,7 +1,11 @@
 package com.stardew.Controllers.InGameControllers;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.stardew.Controllers.GameMenuController;
 import com.stardew.Enums.ItemType;
 import com.stardew.Main;
@@ -10,13 +14,16 @@ import com.stardew.Models.GameMap;
 import com.stardew.Models.Items.Animal;
 import com.stardew.Models.Items.Tool;
 import com.stardew.Models.MessageManager;
+import com.stardew.Models.NPC.DialogueGenerator;
 import com.stardew.Models.Result;
 import com.stardew.Network.Common.Packet.ClientPacket.KeyboardPackets.*;
 import com.stardew.Views.GameMenu;
+import com.stardew.Views.Tab;
 import com.stardew.Views.TabMenus.CookingMenu;
 import com.stardew.Views.TabMenus.CraftingMenu;
 import com.stardew.Views.TabMenus.InventoryMenu;
 import com.stardew.Views.TabMenus.MapMenu;
+import com.stardew.Models.NPC.NPC;
 
 import static com.stardew.Views.GameMenu.angleBetweenPoints;
 
@@ -154,7 +161,22 @@ public class AbilityMenuController extends Controller {
                 GameMenu.getInstance().useItem(x, y, App.getGame().getItemByItemType(App.getCurrentPlayer().backpack.getItemInHand().getItemType()));
             return new Result(true, "Left click handled");
         }
-        return new Result(true, "Right click can't be handled");
+        if(button == Input.Buttons.RIGHT){
+            if(NPC.Abigail.isDialogueOpen()) {
+                NPC.Abigail.setDialogueOpen(false);
+                App.getMyPlayer().setNpcDialogue(null);
+            }
+
+            if(App.getMyPlayer().getNpcDialogue() != null){
+                MessageManager.setShowNpcDialogueButton(App.getMyPlayer().getNpcDialogue(), GameMenu.getScreenWidth()/2
+                , GameMenu.getScreenHeight()/2);
+                NPC.Abigail.setDialogueOpen(true);
+                return new Result(true, " ");
+            }
+            return new Result(true, "Right click handled");
+
+        }
+        return new Result(true, "  ");
     }
 
     @Override

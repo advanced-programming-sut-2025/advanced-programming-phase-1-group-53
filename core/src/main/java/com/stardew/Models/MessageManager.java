@@ -27,6 +27,8 @@ public class MessageManager {
     private static TextButton SHOW_TILE_DETAIL_BUTTON = null;
     private static final LinkedHashMap<TextButton, Float> textButtons = new LinkedHashMap<>();
     private static StringBuilder output= new StringBuilder();
+    private static TextButton SHOW_NPC_DIALOGUE_BUTTON  = null;
+
     public static void getMessage(Result result){
         output.append("[success: " + result.success() + ", message: "+ result.message() + "]");
         System.out.println(result.message());
@@ -105,7 +107,20 @@ public class MessageManager {
 
         if(SHOW_TILE_DETAIL_BUTTON != null)
             textButtonFloatHashMap.put(SHOW_TILE_DETAIL_BUTTON, Float.MAX_VALUE);
+        if(SHOW_NPC_DIALOGUE_BUTTON != null)
+            textButtonFloatHashMap.put(SHOW_NPC_DIALOGUE_BUTTON, Float.MAX_VALUE);
         return textButtonFloatHashMap;
+    }
+
+    public static void setShowNpcDialogueButton(String txt, float x, float y){
+        if(txt == null) {
+            SHOW_NPC_DIALOGUE_BUTTON= null;
+            isChanged = true;
+            return;
+        }
+        SHOW_NPC_DIALOGUE_BUTTON = createTextButton(txt);
+        SHOW_NPC_DIALOGUE_BUTTON.setPosition(x, y);
+        isChanged = true;
     }
 
     public static boolean isChanged() {

@@ -21,16 +21,15 @@ import com.stardew.Enums.GameMenuCommand;
 import com.stardew.Enums.ItemType;
 import com.stardew.Enums.TileKind;
 import com.stardew.Main;
-import com.stardew.Models.Election;
-import com.stardew.Models.Energy;
+import com.stardew.Models.*;
 import com.stardew.Models.Game.App;
-import com.stardew.Models.GameMap;
 import com.stardew.Models.Items.*;
 import com.stardew.Models.Items.CraftAbleAndArtisan.Artisan;
-import com.stardew.Models.MessageManager;
+import com.stardew.Models.NPC.NPC;
 import com.stardew.Network.Client.ClientApp;
 import com.stardew.Network.Common.Packet.ClientPacket.ElectionPackets.ElectionType;
 import com.stardew.Network.Common.Packet.ClientPacket.KeyboardPackets.*;
+import com.stardew.Network.Common.Packet.ClientPacket.NPCPackets.TalkToNPCPacket;
 import com.stardew.Views.TabMenus.*;
 
 import java.util.ArrayList;
@@ -551,7 +550,17 @@ public class GameMenu extends AppMenu implements InputProcessor {
 
         ClientApp.getInstance().getConnectionThread().sendPacket(new TouchDownPacket(App.getMyPlayer(), screenX, screenY, pointer, button ,AbilityMenu.class));
 
+        for(NPC npc : NPC.allNPCs){
+            if(true){
+                boolean b1 =GameMenuController.coordinateCollision(npc.dialogueSprites().get(0).getX(), npc.dialogueSprites().get(0).getWidth(), mouseX, 0);
+                boolean b2 =GameMenuController.coordinateCollision(npc.dialogueSprites().get(0).getY(), npc.dialogueSprites().get(0).getHeight(), mouseY, 0);
 
+                if(b1 && b2){
+                    ClientApp.getInstance().getConnectionThread().sendPacket(new TalkToNPCPacket(App.getMyPlayer(), npc.getName()));
+                    return true;
+                }
+            }
+        }
         return false;
     }
 

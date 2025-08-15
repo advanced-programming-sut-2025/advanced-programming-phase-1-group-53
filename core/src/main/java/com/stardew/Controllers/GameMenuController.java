@@ -99,6 +99,10 @@ public class GameMenuController {
             //choose weather
         }
 
+        for(NPC npc : NPC.allNPCs){
+            npc.update(delta);
+        }
+
         for(Player player : App.getGame().getPlayers()){
             player.update(delta);
         }
