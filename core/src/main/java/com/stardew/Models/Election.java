@@ -69,7 +69,7 @@ public class Election {
 
     public static void applyElectionResult(FinalizeElectionPacket packet, Result result) {
         Election election = App.getGame().getElection();
-        if (packet.type.equals(ElectionType.REMOVE_PLAYER)) {
+        if (packet.electionType.equals(ElectionType.REMOVE_PLAYER)) {
             if (result.message().equalsIgnoreCase("election lost")) {
                 return;
             }
@@ -79,7 +79,7 @@ public class Election {
                     App.getGame().getPlayers().remove(player);
                 }
             }
-        } else if (packet.type.equals(ElectionType.TERMINATE_GAME)) {
+        } else if (packet.electionType.equals(ElectionType.TERMINATE_GAME)) {
             if (result.message().equalsIgnoreCase("election lost")) {
                 return;
             }
@@ -99,7 +99,7 @@ public class Election {
 
     public static void startElection(StartVotingPacket packet) {
         if (App.getGame().getElection() == null) {
-            App.getGame().setElection(new Election(packet.type, packet.username));
+            App.getGame().setElection(new Election(packet.electionType, packet.username));
         }
     }
 
