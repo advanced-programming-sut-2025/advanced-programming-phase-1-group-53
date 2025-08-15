@@ -36,7 +36,6 @@ public class MovementController {
         if(direction == 0) y = -App.ADVANCE_OF_EACH_STEP;
         if(direction == 1) x = App.ADVANCE_OF_EACH_STEP;
         if(direction == 3) x = -App.ADVANCE_OF_EACH_STEP;
-        System.out.println(App.getCurrentPlayer().position.getX()+x +"thtfhft"+(App.getCurrentPlayer().position.getY()+y));
         v2 = GameMap.getPositionByCoordinates(App.getCurrentPlayer().position.getX() + x,
             App.getCurrentPlayer().position.getY() + y);
         if(!App.getGame().getGameMap().areInBound(App.getCurrentPlayer().position.getX() + x,

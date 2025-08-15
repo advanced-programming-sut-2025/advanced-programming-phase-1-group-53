@@ -38,7 +38,6 @@ public class NPC {
 
 
     public void update(float delta){
-        System.out.println(direction);
 
         if(!isIdle){
             if(indexOfSprite == 0) {
@@ -48,9 +47,6 @@ public class NPC {
             else if((GameMenu.getTotalTimeSpent()-lastTimeUpdatedSprite) >= App.TAKING_STEP_TIME_GAP){
                 indexOfSprite = (indexOfSprite % 2) + 1;
                 lastTimeUpdatedSprite = GameMenu.getTotalTimeSpent();
-            }
-            if(!GameMenuController.mvc.canPlayerMove(direction)){
-                isIdle = true;
                 if(direction == 0)
                     position.changeY(-1);
                 if(direction == 1)
@@ -59,9 +55,11 @@ public class NPC {
                     position.changeY(1);
                 if(direction == 3)
                     position.changeX(-1);
+            }
+            if(!GameMenuController.mvc.canPlayerMove(direction)){
+                isIdle = true;
                 return;
             }
-
         }
         if(isIdle){
             indexOfSprite = 0;
