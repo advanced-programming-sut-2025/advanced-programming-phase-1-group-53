@@ -161,7 +161,8 @@ public class AbilityMenuController extends Controller {
                 GameMenu.getInstance().useItem(x, y, App.getGame().getItemByItemType(App.getCurrentPlayer().backpack.getItemInHand().getItemType()));
             return new Result(true, "Left click handled");
         }
-        if(button == Input.Buttons.RIGHT){}
+        if(button == Input.Buttons.RIGHT){
+        }
         return new Result(true, "  ");
     }
 

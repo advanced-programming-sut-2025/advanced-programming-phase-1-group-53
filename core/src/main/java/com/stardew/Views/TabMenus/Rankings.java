@@ -52,10 +52,12 @@ public class Rankings extends Tab {
         s.setPosition(x, y+ROW_HEIGHT/10);
         sprites.add(back);
         sprites.add(s);
-        TextButton details = Tab.createTextButton("name : "+player.personalInfo.getName()+",  quantity : "
-            +player.personalInfo.getGold()+" ");
+        TextButton details = Tab.createTextButton("name : "+player.personalInfo.getName()+",  gold : "
+            +player.personalInfo.getGold()+"\nforaging: "+player.abilities.getAbilities()[3]+" farming: "+
+                player.abilities.getAbilities()[2]+" mining: "+player.abilities.getAbilities()[0]+
+                "\nfishing: "+player.abilities.getAbilities()[1]+" quests done : 0");
         details.setSize(0, 0);
-        details.setPosition(x+ROW_WIDTH/6+20,y+20);
+        details.setPosition(x+ROW_WIDTH/6+90,y+90);
         stage.addActor(details);
     }
 

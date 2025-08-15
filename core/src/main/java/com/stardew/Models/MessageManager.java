@@ -28,6 +28,7 @@ public class MessageManager {
     private static final LinkedHashMap<TextButton, Float> textButtons = new LinkedHashMap<>();
     private static StringBuilder output= new StringBuilder();
     private static TextButton SHOW_NPC_DIALOGUE_BUTTON  = null;
+    private static float TIME_TO_ERASE_NPC_MESSAGE = 0;
 
     public static void getMessage(Result result){
         output.append("[success: " + result.success() + ", message: "+ result.message() + "]");
@@ -115,11 +116,13 @@ public class MessageManager {
     public static void setShowNpcDialogueButton(String txt, float x, float y){
         if(txt == null) {
             SHOW_NPC_DIALOGUE_BUTTON= null;
+            TIME_TO_ERASE_NPC_MESSAGE = 0;
             isChanged = true;
             return;
         }
         SHOW_NPC_DIALOGUE_BUTTON = createTextButton(txt);
         SHOW_NPC_DIALOGUE_BUTTON.setPosition(x, y);
+        TIME_TO_ERASE_NPC_MESSAGE = 5;
         isChanged = true;
     }
 
@@ -132,6 +135,10 @@ public class MessageManager {
     }
 
     public static void update(float delta){
+        TIME_TO_ERASE_NPC_MESSAGE = Math.max(TIME_TO_ERASE_NPC_MESSAGE-delta, 0);
+        if(TIME_TO_ERASE_NPC_MESSAGE <= 0){
+            SHOW_NPC_DIALOGUE_BUTTON = null;
+        }
         ArrayList<TextButton> removals = new ArrayList<>();
         for(TextButton textButton : textButtons.keySet()){
             textButtons.compute(textButton, (k, v)-> v-delta);

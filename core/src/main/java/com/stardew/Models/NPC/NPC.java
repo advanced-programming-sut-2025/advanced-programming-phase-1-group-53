@@ -38,7 +38,6 @@ public class NPC {
 
 
     public void update(float delta){
-
         if(!isIdle){
             if(indexOfSprite == 0) {
                 indexOfSprite = 1;

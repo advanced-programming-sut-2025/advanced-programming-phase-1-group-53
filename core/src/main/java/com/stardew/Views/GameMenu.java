@@ -379,6 +379,11 @@ public class GameMenu extends AppMenu implements InputProcessor {
                 }
             }
         }
+
+        if(App.getMyPlayer().getNpcDialogue() != null){
+            MessageManager.setShowNpcDialogueButton(App.getMyPlayer().getNpcDialogue(), GameMenu.getScreenWidth()/2
+                , GameMenu.getScreenHeight()/2);
+        }
         MessageManager.update(delta);
         if(MessageManager.isChanged()){
             stage = new Stage();
